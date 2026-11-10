@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1: Operating System Fundamentals</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f59e0b;
+  --accent-pink: #ec4899;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border: #334155;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+header { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); flex-wrap: wrap; gap: 0.5rem; }
+header h1 { font-size: 1.4rem; color: var(--accent-cyan); }
+.header-links a { color: var(--text-muted); text-decoration: none; margin-left: 1rem; font-size: 0.9rem; }
+.header-links a:hover { color: var(--accent-cyan); }
+nav.prev-next { background: var(--card); padding: 1rem 2rem; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem; }
+nav.prev-next a { color: var(--accent-cyan); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--accent-cyan); border-radius: 6px; font-size: 0.9rem; transition: background 0.2s; }
+nav.prev-next a:hover { background: var(--accent-cyan); color: white; }
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+.hero { text-align: center; padding: 2rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.hero h2 { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--accent-cyan); }
+.hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; margin: 0 auto; }
+.hero .meta-badges { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+.hero .badge { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.8rem; color: var(--text-muted); }
+.objectives { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--accent-cyan); }
+.objectives h3 { color: var(--accent-cyan); margin-bottom: 1rem; font-size: 1.2rem; }
+.objectives ul { list-style: none; }
+.objectives li { padding: 0.4rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
+.objectives input[type="checkbox"] { accent-color: var(--accent-green); width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; margin-top: 4px; }
+.module { background: var(--card); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; border: 1px solid var(--border); }
+.module-header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.module-header:hover { background: rgba(6,182,212,0.05); }
+.module-header h3 { font-size: 1.1rem; }
+.module-time { background: var(--accent-cyan); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; }
+.module-body { padding: 0 1.5rem 1.5rem; }
+.module-body.collapsed { display: none; }
+.lesson { padding: 1rem; margin-bottom: 1rem; background: rgba(15,23,42,0.6); border-radius: 8px; border-left: 3px solid var(--accent-cyan); }
+.lesson h4 { color: var(--accent-cyan); margin-bottom: 0.5rem; }
+.lesson p { color: var(--text-muted); font-size: 0.95rem; }
+.lesson ul { margin-top: 0.5rem; padding-left: 1.2rem; }
+.lesson li { color: var(--text-muted); font-size: 0.9rem; padding: 0.2rem 0; }
+.lab { background: rgba(16,185,129,0.1); border: 1px solid var(--accent-green); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.lab h4 { color: var(--accent-green); margin-bottom: 0.5rem; }
+.lab ol { padding-left: 1.2rem; }
+.lab li { color: var(--text-muted); font-size: 0.9rem; padding: 0.2rem 0; }
+.scenario { background: rgba(245,158,11,0.1); border: 1px solid var(--accent-orange); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.scenario h4 { color: var(--accent-orange); margin-bottom: 0.5rem; }
+.scenario p { color: var(--text-muted); font-size: 0.9rem; }
+.resources { background: rgba(236,72,153,0.1); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.resources h4 { color: var(--accent-pink); margin-bottom: 0.5rem; }
+.resources a { color: var(--accent-cyan); text-decoration: none; display: block; font-size: 0.9rem; padding: 0.2rem 0; }
+.resources a:hover { text-decoration: underline; }
+.checkpoint { background: rgba(139,92,246,0.1); border: 1px solid var(--accent-purple); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.checkpoint h4 { color: var(--accent-purple); margin-bottom: 0.5rem; }
+.checkpoint p { color: var(--text-muted); font-size: 0.9rem; }
+.os-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+.os-table th { background: var(--card); color: var(--accent-cyan); padding: 0.7rem 1rem; text-align: left; border-bottom: 2px solid var(--border); }
+.os-table td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+.os-table tr:hover td { background: rgba(6,182,212,0.05); }
+.progress-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); padding: 0.5rem 2rem; display: flex; align-items: center; gap: 1rem; z-index: 100; border-top: 1px solid var(--border); }
+.progress-label { color: var(--text-muted); font-size: 0.85rem; }
+#progressTrack { list-style: none; display: flex; gap: 0.5rem; justify-content: center; padding: 1rem 0; margin-bottom: 1rem; }
+#progressTrack li { width: 12px; height: 12px; border-radius: 50%; background: var(--border); }
+#progressTrack li.done { background: var(--accent-green); }
+footer { clear: both; padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+.toggle-icon::after { content: '+'; font-size: 1.5rem; color: var(--accent-cyan); }
+.module.open .toggle-icon::after { content: '-'; }
+</style>
+</head>
+<body>
+<header>
+  <h1>&#x1F4BB; Operating System Fundamentals</h1>
+  <div class="header-links">
+    <a href="../index.html">&#x21A9; Back to Index</a>
+    <a href="phase-1-command-line-basics.html">Next: Command Line &rarr;</a>
+  </div>
+</header>
+<nav class="prev-next">
+  <a href="phase-1-computer-hardware.html">&#8592; Prev: Hardware</a>
+  <a href="phase-1-command-line-basics.html">Next: Command Line &rarr;</a>
+</nav>
+<div class="container">
+  <div class="hero">
+    <h2>Operating System Fundamentals</h2>
+    <p>Understand what an operating system actually does behind the scenes, explore Windows, macOS, and Linux, and learn how systems boot, manage files, and handle user interactions.</p>
+    <div class="meta-badges">
+      <span class="badge">&#x1F550; ~8 Hours</span>
+      <span class="badge">&#x1F512; Virtual Machines Included</span>
+      <span class="badge">CompTIA A+ 220-1101</span>
+      <span class="badge">Windows/macOS/Linux</span>
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <div class="objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li><input type="checkbox" /> Explain the core functions of an operating system as a resource manager</li>
+      <li><input type="checkbox" /> Compare Windows, macOS, and Linux editions, features, and licensing models</li>
+      <li><input type="checkbox" /> Trace the boot sequence from power-on to login screen across all three OSes</li>
+      <li><input type="checkbox" /> Identify and compare file systems: NTFS, exFAT, FAT32, APFS, ext4, HFS+</li>
+      <li><input type="checkbox" /> Navigate system settings, Control Panel, and Settings apps fluently</li>
+      <li><input type="checkbox" /> Perform fresh OS installations from USB media or recovery partitions</li>
+      <li><input type="checkbox" /> Understand drivers, firmware, and the relationship between kernel and applications</li>
+      <li><input type="checkbox" /> Configure networking, time zones, language, and accessibility settings</li>
+    </ul>
+  </div>
+
+  <!-- Module 1 -->
+  <div class="module open">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 1: What Does an OS Actually Do?</h3>
+      <span class="module-time">~1 hour</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 1.1: The OS as Resource Manager</h4>
+        <p>An operating system sits between your applications and the underlying hardware. Its five core jobs are: managing processes, allocating memory, handling file I/O, controlling peripheral devices, and providing a user interface.</p>
+        <ul>
+          <li><strong>Process management:</strong> Creating, scheduling, and terminating programs. Each process gets its own memory space.</li>
+          <li><strong>Memory management:</strong> Tracking RAM allocation, virtual memory paging to disk, preventing process conflicts</li>
+          <li><strong>File system management:</strong> Organizing data on storage, handling permissions, tracking fragmentation</li>
+          <li><strong>Device management:</strong> Talking to hardware through device drivers (kernel-space interfaces)</li>
+          <li><strong>User interface:</strong> GUI (graphical) or CLI (command-line) for human interaction</li>
+          <li><strong>Security:</strong> Authentication, authorization, access controls, audit logging</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 1.2: Kernel, Shell, and User Space</h4>
+        <p>Understanding the layers between you and the silicon helps diagnose problems at the right level.</p>
+        <ul>
+          <li><strong>Kernel:</strong> The core that directly manages hardware. Runs in privileged mode.</li>
+          <li><strong>Shell:</strong> Interpretter between user commands and the kernel (cmd.exe, PowerShell, bash, zsh)</li>
+          <li><strong>User-space applications:</strong> Programs like browsers, Office, Slack that request kernel services via system calls</li>
+          <li><strong>System calls:</strong> The API by which applications ask the kernel to do things (read, write, open, close)</li>
+          <li><strong>Environment variables:</strong> PATH, USER, HOME — configure how programs find things and behave</li>
+        </ul>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A user says their computer is "slow." Before blaming hardware, consider: Is a runaway process consuming CPU? Is the page file thrashing because RAM is exhausted? Is a background update scanning files? Is the disk nearly full? Systematically check Task Manager / Activity Monitor / top to isolate the layer at fault.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://www.kernel.org/doc/html/latest/process/kernel-api.html" target="_blank">Linux Kernel Documentation</a>
+        <a href="https://learn.microsoft.com/en-us/windows/win32/procthread/processes" target="_blank">Windows Processes (Microsoft Learn)</a>
+        <a href="https://developer.apple.com/documentation/kernel" target="_blank">macOS/iOS Kernel Overview</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 2: OS Types & Distributions</h3>
+      <span class="module-time">~2 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 2.1: Windows — Editions & Licensing</h4>
+        <p>Windows dominates enterprise desktops. Knowing edition differences is essential for procurement and compliance.</p>
+        <ul>
+          <li>Windows 10/11 Home vs Pro vs Enterprise vs Education</li>
+          <li>BitLocker encryption availability (Pro+ only)</li>
+          <li>Group Policy Editor presence (Home lacks gpedit.msc natively)</li>
+          <li>Hyper-V virtualization inclusion (Pro+)</li>
+          <li>Windows Update for Business, Assigned Access, Remote Desktop hosting</li>
+          <li>Licensing: Volume License, CSP (Cloud Subscription), OEM pre-install</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 2.2: macOS — Versions & Apple Silicon Transition</h4>
+        <p>Apple's OS runs most creative professional workstations and some corporate dev machines.</p>
+        <ul>
+          <li>macOS releases: Ventura, Sonoma, Sequoia naming conventions</li>
+          <li>Intel-based vs Apple Silicon (M1/M2/M3) architecture differences</li>
+          <li>Rosetta 2: translation layer running Intel apps on ARM Macs</li>
+          <li>Gatekeeper, SIP (System Integrity Protection), FileVault</li>
+          <li>macOS updates: feature updates yearly, security patches monthly</li>
+          <li>Family Sharing, MDM integration for enterprise deployment</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 2.3: Linux — Distributions for IT Support</h4>
+        <p>Linux powers servers, cloud infrastructure, and developer workstations. IT pros need familiarity with at least one distro.</p>
+        <ul>
+          <li>Ubuntu: most popular desktop Linux, beginner-friendly, LTS releases every 2 years</li>
+          <li>Debian: rock-solid base that Ubuntu derives from, slower release cycle</li>
+          <li>Linux Mint: polished Ubuntu-derived experience, great for Windows migrants</li>
+          <li>RHEL / Fedora / CentOS Stream: Red Hat ecosystem, enterprise-grade</li>
+          <li>Package managers: apt (Debian/Ubuntu), dnf/yum (Red Hat), pacman (Arch)</li>
+          <li>Terminal-first philosophy — even desktop Linux relies heavily on CLI</li>
+        </ul>
+      </div>
+      <table class="os-table">
+        <tr><th>Feature</th><th>Windows 11 Pro</th><th>macOS Sonoma</th><th>Ubuntu 24.04 LTS</th></tr>
+        <tr><td>Default Shell</td><td>PowerShell 7 / cmd.exe</td><td>zsh (default)</td><td>bash (default)</td></tr>
+        <tr><td>Package Manager</td><td>winget / Chocolatey</td><td>Homebrew / App Store</td><td>apt (Snap also available)</td></tr>
+        <tr><td>Native Filesystem</td><td>NTFS</td><td>APFS</td><td>ext4</td></tr>
+        <tr><td>Update Mechanism</td><td>Windows Update (WSUS)</td><td>System Settings → Software Update</td><td>apt upgrade / gnome-software</td></tr>
+        <tr><td>Remote Access</td><td>RDP built-in</td><td>VNC third-party / Screen Sharing</td><td>SSH built-in</td></tr>
+        <tr><td>Virtualization</td><td>Hyper-V, WSL2</td><td>Parallels, VMWare Fusion</td><td>VirtualBox, KVM, Docker</td></tr>
+      </table>
+      <div class="lab">
+        <h4>Hands-On Lab: Install Ubuntu in a Virtual Machine</h4>
+        <ol>
+          <li>Download Oracle VM VirtualBox (free) and the Ubuntu 24.04 LTS ISO</li>
+          <li>Create a new VM with 4 GB RAM, 50 GB VDI disk, 2 CPU cores</li>
+          <li>Boot the ISO and run through the Ubuntu installer</li>
+          <li>Set up a user account and verify SSH access from the host</li>
+          <li>Run sudo apt update && sudo apt upgrade to see package management in action</li>
+          <li>Install a terminal text editor (nano or vim) and create a test file</li>
+        </ol>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows/whats-new/windows-11-overview" target="_blank">Windows 11 Overview (Microsoft)</a>
+        <a href="https://ubuntu.com/download/desktop" target="_blank">Download Ubuntu Desktop</a>
+        <a href="https://support.apple.com/en-us/102529" target="_blank">macOS Version Information (Apple)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 3: The Boot Process</h3>
+      <span class="module-time">~1.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 3.1: From Power Button to Login Prompt</h4>
+        <p>Every boot follows a predictable chain. When something goes wrong, knowing this chain tells you where to look.</p>
+        <ul>
+          <li><strong>POST (Power-On Self-Test):</strong> Firmware checks hardware integrity</li>
+          <li><strong>Bootloader selection:</strong> UEFI looks for EFI boot entries in NVRAM</li>
+          <li><strong>GRUB / Windows Boot Manager:</strong> Loads the selected OS kernel</li>
+          <li><strong>Kernel initialization:</strong> Mounts root filesystem, starts init/systemd</li>
+          <li><strong>Service startup:</strong> Network, displays, authentication services start</li>
+          <li><strong>Login prompt:</strong> Display manager or graphical shell appears</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 3.2: UEFI vs Legacy BIOS</h4>
+        <p>Modern systems use UEFI, but legacy BIOS compatibility remains important for older hardware.</p>
+        <ul>
+          <li>BIOS: floppy-era tech, MBR partition table (2 TB limit), 16-bit code</li>
+          <li>UEFI: modular drivers stored in ESP partition, supports GPT disks, secure boot signature verification</li>
+          <li>Secure Boot: prevents unauthorized bootloaders from loading</li>
+          <li>Fast Boot: skips some hardware checks to boot faster</li>
+          <li>Entering UEFI settings: typically Del, F2, or F12 during startup</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 3.3: Recovery Environments</h4>
+        <p>When the normal boot fails, every OS provides fallback environments.</p>
+        <ul>
+          <li>Windows RE: WinRE partition with Safe Mode, Startup Repair, command prompt</li>
+          <li>Linux recovery mode: drops to root shell before systemd starts services</li>
+          <li>macOS Recovery: Command+R at startup — reinstall, disk utility, Terminal</li>
+          <li>Bootable USB recovery: Linux live USB, Windows Installation Media creator</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Boot Into Recovery Modes</h4>
+        <ol>
+          <li>On Windows: press Shift while clicking Restart to access Advanced Startup</li>
+          <li>Enter Safe Mode and note what loads differently (drivers, services disabled)</li>
+          <li>Launch Command Prompt from WinRE and run sfc /scannow /offbootdir=C:\ /offwindir=C:\Windows</li>
+          <li>On Ubuntu (in your VM): boot holding Shift to access GRUB menu, choose Recovery Mode</li>
+          <li>Drop to root shell and check disk space: df -h and fdisk -l</li>
+        </ol>
+      </div>
+      <div class="checkpoint">
+        <h4>Checkpoint</h4>
+        <p>A customer's Windows 11 PC shows "No bootable device found." The BIOS detects the SSD. What's the most likely fix? Run <code>bootrec /fixboot</code> and <code>bootrec /rebuildbcd</code> from Windows RE, or recreate the EFI boot entry manually.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/boot-to-windows-setup-using-a-local-or-network-source" target="_blank">Windows Boot Process Documentation</a>
+        <a href="https://help.ubuntu.com/community/RecoveryMode" target="_blank">Ubuntu Recovery Mode Guide</a>
+        <a href="https://support.apple.com/en-us/102656" target="_blank">Use Recovery Mode on Apple Silicon Macs</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 4: File Systems Explained</h3>
+      <span class="module-time">~1.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 4.1: File System Types & Use Cases</h4>
+        <p>A file system organizes how data is stored and retrieved. Different systems optimize for different needs.</p>
+        <ul>
+          <li><strong>NTFS (NT File System):</strong> Windows default since XP. Supports ACL permissions, encryption (EFS), compression, journaling, hard links, symbolic links</li>
+          <li><strong>exFAT:</strong> Cross-platform (Windows + macOS). No 4 GB single-file limit like FAT32. Good for USB drives and SD cards</li>
+          <li><strong>FAT32:</strong> Universal compatibility but limited to 4 GB files and 2 TB volumes. Still used for UEFI boot partitions</li>
+          <li><strong>APFS (Apple File System):</strong> macOS/iOS default. Copy-on-write, snapshots, native encryption, optimized for SSDs</li>
+          <li><strong>ext4:</strong> Most common Linux file system. Journaling, extents (contiguous blocks), up to 1 EB volume size</li>
+          <li><strong>HFS+:</strong> Pre-APFS macOS file system. Still seen on older drives and Time Machine backups</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 4.2: Partitions, Volumes & Disk Layout</h4>
+        <p>Physical drives are divided into logical sections called partitions, managed through different schemes.</p>
+        <ul>
+          <li>MBR (Master Boot Record): up to 4 primary partitions, 2 TB max disk size</li>
+          <li>GPT (GUID Partition Table): up to 128 partitions, 18 EB max, required for UEFI boot</li>
+          <li>EFI System Partition (ESP): small FAT32 partition containing bootloader files</li>
+          <li>Windows partitions: Recovery, MSR (Microsoft Reserved), C: drive</li>
+          <li>Linux partitions: / (root), /boot, /home, swap, optional /tmp and /var</li>
+          <li>Dynamic disks (Windows): volumes spanning multiple physical disks, mirrored, striped</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Disk Management Deep Dive</h4>
+        <ol>
+          <li>Open Disk Management (diskmgmt.msc) on a Windows machine</li>
+          <li>Identify each partition, its file system, size, and status</li>
+          <li>Create a new simple volume on unallocated space (if available)</li>
+          <li>In Linux VM: run sudo fdisk -l and interpret the partition table output</li>
+          <li>Compare MBR vs GPT: check current disk on your machine with Get-Disk (PowerShell)</li>
+        </ol>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows-server/storage/file-services/file-system-features" target="_blank">Windows File System Features</a>
+        <a href="https://help.ubuntu.com/community/FileSystems" target="_blank">Ubuntu File System Handbook</a>
+        <a href="https://developer.apple.com/documentation/foundation/nsfilemanager" target="_blank">APFS Technical Reference (Apple)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 5: System Settings & Configuration</h3>
+      <span class="module-time">~1.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 5.1: Windows Settings Deep Dive</h4>
+        <p>The modern Settings app replaces much of Control Panel but both interfaces coexist.</p>
+        <ul>
+          <li>Settings app: Accounts, Bluetooth, Network, System, Personalization, Apps, Privacy</li>
+          <li>Control Panel legacy: Appearance, Programs and Features, User Accounts, Power Options</li>
+          <li>msconfig: Boot options, startup items, diagnostic boot</li>
+          <li>sysdm.cpl: Computer properties, remote settings, performance options, environment variables</li>
+          <li>powercfg commands: power plan management, sleep timers, hibernate settings</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 5.2: macOS System Preferences</h4>
+        <ul>
+          <li>System Settings: General, Desktop & Dock, Displays, Sound, Wallet & Apple ID</li>
+          <li>Users & Groups: adding/removing accounts, admin vs standard, parental controls</li>
+          <li>Network: Wi-Fi, Ethernet, DNS configuration, proxy settings</li>
+          <li>Sharing: Screen Sharing (VNC), File Sharing (SMB/AFP), Remote Login (SSH)</li>
+          <li>Terminal preferences: profile colors, shell startup, working directory defaults</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 5.3: Linux System Configuration</h4>
+        <ul>
+          <li>/etc/fstab: permanent mount point definitions</li>
+          <li>/etc/hosts and /etc/resolv.conf: name resolution</li>
+          <li>/etc/network/interfaces or Netplan: network interface configuration (Ubuntu 24.04 uses Netplan YAML)</li>
+          <li>timedatectl: timezone and NTP synchronization</li>
+          <li>snap and flatpak: universal package formats alongside native packages</li>
+          <li>systemd services: systemctl start/status/enable commands</li>
+        </ul>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A user cannot connect to WiFi. They can ping the gateway but get no internet. You suspect DNS. On Windows, flush DNS (ipconfig /flushdns), test nslookup google.com, and check the DNS server addresses. On Linux, check resolv.conf and try systemd-resolve --flush-caches.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/wmi-tutorial" target="_blank">Windows Management Instrumentation (WMI) Basics</a>
+        <a href="https://ubuntu.com/tutorials/manage-system-settings-through-the-command-line" target="_blank">Manage Ubuntu Settings via CLI</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 6: OS Installation & Deployment</h3>
+      <span class="module-time">~2 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 6.1: Creating Bootable Media</h4>
+        <p>You cannot install what you cannot boot from. Mastering media creation is foundational.</p>
+        <ul>
+          <li>Windows: Media Creation Tool (download ISO) or Rufus (create bootable USB from ISO)</li>
+          <li>macOS: createinstallmedia command in Terminal with a downloaded installer</li>
+          <li>Ubuntu: balenaEtcher or the --write flag with dd on Linux</li>
+          <li>USB 3.0 minimum recommended; 8 GB+ for Windows, 4 GB+ for Ubuntu</li>
+          <li>Always verify checksum (SHA-256) after downloading ISOs</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 6.2: Fresh Install Walkthrough</h4>
+        <ul>
+          <li>Back up user data before wiping — documents, browser bookmarks, email archives</li>
+          <li>Disconnect network during Windows install to skip Microsoft account requirement (skip at OOBE)</li>
+          <li>Select custom install, delete old partitions, let OS create new ones automatically</li>
+          <li>Post-install: install chipset drivers first, then GPU, then peripherals</li>
+          <li>Activate license, join domain/workgroup, configure Windows Update settings</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Fresh Windows Installation</h4>
+        <ol>
+          <li>Download Windows 11 ISO from Microsoft's website (use Media Creation Tool)</li>
+          <li>Create a bootable USB with Rufus (GPT partition scheme for UEFI systems)</li>
+          <li>Boot the target machine from USB (may need to change boot order in BIOS)</li>
+          <li>Go through OOBE (Out-of-Box Experience) — choose local offline account</li>
+          <li>After install: verify Windows Update is current, install Visual C++ redistributables</li>
+          <li>Document serial number, license key, and installed software version</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>Your company standardizes on Windows 11 Pro. After imaging 50 machines, users report that OneDrive refuses to sign in on several units. Investigation reveals these machines were created with a Microsoft Account instead of a local account during OOBE. How do you remediate, and what Group Policy setting would prevent this in future deployments?</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://www.rufus.info/" target="_blank">Rufus — Bootable USB Creator</a>
+        <a href="https://www.balena.io/etcher/" target="_blank">balenaEtcher — Flash Tool</a>
+        <a href="https://learn.microsoft.com/en-us/windows/install/windows-11/create-install-media" target="_blank">Create Windows 11 Installation Media</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 7: Drivers, Updates & Stability</h3>
+      <span class="module-time">~1 hour</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 7.1: Driver Fundamentals</h4>
+        <p>Drivers are small programs that translate OS requests into hardware-specific instructions. Outdated or corrupt drivers are a leading cause of hardware dysfunction.</p>
+        <ul>
+          <li>Where drivers live: C:\Windows\System32\drivers\ on Windows, /lib/modules/ on Linux</li>
+          <li>Driver signing: Windows requires WHQL-signed drivers for stability (can be overridden with advanced boot options)</li>
+          <li>Rolling back a bad driver: Device Manager → Driver tab → Roll Back Driver button</li>
+          <li>Updating via INF file or manufacturer executable</li>
+          <li>Linux: DKMS rebuilds drivers on kernel updates; most are built into the kernel tree</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 7.2: Patch Tuesday & Release Channels</h4>
+        <ul>
+          <li>Windows Feature Updates (major, twice/year) vs Quality Updates (monthly security patches)</li>
+          <li>Windows Insider Program: Dev Channel, Beta Channel, Release Preview Channel for early testing</li>
+          <li>macOS: public beta program separate from stable releases</li>
+          <li>Ubuntu: Point releases (24.04.1, 24.04.2) bring newer kernel and firmware on the same LTS</li>
+          <li>Staging updates: defer feature updates by setting branches in WSUS or Intune</li>
+        </ul>
+      </div>
+      <div class="checkpoint">
+        <h4>Checkpoint</h4>
+        <p>A fresh Windows 11 install on a Ryzen 5000 system freezes randomly. The issue started after a Windows Update installed a new chipset driver. What's the immediate fix? Use Device Manager to roll back the chipset driver, then exclude it from automatic driver updates via Group Policy or Registry setting.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/install/driver-stages" target="_blank">Windows Driver Stages (Microsoft)</a>
+        <a href="https://wiki.archlinux.org/title/Kernel_module" target="_blank">Linux Kernel Modules (Arch Wiki)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Check -->
+  <div class="checkpoint" style="margin-top: 2rem;">
+    <h3 style="color:var(--accent-purple); margin-bottom:0.8rem;">Knowledge Check — Quiz Yourself</h3>
+    <p style="color:var(--text-muted); font-size:0.95rem;"><strong>Q1:</strong> What is the maximum disk size supported by MBR partitioning?</p>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.5rem;">Answer: 2 TB (2 TiB). Anything larger requires GPT.</p>
+    <p style="color:var(--text-muted); font-size:0.95rem;"><strong>Q2:</strong> Which file system would you choose for a USB drive shared between Windows and macOS?</p>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.5rem;">Answer: exFAT — supports large files and is natively readable/writable on both platforms.</p>
+    <p style="color:var(--text-muted); font-size:0.95rem;"><strong>Q3:</strong> Where does UEFI store boot loader information compared to legacy BIOS?</p>
+    <p style="color:var(--text-muted); font-size:0.9rem;">Answer: In NVRAM (non-volatile RAM on the motherboard) via EFI boot entries, plus on the EFI System Partition (FAT32) on the disk itself.</p>
+  </div>
+
+  <footer>
+    Phase 1 — Operating System Fundamentals | Estimated Total: ~8 Hours
+  </footer>
+</div>
+<div class="progress-bar">
+  <span class="progress-label">Progress:</span>
+  <span id="progressPercent">0%</span>
+  <div style="flex:1;height:8px;background:#334155;border-radius:4px;">
+    <div id="progressFill" style="height:100%;background:var(--accent-green);border-radius:4px;width:0%;transition:width 0.3s;"></div>
+  </div>
+</div>
+<script>
+function toggleModule(header) {
+  header.parentElement.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('collapsed');
+}
+const checkboxes = document.querySelectorAll('.module input[type="checkbox"]');
+function updateProgress() {
+  const total = checkboxes.length;
+  const done = document.querySelectorAll('.module input[type="checkbox"]:checked').length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPercent').textContent = pct + '%';
+  localStorage.setItem('os-progress', JSON.stringify([...document.querySelectorAll('.module input[type="checkbox"]').map(c => c.checked)]));
+}
+checkboxes.forEach(cb => cb.addEventListener('change', updateProgress));
+(function() {
+  const saved = localStorage.getItem('os-progress');
+  if(saved) { try { const arr = JSON.parse(saved); arr.forEach((val, i) => { if(checkboxes[i]) checkboxes[i].checked = val; }); updateProgress(); } catch(e){} }
+})();
+</script>
+</body>
+</html>

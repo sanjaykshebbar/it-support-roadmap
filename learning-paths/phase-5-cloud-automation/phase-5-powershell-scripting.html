@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 5 — PowerShell Scripting for IT Support</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+.nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+.nav a{color:#94a3b8;font-size:14px;font-weight:500}
+.nav a:hover{color:#3b82f6}
+.nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px}
+h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+.subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+.badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:28px 0 10px}
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+.obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+.obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+.info-box{background:#1e293b;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
+.info-box.green{border-left-color:#10b981}
+.info-box.orange{border-left-color:#f59e0b}
+.info-box.purple{border-left-color:#8b5cf6}
+.info-box.pink{border-left-color:#ec4899}
+.info-box.cyan{border-left-color:#06b6d4}
+.info-box-title{font-weight:700;color:#e2e8f0;font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.info-box p{font-size:14px;color:#94a3b8}
+.table-wrap{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#1e293b}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+@media(max-width:700px){.comparison{grid-template-columns:1fr}}
+.comp-col{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px}
+.comp-col h4{font-size:15px;font-weight:700;margin-bottom:12px}
+.quiz-block{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:16px 0}
+.quiz-q{font-weight:700;color:#e2e8f0;margin-bottom:10px}
+.quiz-answer{display:none;margin-top:10px;padding:10px 14px;background:#0f172a;border-radius:6px;font-size:13px;color:#10b981;font-weight:600}
+.quiz-btn{background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s}
+.quiz-btn:hover{background:#2563eb}
+.next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+.np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+.np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+.res-list{list-style:none;padding:0}
+.res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+.res-list li:last-child{border-bottom:none}
+.res-list a{color:#3b82f6}
+.progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+.module-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px 24px;margin-bottom:16px}
+.module-card h3{margin-top:0;color:#f8fafc}
+.module-meta{display:flex;gap:16px;margin-bottom:12px;font-size:13px;color:#94a3b8}
+.module-meta span{display:inline-flex;align-items:center;gap:4px}
+.code-block{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;margin:12px 0;overflow-x:auto;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;color:#94a3b8;line-height:1.6}
+.checklist{list-style:none;padding:0;margin:12px 0}
+.checklist li{padding:6px 0;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+.checklist li::before{content:"\2610";font-size:16px}
+footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-right:4px}
+.tag-blue{background:rgba(59,130,246,0.15);color:#3b82f6}
+.tag-green{background:rgba(16,185,129,0.15);color:#10b981}
+.tag-purple{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.tag-orange{background:rgba(245,158,11,0.15);color:#f59e0b}
+.exercise-block{background:#0f172a;border:1px dashed #334155;border-radius:8px;padding:16px 20px;margin:16px 0}
+.exercise-block h4{font-size:15px;color:#f8fafc;margin-bottom:8px}
+.exercise-block p{font-size:14px;color:#94a3b8;margin-bottom:8px}
+.solutions-toggle{font-size:13px;color:#10b981;cursor:pointer;font-weight:600}
+.solution-text{display:none;margin-top:10px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">&#8592; Learning Paths</a>
+  <span class="nav-title">Phase 5 — PowerShell Scripting for IT Support</span>
+  <a href="phase-5-bash-ticketing-systems.html">Next: Bash &amp; ITSM &#8594;</a>
+</nav>
+
+<div class="container">
+  <div class="progress-bar"><div class="fill"></div></div>
+  <span class="badge" style="border-color:#06b6d4;color:#06b6d4">PHASE 5 &#183; MODULE 3</span>
+  <h1>PowerShell Scripting for IT Support</h1>
+  <p class="subtitle">Automate repetitive tasks, manage Active Directory, and build reusable scripts that save hours of manual work.</p>
+
+  <h2>Learning Objectives</h2>
+  <div class="obj-grid">
+    <label class="obj-item"><input type="checkbox"> Understand PowerShell syntax, version history, and execution policies</label>
+    <label class="obj-item"><input type="checkbox"> Declare and manipulate variables, arrays, and hashtables</label>
+    <label class="obj-item"><input type="checkbox"> Work with PowerShell objects using properties and methods</label>
+    <label class="obj-item"><input type="checkbox"> Write conditional logic with if/else and switch statements</label>
+    <label class="obj-item"><input type="checkbox"> Use loops (for, foreach, while) for batch operations</label>
+    <label class="obj-item"><input type="checkbox"> Manage users and computers with AD cmdlets</label>
+    <label class="obj-item"><input type="checkbox"> Perform file system operations and error handling</label>
+    <label class="obj-item"><input type="checkbox"> Build reusable functions and schedule them with Task Scheduler</label>
+    <label class="obj-item"><input type="checkbox"> Follow security best practices for credential handling</label>
+    <label class="obj-item"><input type="checkbox"> Complete all exercises and knowledge checks</label>
+  </div>
+
+  <!-- MODULE BREAKDOWN -->
+  <h2>Module Breakdown</h2>
+  <div class="module-card">
+    <h3>Module 1: PowerShell Foundations</h3>
+    <div class="module-meta">
+      <span>&#128336; ~2.5 hours</span>
+      <span><span class="tag tag-blue">Core Skills</span></span>
+    </div>
+    <ul class="checklist">
+      <li>Getting started, syntax, variables, data types</li>
+      <li>Working with objects, properties, and methods</li>
+      <li>Conditional logic and loops</li>
+    </ul>
+  </div>
+  <div class="module-card">
+    <h3>Module 2: Active Directory &amp; File Operations</h3>
+    <div class="module-meta">
+      <span>&#128336; ~2 hours</span>
+      <span><span class="tag tag-green">IT Support Focus</span></span>
+    </div>
+    <ul class="checklist">
+      <li>AD user/computer management cmdlets</li>
+      <li>File system navigation and manipulation</li>
+      <li>Error handling with try/catch</li>
+    </ul>
+  </div>
+  <div class="module-card">
+    <h3>Module 3: Functions, Automation &amp; Scheduling</h3>
+    <div class="module-meta">
+      <span>&#128336; ~2 hours</span>
+      <span><span class="tag tag-purple">Advanced</span></span>
+    </div>
+    <ul class="checklist">
+      <li>Writing and parameterizing functions</li>
+      <li>Scheduling scripts with Windows Task Scheduler</li>
+      <li>Security considerations and credential management</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1: POWERSHELL BASICS -->
+  <h2>Module 1: PowerShell Foundations</h2>
+
+  <h3>What is PowerShell?</h3>
+  <p style="color:#94a3b8;margin-bottom:12px">PowerShell is a cross-platform task automation framework from Microsoft, consisting of a command-line shell and scripting language. Unlike traditional shells that work with text, PowerShell works with .NET objects, enabling powerful piping and object manipulation.</p>
+  <div class="info-box green">
+    <div class="info-box-title">PowerShell Versions</div>
+    <p><strong>Windows PowerShell 5.1:</strong> The legacy version built into Windows 10/11. Still widely used in enterprise environments. <strong>PowerShell 7+</strong> (pwsh): The modern cross-platform version built on .NET Core. Supports Linux, macOS, and Windows. All examples below work in both versions unless noted.</p>
+  </div>
+
+  <h3>Your First Scripts: Variables and Data Types</h3>
+  <div class="code-block"># Variable declaration (no $ needed for cmdlet parameters!)
+$computerName = "WORKSTATION-01"
+$userCount = 42
+$isOnline = $true
+$departments = @("Sales", "IT", "HR", "Finance")
+
+# String interpolation
+Write-Host "Checking $computerName -- $userCount users online, status: $isOnline"
+
+# Arrays and hashtables
+$servers = @("SRV-DC01", "SRV-APP01", "SRV-FILE01")
+$config = @{
+    Environment = "Production"
+    Region = "US-East"
+    MaxRetries = 3
+}</div>
+
+  <h3>Working with Objects</h3>
+  <p style="color:#94a3b8;margin-bottom:12px">Everything in PowerShell is an object. Cmdlets return objects with properties you can access and methods you can invoke.</p>
+  <div class="code-block"># Get processes as objects and filter by property
+Get-Process | Where-Object { $_.CPU -gt 100 } | Select-Object Name, CPU, Id
+
+# View available properties and methods
+Get-Process | Get-Member
+
+# Call a method directly
+(Get-Date).AddDays(7).ToString("yyyy-MM-dd")
+
+# Format output as a table
+Get-Service | Where-Object { $_.Status -eq 'Running' } |
+    Sort-Object DisplayName |
+    Select-Object -First 10 DisplayName, Status, StartType</div>
+
+  <div class="info-box cyan">
+    <div class="info-box-title">Key Syntax Notes</div>
+    <p>The <code>$_.Property</code> syntax refers to the current object in a pipeline. <code>Get-Member</code> (alias <code>gm</code>) shows all properties and methods available on any object. Use <code>Select-Object</code> (alias <code>select</code>) to choose which properties appear in your output.</p>
+  </div>
+
+  <h3>Conditional Logic</h3>
+  <div class="code-block"># If / Else if / Else
+$serviceStatus = (Get-Service -Name wuauserv).Status
+if ($serviceStatus -eq 'Running') {
+    Write-Host "Windows Update service is running." -ForegroundColor Green
+} elseif ($serviceStatus -eq 'Stopped') {
+    Write-Host "Windows Update service is stopped. Attempting to start..." -ForegroundColor Yellow
+    Start-Service wuauserv
+} else {
+    Write-Host "Service status is: $serviceStatus" -ForegroundColor Red
+}
+
+# Switch statement (cleaner for multiple conditions)
+$exitCode = $LASTEXITCODE
+switch ($exitCode) {
+    0 { Write-Host "Success!" -ForegroundColor Green }
+    1 { Write-Host "Warning -- non-fatal error" -ForegroundColor Yellow }
+    2 { Write-Host "Critical failure" -ForegroundColor Red }
+    default { Write-Host "Unknown exit code: $exitCode" }
+}
+
+# Comparison operators reference
+# -eq (equal), -ne (not equal), -gt (greater than), -lt (less than)
+# -ge (>=), -le (<=), -like (wildcard match), -match (regex)
+# -contains, -in, -not, -and, -or</div>
+
+  <h3>Loops for Batch Operations</h3>
+  <div class="code-block"># For loop -- iterate through a list of computers
+$servers = @("SRV-DC01", "SRV-APP01", "SRV-FILE01")
+foreach ($server in $servers) {
+    if (Test-Connection -ComputerName $server -Quiet -Count 2) {
+        Write-Host "$server is ONLINE" -ForegroundColor Green
+    } else {
+        Write-Host "$server is OFFLINE" -ForegroundColor Red
+    }
+}
+
+# While loop -- process until condition changes
+$maxAttempts = 5
+$attempt = 0
+$connected = $false
+while ($attempt -lt $maxAttempts -and -not $connected) {
+    $attempt++
+    Write-Host "Attempt $attempt of $maxAttempts..."
+    $connected = Test-Connection -ComputerName "SRV-DC01" -Quiet -Count 1
+    Start-Sleep -Seconds 2
+}
+if ($connected) { Write-Host "Connection established!" -ForegroundColor Green }
+
+# ForEach-Object (pipeline version) -- essential for production scripts
+Get-Process | Where-Object { $_.WorkingSet64 -gt 100MB } |
+    ForEach-Object {
+        Write-Host "$($_.Name) is using $([math]::Round($_.WorkingSet64/1MB)) MB RAM"
+    }</div>
+
+  <!-- EXERCISE 1 -->
+  <div class="exercise-block">
+    <h4>Exercise 1: User Account Age Report</h4>
+    <p>Write a script that queries Active Directory for user accounts, finds those older than 90 days, and outputs their SamAccountName, LastLogonDate, and Created date. If the AD module is not available, simulate with sample data.</p>
+    <button class="quiz-btn" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution-text">
+      <div class="code-block"># Simulation without AD module (use Replace-AdventureWorks for real AD)
+$simulatedUsers = @(
+    @{SamAccountName = "jsmith"; LastLogon = (Get-Date).AddDays(-150); Created = (Get-Date).AddDays(-200)},
+    @{SamAccountName = "ajones"; LastLogon = (Get-Date).AddDays(-30); Created = (Get-Date).AddDays(-60)},
+    @{SamAccountName = "bwilliams"; LastLogon = (Get-Date).AddDays(-365); Created = (Get-Date).AddDays(-400)},
+    @{SamAccountName = "mdavis"; LastLogon = (Get-Date).AddDays(-95); Created = (Get-Date).AddDays(-120)}
+)
+
+$cutoffDate = (Get-Date).AddDays(-90)
+$inactiveUsers = $simulatedUsers | Where-Object { $_.LastLogon -lt $cutoffDate }
+
+Write-Host "Inactive users (no login in 90+ days):" -ForegroundColor Yellow
+$inactiveUsers | ForEach-Object {
+    Write-Host "  $($_.SamAccountName) -- Last logon: $($_.LastLogon.ToString('yyyy-MM-dd')) | Created: $($_.Created.ToString('yyyy-MM-dd'))"
+}
+
+# Real AD equivalent (uncomment when AD module is available):
+# Import-Module ActiveDirectory
+# Get-ADUser -Filter {Enabled -eq $true} -Properties LastLogonDate, Created |
+#     Where-Object { $_.LastLogonDate -lt (Get-Date).AddDays(-90) } |
+#     Select-Object SamAccountName, LastLogonDate, Created |
+#     Export-Csv -Path "C:\Reports\StaleAccounts.csv" -NoTypeInformation</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: AD CMDLETS -->
+  <h2>Module 2: Active Directory &amp; File Operations</h2>
+
+  <h3>Active Directory Cmdlets</h3>
+  <p style="color:#94a3b8;margin-bottom:12px">The <code>ActiveDirectory</code> module provides over 200 cmdlets for managing AD. These are available on Domain Controllers and machines with RSAT (Remote Server Administration Tools) installed.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Task</th><th>PowerShell Cmdlet</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>List all users in a department</td><td><code>Get-ADUser</code></td><td><code>Get-ADUser -Filter {Department -eq 'IT'}</code></td></tr>
+        <tr><td>Create a new user</td><td><code>New-ADUser</code></td><td><code>New-ADUser -Name ...</code></td></tr>
+        <tr><td>Reset a password</td><td><code>Reset-ADAccountPassword</code></td><td><code>Reset-ADAccountPassword ...</code></td></tr>
+        <tr><td>Disable an account</td><td><code>Disable-ADAccount</code></td><td><code>Disable-ADAccount -Identity jsmith</code></td></tr>
+        <tr><td>Enable an account</td><td><code>Enable-ADAccount</code></td><td><code>Enable-ADAccount -Identity jsmith</code></td></tr>
+        <tr><td>Add user to group</td><td><code>Add-ADGroupMember</code></td><td><code>Add-ADGroupMember -Members jsmith -Groups 'IT-Support'</code></td></tr>
+        <tr><td>Find disabled accounts</td><td><code>Get-ADUser</code> with filter</td><td><code>Get-ADUser -Filter {Enabled -eq $false}</code></td></tr>
+        <tr><td>Find expired passwords</td><td><code>Get-ADUser</code> + PasswordExpired</td><td><code>Get-ADUser -Filter {PasswordExpired -eq $true}</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Complete AD Management Scripts</h3>
+  <div class="code-block"># Script 1: Bulk create users from CSV
+Import-Module ActiveDirectory
+$users = Import-Csv "C:\Scripts\NewHires.csv"
+foreach ($u in $users) {
+    $params = @{
+        Name = "$($u.FirstName) $($u.LastName)"
+        SamAccountName = $u.Username
+        UserPrincipalName = "$($u.Username)@contoso.com"
+        Path = $u.OU
+        AccountPassword = (ConvertTo-SecureString $u.Password -AsPlain -Force)
+        Enabled = $true
+        PasswordNeverExpires = $false
+    }
+    New-ADUser @params
+    Write-Host "Created user: $($u.Username)"
+}
+
+# Script 2: Lock out and report stale accounts (90-day rule)
+$staleThreshold = (Get-Date).AddDays(-90)
+$staleUsers = Get-ADUser -Filter {Enabled -eq $true} -Properties PasswordLastSet, LastLogonDate |
+    Where-Object { $_.PasswordLastSet -lt $staleThreshold -and $_.LastLogonDate -lt $staleThreshold }
+
+foreach ($user in $staleUsers) {
+    Disable-ADAccount -Identity $user.SamAccountName
+    Write-Host "Disabled stale account: $($user.SamAccountName) (last logon: $($user.LastLogonDate))"
+}
+$staleUsers | Measure-Object | Select-Object -ExpandProperty Count</div>
+
+  <h3>File System Operations</h3>
+  <div class="code-block"># Common file operations
+Get-ChildItem "C:\Logs" -Recurse | Where-Object { $_.Length -gt 100MB } |
+    Sort-Object Length -Descending | Select-Object FullName, Length, LastWriteTime
+
+# Find and delete old log files (older than 30 days)
+$deleteBefore = (Get-Date).AddDays(-30)
+Get-ChildItem "C:\Temp\Backups" -File | Where-Object { $_.LastWriteTime -lt $deleteBefore } |
+    Remove-Item -Force
+Write-Host "Cleaned up $(@(Get-ChildItem 'C:\Temp\Backups' -File | Where-Object { $_.LastWriteTime -lt $deleteBefore }).Count) old backup files"
+
+# Copy and archive
+$dateStamp = Get-Date -Format "yyyyMMdd"
+Compress-Archive -Path "C:\Data\Sensitive" -DestinationPath "C:\Archive\backup-$dateStamp.zip" -Force
+
+# Parse event logs
+Get-WinEvent -FilterHashtable @{LogName='Security'; ID=4625} -MaxEvents 20 |
+    Select-Object TimeCreated, Message |
+    ConvertTo-Xml -As String -Depth 2 | Out-File "C:\Reports\EventLogExport.xml"</div>
+
+  <h3>Error Handling with Try/Catch</h3>
+  <div class="code-block"># Basic error handling pattern
+try {
+    $svc = Get-Service -Name "Spooler" -ErrorAction Stop
+    Restart-Service -Name "Spooler" -ErrorAction Stop
+    Write-Host "Print spooler restarted successfully." -ForegroundColor Green
+} catch {
+    Write-Host "Failed to restart Print Spooler: $($_.Exception.Message)" -ForegroundColor Red
+    # Log to event log or file
+    Write-EventLog -LogName Application -Source PowerShell -EntryType Error `
+        -EventId 5000 -Message "Script error restarting spooler: $($_.Exception.Message)"
+}
+
+# Finally block ensures cleanup runs regardless of outcome
+try {
+    $result = Invoke-Command -ComputerName $targetPC -ScriptBlock { Get-Process }
+} catch {
+    Write-Host "Remote connection failed: $($_.Exception.Message)"
+} finally {
+    Write-Host "Operation completed at $(Get-Date)."
+}</div>
+
+  <!-- EXERCISE 2 -->
+  <div class="exercise-block">
+    <h4>Exercise 2: New Employee Onboarding Script</h4>
+    <p>Create a PowerShell script that takes FirstName, LastName, Department, and Manager as parameters. It should create an AD user, add them to the appropriate security group, assign an O365 license placeholder, and send a confirmation email body as a string.</p>
+    <button class="quiz-btn" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution-text">
+      <div class="code-block">#Requires -Module ActiveDirectory
+param(
+    [Parameter(Mandatory=$true)][string]$FirstName,
+    [Parameter(Mandatory=$true)][string]$LastName,
+    [Parameter(Mandatory=$true)][string]$Department,
+    [Parameter(Mandatory=$true)][string]$Manager
+)
+
+$upan = "$FirstName.$LastName".ToLower()
+$ouPath = switch ($Department) {
+    "Sales" { "OU=Sales,OU=Users,DC=contoso,DC=com" }
+    "IT" { "OU=IT,OU=Users,DC=contoso,DC=com" }
+    default { "OU=General,OU=Users,DC=contoso,DC=com" }
+}
+
+try {
+    $newUser = New-ADUser -Name "$FirstName $LastName" -SamAccountName $upan
+        -UserPrincipalName "$upan@contoso.com" -Path $ouPath
+        -Enabled $true -ChangePasswordAtLogon $true
+    Write-Host "User created: $upan in $ouPath" -ForegroundColor Green
+    Write-Host "Temporary password assigned -- user must change at next login." -ForegroundColor Yellow
+} catch {
+    Write-Host "Error creating user: $($_.Exception.Message)" -ForegroundColor Red
+}</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: FUNCTIONS & SCHEDULING -->
+  <h2>Module 3: Functions, Automation &amp; Scheduling</h2>
+
+  <h3>Writing Reusable Functions</h3>
+  <div class="code-block"># Function with parameters and validation
+function Test-ServiceHealth {
+    param(
+        [Parameter(Mandatory=$true)][string[]]$ComputerName,
+        [string[]]$Services = @("spooler", "wuauserv", "bits"),
+        [int]$TimeoutSec = 5
+    )
+
+    foreach ($comp in $ComputerName) {
+        foreach ($svc in $Services) {
+            try {
+                $status = Get-Service -Name $svc -ComputerName $comp -ErrorAction Stop
+                $emoji = if ($status.Status -eq 'Running') { '[OK]' } else { '[!!]' }
+                Write-Host "$emoji $comp : $svc = $($status.Status)"
+            } catch {
+                Write-Host "[XX] $comp : $svc = UNREACHABLE ($($_.Exception.Message))" -ForegroundColor Red
+            }
+        }
+    }
+}
+
+# Usage examples
+Test-ServiceHealth -ComputerName "SRV-DC01","SRV-APP01"
+Test-ServiceHealth -ComputerName "WORKSTATION-05" -Services @("TermService", "Schedule")
+
+# Advanced function with advanced features (param attributes)
+function Enable-MultiFactorAuth {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$Username,
+        [switch]$VerboseLogging
+    )
+    process {
+        Write-Verbose "Processing $Username"
+        # MFA enrollment logic here
+        return @{ Username = $Username; Status = "Enrolled"; Timestamp = Get-Date }
+    }
+}</div>
+
+  <h3>Scheduling Scripts with Task Scheduler</h3>
+  <div class="code-block"># Create a scheduled task via PowerShell
+$action = New-ScheduledTaskAction -Execute "PowerShell.exe" `
+    -Argument "-ExecutionPolicy Bypass -File C:\Scripts\DailyCleanup.ps1"
+$trigger = New-ScheduledTaskTrigger -Daily -At "2:00AM"
+$principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -RunLevel Highest
+$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopOnIdleEnd
+
+Register-ScheduledTask -TaskName "Daily-System-Cleanup" -Action $action `
+    -Trigger $trigger -Principal $principal -Settings $settings `
+    -Description "Cleans temp files and rotates logs daily at 2 AM"
+
+# Create a weekly Monday morning task for employee count reports
+$weeklyTrigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At "8:00AM"
+Register-ScheduledTask -TaskName "Weekly-Employee-Report" `
+    -Action (New-ScheduledTaskAction -Execute "PowerShell.exe"
+        -Argument "-File C:\Scripts\EmployeeReport.ps1") `
+    -Trigger $weeklyTrigger -Principal (New-ScheduledTaskPrincipal -UserId "DOMAIN\admin"
+        -LogonType Password -RunLevel Highest) `
+    -Description "Generates weekly employee headcount report"</div>
+
+  <h3>Security Best Practices</h3>
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#ef4444">DO NOT Do This</h4>
+      <ul style="font-size:14px;color:#cbd5e1;padding-left:18px;line-height:2">
+        <li>Hardcoding passwords in plain text</li>
+        <li>Using <code>-AsPlainText -Force</code> for sensitive data</li>
+        <li>Running scripts with unrestricted execution policy</li>
+        <li>Storing credentials in config files</li>
+        <li>Sharing admin scripts without access controls</li>
+      </ul>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#10b981">Do This Instead</h4>
+      <ul style="font-size:14px;color:#cbd5e1;padding-left:18px;line-height:2">
+        <li>Use <code>Get-Credential</code> prompts or Azure Key Vault</li>
+        <li>Store encrypted credentials: <code>Read-Host -AsSecureString | ConvertFrom-SecureString</code></li>
+        <li>Set ExecutionPolicy to <code>RemoteSigned</code> at minimum</li>
+        <li>Place scripts in protected network shares with ACLs</li>
+        <li>Audit script execution via Windows Event Logs</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code-block"># Secure credential storage pattern
+$credentialPath = "$env:APPDATA\scripts\credentials.enc"
+# One-time setup: save encrypted credential
+# Read-Host "Enter password" -AsSecureString | ConvertFrom-SecureString | Set-Content $credentialPath
+# Daily use: retrieve and use
+#$cred = New-Object PSCredential("admin", (Get-Content $credentialPath | ConvertTo-SecureString))
+# Use $cred in your script...</div>
+
+  <!-- QUIZ -->
+  <h2>Knowledge Check</h2>
+
+  <div class="quiz-block">
+    <div class="quiz-q">1. What does the <code>$_.Property</code> syntax represent in a PowerShell pipeline?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) The first object in the pipeline</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) The current object being processed in the pipeline</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) A variable reference to the pipeline itself</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) An error object from the previous command</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: B. <code>$_</code> is the automatic variable representing the current object in the pipeline during each iteration of Where-Object, ForEach-Object, etc.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">2. Which command creates a new Active Directory user account?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Add-ADUser</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) New-ADUser</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Create-ADAccount</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) New-ADSObject</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: B) New-ADUser. Part of the ActiveDirectory module. Requires proper permissions and an OU path.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">3. How do you prevent a PowerShell script from stopping entirely when a non-terminating error occurs?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Use try/catch with -ErrorAction SilentlyContinue</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Set $ErrorActionPreference to Ignore</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Use -ErrorAction Stop to convert to terminating errors only</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Both A and C are correct approaches depending on intent</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: D. <code>-ErrorAction SilentlyContinue</code> suppresses non-terminating errors without stopping. Using <code>-ErrorAction Stop</code> converts them to terminating errors so try/catch can handle them gracefully.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">4. What is the recommended way to store credentials securely in a scheduled PowerShell script?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Hardcode username/password in the script</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Store in a .txt file next to the script</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Encrypt with DPAPI using ConvertFrom-SecureString and store the encrypted string</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Use plain text in an environment variable</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: C. DPAPI (Data Protection API) encryption via ConvertFrom-SecureString binds the encrypted credential to the user account and machine, making it readable only by that specific user on that specific machine.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">5. Which execution policy allows local scripts to run but requires downloaded scripts to be signed?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Restricted</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) AllSigned</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) RemoteSigned</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Unrestricted</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: C) RemoteSigned. This is the default on most systems and is the recommended minimum for production. Restricted blocks all scripts. AllSigned requires every script to be signed. Unrestricted runs everything including unsigned downloaded scripts (dangerous).</div>
+  </div>
+
+  <!-- RESOURCES -->
+  <h2>Recommended Resources</h2>
+  <ul class="res-list">
+    <li>&#128203; <a href="https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/00-introduction" target="_blank">Microsoft Learn: PowerShell 101</a> -- Official free learning path</li>
+    <li>&#128203; <a href="https://learn.microsoft.com/en-us/powershell/module/activedirectory/" target="_blank">ActiveDirectory Module Documentation</a> -- Full cmdlet reference</li>
+    <li>&#128203; <a href="https://github.com/PowerShell/PowerShell" target="_blank">PowerShell GitHub Repository</a> -- Latest releases and source</li>
+    <li>&#128203; <a href="https://poshcode.gitlab.io/" target="_blank">PowerShell Gallery</a> -- Community modules and scripts</li>
+    <li>&#128203; <a href="https://donjones.com/powershell/" target="_blank">Don Jones' PowerShell Tutorials</a> -- Deep dives and best practices</li>
+    <li>&#128203; <a href="https://docs.microsoft.com/en-us/powershell/scripting/developer/cmdlet/" target="_blank">How to Write a PowerShell Cmdlet</a> -- For advanced module creation</li>
+    <li>&#128203; <a href="https://admx.help/" target="_blank">Group Policy &amp; ADMX Reference</a> -- Useful for scripting GPO-related tasks</li>
+  </ul>
+
+  <!-- PROGRESS CHECKLIST -->
+  <h2>Progress Checklist</h2>
+  <ul class="checklist">
+    <li>I understand PowerShell vs Windows PowerShell vs PowerShell 7</li>
+    <li>I can declare variables, arrays, and hashtables correctly</li>
+    <li>I can pipe objects and filter with Where-Object and Select-Object</li>
+    <li>I can write if/elseif/else and switch statements</li>
+    <li>I can write for, foreach, and while loops with practical examples</li>
+    <li>I know the key AD cmdlets for user management</li>
+    <li>I can perform file system operations and parse event logs</li>
+    <li>I understand try/catch/finally error handling patterns</li>
+    <li>I can write functions with parameters and validation</li>
+    <li>I have created a scheduled task to run a PowerShell script</li>
+    <li>I know how to safely handle credentials in scripts</li>
+    <li>I have scored at least 4/5 on the knowledge check quiz</li>
+  </ul>
+
+  <!-- NEXT STEPS -->
+  <h2>Next Steps</h2>
+  <div class="info-box">
+    <div class="info-box-title">Where to Go From Here</div>
+    <p>You now have strong PowerShell skills for Windows automation. Next, complete <a href="phase-5-bash-ticketing-systems.html">Bash Scripting &amp; IT Service Management</a> to gain the complementary Linux scripting skills every modern IT support professional needs. After finishing Phase 5, you'll be ready for <a href="../phase-6-career-prep/index.html">Phase 6: Land Your First Role</a>.</p>
+  </div>
+
+  <div class="next-prev">
+    <a href="phase-5-azure-aws-basics.html" class="np-btn">&#8592; Previous: Azure &amp; AWS Basics</a>
+    <a href="phase-5-bash-ticketing-systems.html" class="np-btn">Next: Bash &amp; ITSM &#8594;</a>
+  </div>
+</div>
+
+<footer>&copy; 2025 IT Support Roadmap -- Phase 5 Learning Paths</footer>
+
+<script>
+function toggleAnswer(btn) {
+  var ans = btn.nextElementSibling;
+  if (ans.style.display === 'block') {
+    ans.style.display = 'none';
+    btn.textContent = 'Show Answer';
+  } else {
+    ans.style.display = 'block';
+    btn.textContent = 'Hide Answer';
+  }
+}
+function toggleSolution(btn) {
+  var sol = btn.nextElementSibling;
+  if (sol.style.display === 'block') {
+    sol.style.display = 'none';
+    btn.textContent = 'Show Solution';
+  } else {
+    sol.style.display = 'block';
+    btn.textContent = 'Hide Solution';
+  }
+}
+(function() {
+  var checkboxes = document.querySelectorAll('.obj-item input[type=checkbox], .checklist input[type=checkbox]');
+  checkboxes.forEach(function(cb, i) {
+    var saved = sessionStorage.getItem('cb_p5_ps_' + i);
+    if (saved === 'true') cb.checked = true;
+    cb.addEventListener('change', function() {
+      sessionStorage.setItem('cb_p5_ps_' + i, this.checked);
+    });
+  });
+})();
+</script>
+</body>
+</html>

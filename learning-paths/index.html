@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT Support Learning Paths Hub</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* Navigation */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-brand span {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .nav-link:hover {
+      color: var(--text);
+      background: var(--bg);
+      border-color: var(--border);
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 3.5rem 1rem 2.5rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    header h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.6rem;
+      letter-spacing: -1px;
+    }
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    .badge-row { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1.2rem; }
+    .badge {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .badge.highlight {
+      background: rgba(59,130,246,0.15);
+      border-color: rgba(59,130,246,0.3);
+      color: var(--accent-blue);
+    }
+
+    /* Progress Tracker */
+    .progress-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.8rem;
+      margin-bottom: 3rem;
+    }
+    .progress-section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .progress-bar-container {
+      background: var(--bg);
+      border-radius: 999px;
+      height: 14px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      width: 0%;
+      transition: width 1s ease;
+    }
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .progress-checklist { list-style: none; }
+    .progress-checklist li {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .progress-checklist li:hover { color: var(--text); }
+    .progress-checklist input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .progress-checklist input[type="checkbox"]:checked {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+    .progress-checklist input[type="checkbox"]:checked::after {
+      content: '\2713';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .progress-checklist li.done span {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    /* Phase Grid */
+    .phases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .phase-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .phase-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.8rem;
+      height: 100%;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .phase-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    .phase-card[data-color="blue"]::before { background: var(--accent-blue); }
+    .phase-card[data-color="cyan"]::before { background: var(--accent-cyan); }
+    .phase-card[data-color="green"]::before { background: var(--accent-green); }
+    .phase-card[data-color="purple"]::before { background: var(--accent-purple); }
+    .phase-card[data-color="orange"]::before { background: var(--accent-orange); }
+    .phase-card[data-color="pink"]::before { background: var(--accent-pink); }
+    .phase-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    }
+    .phase-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+    .phase-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 0.2rem 0.7rem;
+      border-radius: 6px;
+    }
+    .phase[data-color="blue"] .phase-label { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .phase[data-color="cyan"] .phase-label { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+    .phase[data-color="green"] .phase-label { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .phase[data-color="purple"] .phase-label { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .phase[data-color="orange"] .phase-label { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .phase[data-color="pink"] .phase-label { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+    .phase-hours {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .phase-card h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .phase-card > p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem; line-height: 1.6; }
+    .phase-topics { list-style: none; margin-bottom: 1.5rem; }
+    .phase-topics li {
+      padding: 0.3rem 0;
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .phase-topics li::before {
+      content: '\25B8';
+      font-size: 0.65rem;
+      flex-shrink: 0;
+      margin-top: 0.35rem;
+    }
+    .phase[data-color="blue"] .phase-topics li::before { color: var(--accent-blue); }
+    .phase[data-color="cyan"] .phase-topics li::before { color: var(--accent-cyan); }
+    .phase[data-color="green"] .phase-topics li::before { color: var(--accent-green); }
+    .phase[data-color="purple"] .phase-topics li::before { color: var(--accent-purple); }
+    .phase[data-color="orange"] .phase-topics li::before { color: var(--accent-orange); }
+    .phase[data-color="pink"] .phase-topics li::before { color: var(--accent-pink); }
+    .phase-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .cert-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(59,130,246,0.1);
+      color: var(--accent-blue);
+    }
+    .start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      background: var(--bg);
+    }
+    .start-btn:hover { color: var(--text); border-color: var(--accent-blue); background: rgba(59,130,246,0.1); }
+    .phase[data-color="blue"] .start-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); background: rgba(59,130,246,0.1); }
+    .phase[data-color="cyan"] .start-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(6,182,212,0.1); }
+    .phase[data-color="green"] .start-btn:hover { border-color: var(--accent-green); color: var(--accent-green); background: rgba(16,185,129,0.1); }
+    .phase[data-color="purple"] .start-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(139,92,246,0.1); }
+    .phase[data-color="orange"] .start-btn:hover { border-color: var(--accent-orange); color: var(--accent-orange); background: rgba(245,158,11,0.1); }
+    .phase[data-color="pink"] .start-btn:hover { border-color: var(--accent-pink); color: var(--accent-pink); background: rgba(236,72,153,0.1); }
+
+    /* Recommended Path */
+    .recommended {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(6,182,212,0.1));
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+    .recommended h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .recommended p { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .path-steps {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .path-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+    .path-step:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .path-arrow { color: var(--text-dim); font-size: 1.1rem; }
+    .path-step.start-here {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+    .path-step.start-here:hover { opacity: 0.9; color: white; }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    .stat-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--accent-blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 1.8rem; }
+      .phases-grid { grid-template-columns: 1fr; }
+      nav { padding: 0.8rem 1rem; }
+      .container { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="nav-brand">&#x1F4DA; <span>Learning Paths</span></a>
+    <div class="nav-links">
+      <a href="../it-support-roadmap.html" class="nav-link">&#x1F5FA; Main Roadmap</a>
+      <a href="#all-phases" class="nav-link">All Phases</a>
+      <a href="#progress" class="nav-link">My Progress</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>IT Support Learning Paths</h1>
+      <p>Detailed, module-by-module guides for every phase of your IT support career journey. Pick a path and start learning.</p>
+      <div class="badge-row">
+        <span class="badge highlight">&#x1F3AF; 6 Phases</span>
+        <span class="badge">&#9201; ~300 Total Hours</span>
+        <span class="badge">&#128218; Self-Paced</span>
+        <span class="badge">&#128170; Hands-On Focus</span>
+        <span class="badge">&#127891; Certification Aligned</span>
+      </div>
+    </header>
+
+    <!-- Quick Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Learning Phases</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">20+</div>
+        <div class="stat-label">Detailed Guides</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">~300h</div>
+        <div class="stat-label">Total Content</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">9-12</div>
+        <div class="stat-label">Months to Job-Ready</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">&#9733;</div>
+        <div class="stat-label">Free Resources</div>
+      </div>
+    </div>
+
+    <!-- Recommended Path -->
+    <div class="recommended">
+      <h2>&#x1F680; Recommended Starting Point</h2>
+      <p>If you're just beginning your IT support journey, follow this path from top to bottom. Each phase builds on the last.</p>
+      <div class="path-steps">
+        <a href="phase-1-fundamentals/" class="path-step start-here">Start Here &#x1F539;</a>
+        <span class="path-arrow">&#8594;</span>
+        <a href="phase-2-os-deep-dive/" class="path-step">Phase 2: OS Deep Dive</a>
+        <span class="path-arrow">&#8594;</span>
+        <a href="phase-3-networking/" class="path-step">Phase 3: Networking</a>
+        <span class="path-arrow">&#8594;</span>
+        <a href="phase-4-security/" class="path-step">Phase 4: Security</a>
+        <span class="path-arrow">&#8594;</span>
+        <a href="phase-5-cloud-automation/" class="path-step">Phase 5: Cloud &amp; Automation</a>
+        <span class="path-arrow">&#8594;</span>
+        <a href="phase-6-career-prep/" class="path-step">Phase 6: Career Prep</a>
+      </div>
+    </div>
+
+    <!-- All Phases -->
+    <h2 id="all-phases" class="section-title" style="text-align:center;font-size:2rem;font-weight:700;margin-bottom:0.5rem;">All Learning Paths</h2>
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:2rem;">Click any card to open the detailed guide with modules, exercises, and resources</p>
+
+    <div class="phases-grid">
+      <!-- Phase 1 -->
+      <a href="phase-1-fundamentals/" class="phase-card-link">
+        <div class="phase-card" data-color="blue">
+          <div class="phase-header">
+            <span class="phase-label">Phase 1</span>
+            <span class="phase-hours">~40 hours</span>
+          </div>
+          <h2>Build Your Foundation</h2>
+          <p>Computer hardware, basic networking concepts, command line fundamentals, and how operating systems work under the hood.</p>
+          <ul class="phase-topics">
+            <li>How computers work: CPU, RAM, storage, motherboard</li>
+            <li>Networking basics: IP addresses, DNS, routers</li>
+            <li>Command line comfort: CMD, PowerShell, Bash</li>
+            <li>OS navigation and file management</li>
+            <li>Hardware components and upgrades</li>
+          </ul>
+          <div class="phase-footer">
+            <span class="cert-tag" style="background:rgba(59,130,246,0.1);color:var(--accent-blue);">Pre-certification</span>
+            <span class="start-btn">Open Guide &#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Phase 2 -->
+      <a href="phase-2-os-deep-dive/" class="phase-card-link">
+        <div class="phase-card" data-color="cyan">
+          <div class="phase-header">
+            <span class="phase-label">Phase 2</span>
+            <span class="phase-hours">~60 hours</span>
+          </div>
+          <h2>Operating Systems Deep Dive</h2>
+          <p>Master Windows 10/11 administration, Linux fundamentals, macOS enterprise basics, and build a virtual home lab.</p>
+          <ul class="phase-topics">
+            <li>Windows 10/11 installation and configuration</li>
+            <li>Linux basics: Ubuntu/Debian file system, permissions</li>
+            <li>macOS fundamentals for enterprise support</li>
+            <li>VirtualBox home lab setup</li>
+            <li>Multi-OS troubleshooting practice</li>
+          </ul>
+          <div class="phase-footer">
+            <span class="cert-tag" style="background:rgba(6,182,212,0.1);color:var(--accent-cyan);">A+ 220-1101 Prep</span>
+            <span class="start-btn">Open Guide &#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Phase 3 -->
+      <a href="phase-3-networking/" class="phase-card-link">
+        <div class="phase-card" data-color="green">
+          <div class="phase-header">
+            <span class="phase-label">Phase 3</span>
+            <span class="phase-hours">~80 hours</span>
+          </div>
+          <h2>Networking Essentials</h2>
+          <p>OSI model, TCP/IP, subnetting, VLANs, core protocols, router/switch basics, and hands-on network troubleshooting.</p>
+          <ul class="phase-topics">
+            <li>OSI and TCP/IP models deep dive</li>
+            <li>IP addressing, subnetting, VLANs, CIDR</li>
+            <li>Core protocols: DHCP, DNS, HTTP/S, SSH, RDP</li>
+            <li>Router and switch configuration basics</li>
+            <li>Troubleshooting: ping, traceroute, nslookup</li>
+            <li>Home network setup and configuration</li>
+          </ul>
+          <div class="phase-footer">
+            <span class="cert-tag" style="background:rgba(16,185,129,0.1);color:var(--accent-green);">Network+ Target</span>
+            <span class="start-btn">Open Guide &#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Phase 4 -->
+      <a href="phase-4-security/" class="phase-card-link">
+        <div class="phase-card" data-color="purple">
+          <div class="phase-header">
+            <span class="phase-label">Phase 4</span>
+            <span class="phase-hours">~60 hours</span>
+          </div>
+          <h2>Security Fundamentals</h2>
+          <p>Common threats, encryption basics, firewalls, access control, endpoint security, user management, and incident response.</p>
+          <ul class="phase-topics">
+            <li>Threat landscape: malware, phishing, ransomware</li>
+            <li>Encryption, firewalls, and access control</li>
+            <li>User account management and password policies</li>
+            <li>Endpoint security: antivirus, EDR tools</li>
+            <li>Incident response fundamentals</li>
+          </ul>
+          <div class="phase-footer">
+            <span class="cert-tag" style="background:rgba(139,92,246,0.1);color:var(--accent-purple);">Security+ Target</span>
+            <span class="start-btn">Open Guide &#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Phase 5 -->
+      <a href="phase-5-cloud-automation/" class="phase-card-link">
+        <div class="phase-card" data-color="orange">
+          <div class="phase-header">
+            <span class="phase-label">Phase 5</span>
+            <span class="phase-hours">~60 hours</span>
+          </div>
+          <h2>Cloud &amp; Automation</h2>
+          <p>Cloud computing models, Azure/AWS basics, PowerShell and Bash scripting, ticketing systems, and remote desktop tools.</p>
+          <ul class="phase-topics">
+            <li>IaaS, PaaS, SaaS cloud models</li>
+            <li>Azure or AWS fundamentals hands-on</li>
+            <li>PowerShell scripting for automation</li>
+            <li>Bash scripting on Linux</li>
+            <li>Ticketing systems: Jira, Freshservice</li>
+            <li>Remote desktop tools and best practices</li>
+          </ul>
+          <div class="phase-footer">
+            <span class="cert-tag" style="background:rgba(245,158,11,0.1);color:var(--accent-orange);">AZ-900 / AWS CCP</span>
+            <span class="start-btn">Open Guide &#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Phase 6 -->
+      <a href="phase-6-career-prep/" class="phase-card-link">
+        <div class="phase-card" data-color="pink">
+          <div class="phase-header">
+            <span class="phase-label">Phase 6</span>
+            <span class="phase-hours">~40+ hours</span>
+          </div>
+          <h2>Career Preparation</h2>
+          <p>Build your portfolio, nail your resume and interviews, develop a job search strategy, and prepare for your first IT role.</p>
+          <ul class="phase-topics">
+            <li>Portfolio building and documentation</li>
+            <li>Resume writing and interview prep</li>
+            <li>Job search strategy and networking</li>
+            <li>LinkedIn optimization for IT roles</li>
+            <li>Salary negotiation and career growth</li>
+          </ul>
+          <div class="phase-footer">
+            <span class="cert-tag" style="background:rgba(236,72,153,0.1);color:var(--accent-pink);">Goal: First Role</span>
+            <span class="start-btn">Open Guide &#8594;</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div id="progress" class="progress-section">
+      <h2>&#x1F4CB; Track Your Progress</h2>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+      <div class="progress-stats">
+        <span id="progressText">0 of 18 milestones completed</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <ul class="progress-checklist" id="checklist">
+        <li><input type="checkbox" onchange="updateProgress()"><span>Complete Phase 1: Build Your Foundation</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Complete Phase 2: Operating Systems Deep Dive</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Complete Phase 3: Networking Essentials</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Complete Phase 4: Security Fundamentals</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Complete Phase 5: Cloud &amp; Automation</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Complete Phase 6: Career Preparation</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Pass CompTIA A+ Exam</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Pass CompTIA Network+ Exam</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Pass CompTIA Security+ Exam</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Build Home Lab Portfolio</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Create GitHub Portfolio</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Complete Resume Draft</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Optimize LinkedIn Profile</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Practice 10+ Mock Interviews</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Apply to 10+ Jobs</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Attend 1 Tech Meetup or Community Event</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Land Your First IT Support Role</span></li>
+        <li><input type="checkbox" onchange="updateProgress()"><span>Set 1-Year Career Growth Plan</span></li>
+      </ul>
+    </div>
+
+    <!-- Quick Links -->
+    <div style="text-align:center;padding:1rem 0;margin-bottom:2rem;border-top:1px solid var(--border);">
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.8rem;">Also check out</p>
+      <a href="../it-support-roadmap.html" style="display:inline-flex;align-items:center;gap:0.4rem;color:var(--accent-blue);text-decoration:none;font-size:0.9rem;padding:0.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border)'">&#x1F5FA; View Full IT Support Roadmap</a>
+    </div>
+
+    <footer>
+      <p>IT Support Learning Paths Hub &middot; Part of the IT Support Career Guide &middot; November 2026</p>
+      <p style="margin-top:0.4rem;"><a href="../it-support-roadmap.html">&#x2190; Back to Main Roadmap</a></p>
+    </footer>
+  </div>
+
+  <script>
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+      const checked = document.querySelectorAll('#checklist input[type="checkbox"]:checked');
+      const total = checkboxes.length;
+      const done = checked.length;
+      const percent = Math.round((done / total) * 100);
+      document.getElementById('progressBar').style.width = percent + '%';
+      document.getElementById('progressText').textContent = done + ' of ' + total + ' milestones completed';
+      document.getElementById('progressPercent').textContent = percent + '%';
+      checkboxes.forEach(function(cb, i) {
+        cb.parentElement.classList.toggle('done', cb.checked);
+      });
+      try {
+        const saved = {};
+        checkboxes.forEach(function(cb, i) {
+          saved[i] = cb.checked;
+        });
+        localStorage.setItem('lp-progress', JSON.stringify(saved));
+      } catch(e) {}
+    }
+    try {
+      const saved = JSON.parse(localStorage.getItem('lp-progress'));
+      if (saved) {
+        const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+        checkboxes.forEach(function(cb, i) {
+          if (saved[i]) {
+            cb.checked = true;
+          }
+        });
+        updateProgress();
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>

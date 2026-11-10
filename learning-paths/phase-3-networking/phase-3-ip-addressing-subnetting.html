@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — IP Addressing & Subnetting Mastery</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+  a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+  .nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+  .nav a{color:#94a3b8;font-size:14px;font-weight:500}
+  .nav a:hover{color:#3b82f6}
+  .nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+  .container{max-width:1100px;margin:0 auto;padding:40px 32px}
+  h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+  .subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+  .badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+  h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+  h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:28px 0 10px}
+  .obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+  .obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+  .obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+  .info-box{background:#1e293b;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
+  .info-box.green{border-left-color:#10b981}
+  .info-box.orange{border-left-color:#f59e0b}
+  .info-box.purple{border-left-color:#8b5cf6}
+  .info-box.cyan{border-left-color:#06b6d4}
+  .info-box-title{font-weight:700;color:#e2e8f0;font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .info-box p,.info-box li{font-size:14px;color:#94a3b8}
+  .info-box ul{padding-left:18px;margin-top:6px}
+  .table-wrap{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+  td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#1e293b}
+  .code-block{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px 20px;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;color:#94a3b8;margin:16px 0;overflow-x:auto;white-space:pre}
+  .code-block .hl-blue{color:#3b82f6}
+  .code-block .hl-cyan{color:#06b6d4}
+  .code-block .hl-green{color:#10b981}
+  .code-block .hl-orange{color:#f59e0b}
+  .code-block .hl-purple{color:#8b5cf6}
+  .code-block .hl-pink{color:#ec4899}
+  .code-block .hl-comment{color:#475569}
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+  @media(max-width:700px){.calc-grid{grid-template-columns:1fr}}
+  .calc-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px}
+  .calc-card h4{font-size:14px;font-weight:700;margin-bottom:12px}
+  .calc-card.blue h4{color:#3b82f6}
+  .calc-card.green h4{color:#10b981}
+  .practice-problem{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:16px 0}
+  .practice-problem .problem-text{font-weight:600;color:#f8fafc;margin-bottom:12px}
+  .solution{display:none;margin-top:12px;padding:14px;background:#0f172a;border-radius:6px;font-size:13px;color:#94a3b8}
+  .solution.show{display:block}
+  .sol-highlight{color:#06b6d4;font-weight:700}
+  .sol-result{color:#10b981;font-weight:700}
+  .reveal-btn{background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s}
+  .reveal-btn:hover{background:#2563eb}
+  .mnemonic{background:#1e293b;border:1px dashed #334155;border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px;color:#cbd5e1}
+  .mnemonic strong{color:#06b6d4}
+  .binary-grid{display:flex;flex-wrap:wrap;gap:4px;margin:12px 0}
+  .bit-cell{width:28px;height:32px;display:flex;align-items:center;justify-content:center;background:#0f172a;border:1px solid #334155;border-radius:4px;font-family:monospace;font-size:13px;font-weight:700;color:#cbd5e1}
+  .bit-cell.highlight-octet{border-color:#3b82f6;color:#3b82f6}
+  .bit-cell.highlight-net{border-color:#10b981;color:#10b981}
+  .bit-cell.highlight-host{border-color:#f59e0b;color:#f59e0b}
+  .progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+  .progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+  .key-formula{background:#1e293b;border:2px solid #3b82f6;border-radius:10px;padding:18px 22px;margin:20px 0;text-align:center}
+  .key-formula .formula{font-family:'Cascadia Code',monospace;font-size:18px;color:#06b6d4;font-weight:700}
+  .key-formula .formula-desc{font-size:13px;color:#94a3b8;margin-top:8px}
+  .pitfall{background:#1e293b;border-left:4px solid #f59e0b;border-radius:0 8px 8px 0;padding:14px 18px;margin:12px 0;font-size:14px;color:#cbd5e1}
+  .pitfall strong{color:#f59e0b}
+  .cheat-sheet{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:20px 0}
+  .cheat-sheet h4{color:#f8fafc;font-size:15px;font-weight:700;margin-bottom:12px}
+  .step-list{counter-reset:step-list}
+  .step-list li{counter-increment:step-list;padding:10px 0 10px 48px;position:relative;color:#94a3b8;font-size:14px;border-bottom:1px solid #1e293b}
+  .step-list li:last-child{border-bottom:none}
+  .step-list li::before{content:counter(step-list);position:absolute;left:0;top:8px;width:32px;height:32px;background:#3b82f6;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+  .np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+  .np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+  .res-list{list-style:none;padding:0}
+  .res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+  .res-list li:last-child{border-bottom:none}
+  .res-list a{color:#3b82f6}
+  .res-list a:hover{color:#06b6d4}
+  footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">&#8592; Learning Paths</a>
+  <span class="nav-title">Phase 3 — IP Addressing &amp; Subnetting</span>
+  <a href="phase-3-network-protocols.html">Next: Network Protocols &rarr;</a>
+</nav>
+
+<div class="container">
+  <div class="progress-bar"><div class="fill"></div></div>
+  <span class="badge">PHASE 3 · MODULE 2</span>
+  <h1>IP Addressing &amp; Subnetting Mastery</h1>
+  <p class="subtitle">From binary fundamentals to rapid subnet calculations — everything you need to design and debug IP networks.</p>
+
+  <h2>Learning Objectives</h2>
+  <div class="obj-grid">
+    <label class="obj-item"><input type="checkbox"> Understand IPv4 structure, octets, and binary representation</label>
+    <label class="obj-item"><input type="checkbox"> Classify IPv4 addresses into Classes A, B, C, D, E</label>
+    <label class="obj-item"><input type="checkbox"> Decode CIDR notation and calculate subnet masks</label>
+    <label class="obj-item"><input type="checkbox"> Perform subnet calculations by hand (host count, network ID, broadcast)</label>
+    <label class="obj-item"><input type="checkbox"> Explain IPv6 structure and advantages over IPv4</label>
+    <label class="obj-item"><input type="checkbox"> Distinguish private vs public IPs and understand NAT/DHCP roles</label>
+    <label class="obj-item"><input type="checkbox"> Solve subnetting practice problems confidently</label>
+  </div>
+
+  <!-- ===== SECTION 1: IPv4 STRUCTURE ===== -->
+  <h2>IPv4 Structure</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">An IPv4 address is a <strong>32-bit</strong> number expressed as four decimal octets separated by dots (dotted-decimal notation). Each octet ranges from 0 to 255.</p>
+
+  <div class="code-block"><span class="hl-comment">// 32-bit IPv4 address — 4 octets, 8 bits each</span>
+<span class="hl-blue">192</span>.<span class="hl-cyan">168</span>.<span class="hl-green">1</span>.<span class="hl-orange">100</span>
+
+<span class="hl-comment">// Binary representation:</span>
+<span class="hl-purple">11000000</span>.<span class="hl-pink">10101000</span>.<span class="hl-blue">00000001</span>.<span class="hl-cyan">01100100</span>
+   <span class="hl-comment">↑ octet 1     ↑ octet 2     ↑ octet 3     ↑ octet 4</span></div>
+
+  <div class="binary-grid" aria-label="Binary breakdown of 192.168.1.100">
+    <div class="bit-cell highlight-octet">1</div><div class="bit-cell highlight-octet">1</div><div class="bit-cell highlight-octet">0</div><div class="bit-cell highlight-octet">0</div><div class="bit-cell highlight-octet">0</div><div class="bit-cell highlight-octet">0</div><div class="bit-cell highlight-octet">0</div><div class="bit-cell highlight-octet">0</div>
+    <div class="bit-cell highlight-net">1</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">1</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">1</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div>
+    <div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">0</div><div class="bit-cell highlight-net">1</div>
+    <div class="bit-cell highlight-host">0</div><div class="bit-cell highlight-host">1</div><div class="bit-cell highlight-host">1</div><div class="bit-cell highlight-host">0</div><div class="bit-cell highlight-host">0</div><div class="bit-cell highlight-host">1</div><div class="bit-cell highlight-host">0</div><div class="bit-cell highlight-host">0</div>
+  </div>
+
+  <div class="key-formula">
+    <div class="formula">Value = Σ (bit × 2^(7-n))</div>
+    <div class="formula-desc">Each bit position represents a power of 2: 128, 64, 32, 16, 8, 4, 2, 1</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Bit Position</th><th>Power of 2</th><th>Decimal Value</th></tr></thead>
+      <tbody>
+        <tr><td>1st (MSB)</td><td>2^7</td><td>128</td></tr>
+        <tr><td>2nd</td><td>2^6</td><td>64</td></tr>
+        <tr><td>3rd</td><td>2^5</td><td>32</td></tr>
+        <tr><td>4th</td><td>2^4</td><td>16</td></tr>
+        <tr><td>5th</td><td>2^3</td><td>8</td></tr>
+        <tr><td>6th</td><td>2^2</td><td>4</td></tr>
+        <tr><td>7th</td><td>2^1</td><td>2</td></tr>
+        <tr><td>8th (LSB)</td><td>2^0</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 2: IP CLASSES ===== -->
+  <h2>IPv4 Address Classes</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">Classful addressing divides IPv4 space into five classes based on the leading bits of the first octet.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Class</th><th>Leading Bits</th><th>First Octet Range</th><th>Default Mask</th><th>Network/Host Split</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:#3b82f6">A</strong></td><td>0xxx xxxx</td><td>1 – 126</td><td>/8 (255.0.0.0)</td><td>Net.Host.Host.Host</td><td>Large organizations</td></tr>
+        <tr><td><strong style="color:#10b981">B</strong></td><td>10xx xxxx</td><td>128 – 191</td><td>/16 (255.255.0.0)</td><td>Net.Net.Host.Host</td><td>Medium organizations</td></tr>
+        <tr><td><strong style="color:#f59e0b">C</strong></td><td>110x xxxx</td><td>192 – 223</td><td>/24 (255.255.255.0)</td><td>Net.Net.Net.Host</td><td>Small networks</td></tr>
+        <tr><td><strong style="color:#8b5cf6">D</strong></td><td>1110 xxxx</td><td>224 – 239</td><td>—</td><td>Multicast</td><td>Multicast groups</td></tr>
+        <tr><td><strong style="color:#ec4899">E</strong></td><td>1111 xxxx</td><td>240 – 255</td><td>—</td><td>Reserved</td><td>Research/experimental</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pitfall">
+    <strong>Pitfall:</strong> 127.x.x.x is reserved for loopback (127.0.0.1 = localhost). Class A effectively starts at 1.0.0.0 and ends at 126.255.255.255. 0.0.0.0 and 255.255.255.255 have special meanings (default route and broadcast respectively).
+  </div>
+
+  <!-- ===== SECTION 3: CIDR ===== -->
+  <h2>CIDR Notation (Classless Inter-Domain Routing)</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">CIDR replaced classful addressing in 1993. It uses a <strong>/prefix-length</strong> suffix to indicate how many bits are fixed as the network portion.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>CIDR</th><th>Subnet Mask</th><th>Broadcast Mask</th><th>Total IPs</th><th>Usable Hosts</th></tr></thead>
+      <tbody>
+        <tr><td>/8</td><td>255.0.0.0</td><td>11111111.00000000.00000000.00000000</td><td>16,777,216</td><td>16,777,214</td></tr>
+        <tr><td>/16</td><td>255.255.0.0</td><td>11111111.11111111.00000000.00000000</td><td>65,536</td><td>65,534</td></tr>
+        <tr><td>/24</td><td>255.255.255.0</td><td>11111111.11111111.11111111.00000000</td><td>256</td><td>254</td></tr>
+        <tr><td>/25</td><td>255.255.255.128</td><td>—</td><td>128</td><td>126</td></tr>
+        <tr><td>/26</td><td>255.255.255.192</td><td>—</td><td>64</td><td>62</td></tr>
+        <tr><td>/27</td><td>255.255.255.224</td><td>—</td><td>32</td><td>30</td></tr>
+        <tr><td>/28</td><td>255.255.255.240</td><td>—</td><td>16</td><td>14</td></tr>
+        <tr><td>/29</td><td>255.255.255.248</td><td>—</td><td>8</td><td>6</td></tr>
+        <tr><td>/30</td><td>255.255.255.252</td><td>—</td><td>4</td><td>2</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key-formula">
+    <div class="formula">Usable Hosts = 2^h − 2</div>
+    <div class="formula-desc">Where h = number of host bits (32 − prefix length). Subtract 2 for network ID and broadcast address.</div>
+  </div>
+
+  <h3>Binary-to-Decimal Quick Reference</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Prefix</th><th>Interesting Octet Value</th><th>Increment/Borrow</th></tr></thead>
+      <tbody>
+        <tr><td>/24</td><td>255.255.255.0</td><td>— (boundary)</td></tr>
+        <tr><td>/25</td><td>255.255.255.128</td><td>128</td></tr>
+        <tr><td>/26</td><td>255.255.255.192</td><td>64</td></tr>
+        <tr><td>/27</td><td>255.255.255.224</td><td>32</td></tr>
+        <tr><td>/28</td><td>255.255.255.240</td><td>16</td></tr>
+        <tr><td>/29</td><td>255.255.255.248</td><td>8</td></tr>
+        <tr><td>/30</td><td>255.255.255.252</td><td>4</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 4: SUBNET CALCULATION ===== -->
+  <h2>Subnet Calculation — Step by Step</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">Given: <strong>192.168.10.0/26</strong> — Find network address, broadcast, usable range, and host count.</p>
+
+  <ol class="step-list">
+    <li><strong>Identify the "interesting octet."</strong> /26 means 26 network bits span 3 full octets (24 bits) + 2 bits into the 4th octet. The 4th octet is interesting.</li>
+    <li><strong>Find the mask for the interesting octet.</strong> 26 − 24 = 2 network bits → 1100 0000 = 128 + 64 = <span class="sol-highlight">192</span>. Subnet mask: 255.255.255.192</li>
+    <li><strong>Calculate the increment (block size).</strong> 256 − 192 = <span class="sol-highlight">64</span>. Subnets increase by 64 in the 4th octet.</li>
+    <li><strong>List the subnets.</strong> 0, 64, 128, 192 — giving us four /26 subnets.</li>
+    <li><strong>For 192.168.10.0/26:</strong> Network = <span class="sol-highlight">192.168.10.0</span>, Broadcast = <span class="sol-highlight">192.168.10.63</span>, Usable range = 192.168.10.1 – 192.168.10.62, Hosts = 2^6 − 2 = <span class="sol-result">62</span>.</li>
+  </ol>
+
+  <div class="info-box green">
+    <div class="info-box-title">Fast Subnet Cheat Sheet</div>
+    <p> memorize the power-of-2 table and the magic number trick:<br>
+    <strong>Magic Number = 256 − interesting octet mask value</strong><br>
+    Subnet boundaries are multiples of the magic number in that octet.</p>
+  </div>
+
+  <!-- ===== SECTION 5: PRACTICE PROBLEMS ===== -->
+  <h2>Subnetting Practice Problems</h2>
+
+  <div class="practice-problem">
+    <div class="problem-text">Problem 1: Analyze 172.16.0.0/20</div>
+    <button class="reveal-btn" onclick="document.getElementById('sol1').classList.toggle('show')">Show Solution</button>
+    <div class="solution" id="sol1">
+      <p><strong>Interesting octet:</strong> 2nd (20 bits spans 1 full octet + 4 into 2nd)</p>
+      <p><strong>Mask:</strong> 1111 0000 = <span class="sol-highlight">240</span> → 255.255.240.0</p>
+      <p><strong>Magic number:</strong> 256 − 240 = <span class="sol-highlight">16</span></p>
+      <p><strong>Subnets in 2nd octet:</strong> 0, 16, 32, 48, ... 240 (16 subnets total)</p>
+      <p><strong>First subnet:</strong> Network = <span class="sol-highlight">172.16.0.0</span>, Broadcast = <span class="sol-highlight">172.16.15.255</span></p>
+      <p><strong>Usable hosts:</strong> 2^(32−20) − 2 = 2^12 − 2 = <span class="sol-result">4,094</span></p>
+      <p><strong>Usable range:</strong> 172.16.0.1 – 172.16.15.254</p>
+    </div>
+  </div>
+
+  <div class="practice-problem">
+    <div class="problem-text">Problem 2: You need 50 subnets from 10.0.0.0/8. What's the new prefix?</div>
+    <button class="reveal-btn" onclick="document.getElementById('sol2').classList.toggle('show')">Show Solution</button>
+    <div class="solution" id="sol2">
+      <p><strong>Required subnets:</strong> 50 → need 2^n ≥ 50 → n = <span class="sol-highlight">6</span> bits (2^6 = 64)</p>
+      <p><strong>New prefix:</strong> /8 + 6 borrowed = <span class="sol-highlight">/14</span></p>
+      <p><strong>New mask:</strong> 255.252.0.0 (11111100.00000000.00000000.00000000)</p>
+      <p><strong>Hosts per subnet:</strong> 2^(32−14) − 2 = 2^18 − 2 = <span class="sol-result">262,142</span></p>
+      <p><strong>Subnet increment:</strong> 256 − 252 = 4 in the 2nd octet</p>
+    </div>
+  </div>
+
+  <div class="practice-problem">
+    <div class="problem-text">Problem 3: What is the broadcast address of 192.168.1.128/27?</div>
+    <button class="reveal-btn" onclick="document.getElementById('sol3').classList.toggle('show')">Show Solution</button>
+    <div class="solution" id="sol3">
+      <p><strong>Magic number:</strong> 256 − 224 = <span class="sol-highlight">32</span></p>
+      <p><strong>Subnet boundaries in 4th octet:</strong> 0, 32, 64, 96, 128, 160, 192, 224</p>
+      <p>192.168.1.128 falls in the subnet starting at <strong>128</strong></p>
+      <p><strong>Next subnet:</strong> 128 + 32 = 160</p>
+      <p><strong>Broadcast address:</strong> <span class="sol-highlight">192.168.1.159</span> (one less than next subnet)</p>
+      <p><strong>Usable range:</strong> 192.168.1.129 – 192.168.1.158</p>
+      <p><strong>Usable hosts:</strong> 2^5 − 2 = <span class="sol-result">30</span></p>
+    </div>
+  </div>
+
+  <div class="practice-problem">
+    <div class="problem-text">Problem 4: Divide 10.10.0.0/16 into 8 equal subnets. List the first two.</div>
+    <button class="reveal-btn" onclick="document.getElementById('sol4').classList.toggle('show')">Show Solution</button>
+    <div class="solution" id="sol4">
+      <p><strong>Borrowed bits:</strong> log2(8) = 3 → new prefix = /16 + 3 = <span class="sol-highlight">/19</span></p>
+      <p><strong>Mask:</strong> 255.255.224.0 (11100000 = 224 in 3rd octet)</p>
+      <p><strong>Magic number:</strong> 256 − 224 = <span class="sol-highlight">32</span></p>
+      <p><strong>Subnet 0:</strong> 10.10.0.0/19 — range 10.10.0.1 – 10.10.31.254, bcast 10.10.31.255</p>
+      <p><strong>Subnet 1:</strong> 10.10.32.0/19 — range 10.10.32.1 – 10.10.63.254, bcast 10.10.63.255</p>
+      <p><strong>Hosts per subnet:</strong> 2^(32−19) − 2 = 2^13 − 2 = <span class="sol-result">8,190</span></p>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6: IPV6 ===== -->
+  <h2>IPv6 Basics</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">IPv6 uses <strong>128-bit</strong> addresses, providing approximately 3.4 × 10^38 unique addresses — enough for every grain of sand on Earth to have its own IP.</p>
+
+  <div class="code-block"><span class="hl-comment">// Full IPv6 address (8 groups of 4 hex digits)</span>
+<span class="hl-cyan">2001</span>:<span class="hl-blue">0db8</span>:<span class="hl-green">85a3</span>:<span class="hl-orange">0000</span>:<span class="hl-purple">0000</span>:<span class="hl-pink">8a2e</span>:<span class="hl-cyan">0370</span>:<span class="hl-green">7334</span>
+
+<span class="hl-comment">// Compressed form (leading zeros omitted, :: once)</span>
+<span class="hl-cyan">2001</span>:<span class="hl-blue">db8</span>:<span class="hl-green">85a3</span>::<span class="hl-purple">8a2e</span>:<span class="hl-cyan">370</span>:<span class="hl-green">7334</span>
+
+<span class="hl-comment">// Common prefixes</span>
+<span class="hl-green">2001:db8::</span>      <span class="hl-comment">// Documentation (RFC 3849)</span>
+<span class="hl-cyan">::1</span>             <span class="hl-comment">// Loopback (equivalent to 127.0.0.1)</span>
+<span class="hl-purple">fe80::</span>/10       <span class="hl-comment">// Link-local unicast</span>
+<span class="hl-orange">ff00::</span>/8        <span class="hl-comment">// Multicast</span></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>IPv4</th><th>IPv6</th></tr></thead>
+      <tbody>
+        <tr><td>Address size</td><td>32 bits (4.3 billion)</td><td>128 bits (~3.4×10^38)</td></tr>
+        <tr><td>Notation</td><td>Dotted decimal</td><td>Hex colon-separated</td></tr>
+        <tr><td>Configuration</td><td>Manual or DHCP</td><td>SLAAC (stateless) or DHCPv6</td></tr>
+        <tr><td>NAT</td><td>Necessary due to scarcity</td><td>Generally unnecessary</td></tr>
+        <tr><td>Headers</td><td>20+ bytes, options variable</td><td>40 bytes fixed, extensible</td></tr>
+        <tr><td>Security</td><td>Optional (IPsec added later)</td><td>Designed with IPsec in mind</td></tr>
+        <tr><td>Fragmentation</td><td>Routers can fragment</td><td>Only source can fragment</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 7: PRIVATE VS PUBLIC ===== -->
+  <h2>Private vs Public IP Addresses</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Range</th><th>Class</th><th>CIDR</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>10.0.0.0 – 10.255.255.255</td><td>A</td><td>/8</td><td>Single /8 — largest private block</td></tr>
+        <tr><td>172.16.0.0 – 172.31.255.255</td><td>B</td><td>/12–/16</td><td>16 contiguous /12 blocks</td></tr>
+        <tr><td>192.168.0.0 – 192.168.255.255</td><td>C</td><td>/16</td><td>256 contiguous /24 networks — most common</td></tr>
+        <tr><td>100.64.0.0 – 100.127.255.255</td><td>—</td><td>/10</td><td>Carrier-grade NAT (CGNAT, RFC 6598)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box green">
+    <div class="info-box-title">NAT (Network Address Translation)</div>
+    <p>NAT allows multiple private IPs to share a single public IP. When an internal host sends traffic out, the router replaces the private source IP with its public IP and tracks the translation in a NAT table. Return traffic is reverse-translated. Types include <strong>Static NAT</strong> (1:1 mapping), <strong>Dynamic NAT</strong> (pool-based), and <strong>NAPT/PAT</strong> (overloading — most common, using port numbers to distinguish sessions).</p>
+  </div>
+
+  <div class="info-box cyan">
+    <div class="info-box-title">DHCP (Dynamic Host Configuration Protocol)</div>
+    <p>DHCP automatically assigns IP configuration to devices. The <strong>DORA</strong> process: <strong>D</strong>iscover (client broadcasts), <strong>O</strong>ffer (server responds with IP), <strong>R</strong>equest (client requests the offered IP), <strong>A</strong>cquire (server confirms). Key concepts: <strong>scopes</strong> (range of assignable IPs), <strong>reservations</strong> (binding a MAC to a specific IP), <strong>leases</strong> (temporary assignment with renewal).</p>
+  </div>
+
+  <!-- ===== SECTION 8: COMMON PITFALLS ===== -->
+  <h2>Common Pitfalls</h2>
+  <div class="pitfall"><strong>Pitfall 1:</strong> Forgetting to subtract 2 for network and broadcast addresses. /24 always gives 254 usable hosts, not 256.</div>
+  <div class="pitfall"><strong>Pitfall 2:</strong> Confusing the subnet mask with the wildcard mask (used in ACLs). They are bitwise complements: mask 255.255.255.0 → wildcard 0.0.0.255.</div>
+  <div class="pitfall"><strong>Pitfall 3:</strong> Misidentifying the interesting octet. Count network bits: if /27, the 3rd octet is full (24 bits) + 3 bits in the 4th octet — the 4th is interesting.</div>
+  <div class="pitfall"><strong>Pitfall 4:</strong> Treating /31 and /32 as having usable hosts. /32 is a single host route. /31 (point-to-point per RFC 3021) has 0 usable hosts but is valid for point-to-point links.</div>
+  <div class="pitfall"><strong>Pitfall 5:</strong> IPv6 :: expansion errors. :: can only appear once in an address. 2001:db8::1:1 is valid but 2001::db8::1 is invalid.</div>
+
+  <!-- ===== SECTION 9: RESOURCES ===== -->
+  <h2>Resources</h2>
+  <ul class="res-list">
+    <li>&#x1f517; <a href="https://www.subnetcalculator.com/" target="_blank">Subnet Calculator (online)</a></li>
+    <li>&#x1f517; <a href="https://www.certlibrary.com/free-ip-address-and-subnetting-course/" target="_blank">Free IP Addressing & Subnetting Course — CertLibrary</a></li>
+    <li>&#x1f517; <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" target="_blank">Wikipedia — CIDR</a></li>
+    <li>&#x1f517; <a href="https://www.rfc-editor.org/rfc/rfc4291" target="_blank">RFC 4291 — IPv6 Addressing Architecture</a></li>
+    <li>&#x1f517; <a href="https://github.com/jeremybryant/ccna/tree/main/2-Addresses" target="_blank">CCNA Subnetting Practice — Jeremy's IT Lab</a></li>
+    <li>&#x1f517; <a href="https://www.amazon.com/CCNA-Official-Certification-Guide-Explore/dp/0135973678" target="_blank">CCNA Official Cert Guide — Wendell Odom</a></li>
+  </ul>
+
+  <div class="next-prev">
+    <a href="phase-3-osi-tcpip-models.html" class="np-btn">&#8592; OSI &amp; TCP/IP Models</a>
+    <a href="phase-3-network-protocols.html" class="np-btn">Next: Network Protocols &#8594;</a>
+  </div>
+</div>
+
+<footer>Phase 3 Networking Learning Paths &copy; 2026</footer>
+</body>
+</html>

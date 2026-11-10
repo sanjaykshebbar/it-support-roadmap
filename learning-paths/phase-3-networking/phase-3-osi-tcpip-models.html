@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — OSI & TCP/IP Model Deep Dive</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+  a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+  .nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+  .nav a{color:#94a3b8;font-size:14px;font-weight:500}
+  .nav a:hover{color:#3b82f6}
+  .nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+  .container{max-width:1100px;margin:0 auto;padding:40px 32px}
+  h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+  .subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+  .badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+  h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+  h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:28px 0 10px}
+  .obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+  .obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+  .obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+  .layer-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:16px;transition:border-color .2s}
+  .layer-card:hover{border-color:#3b82f6}
+  .layer-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;font-weight:800;font-size:14px;color:#fff;margin-right:12px}
+  .layer-name{font-size:18px;font-weight:700;color:#f8fafc;display:inline}
+  .layer-body{margin-top:14px;color:#94a3b8;font-size:14px}
+  .layer-body p{margin-bottom:8px}
+  .proto-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .proto-tag{background:#0f172a;border:1px solid #334155;color:#94a3b8;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+  .info-box{background:#1e293b;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
+  .info-box.green{border-left-color:#10b981}
+  .info-box.orange{border-left-color:#f59e0b}
+  .info-box.purple{border-left-color:#8b5cf6}
+  .info-box.pink{border-left-color:#ec4899}
+  .info-box.cyan{border-left-color:#06b6d4}
+  .info-box-title{font-weight:700;color:#e2e8f0;font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .info-box p{font-size:14px;color:#94a3b8}
+  .table-wrap{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+  td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#1e293b}
+  .comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+  @media(max-width:700px){.comparison{grid-template-columns:1fr}}
+  .comp-col{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px}
+  .comp-col h4{font-size:15px;font-weight:700;margin-bottom:12px}
+  .comp-col.osi h4{color:#3b82f6}
+  .comp-col.tcp h4{color:#10b981}
+  .mnemonic{background:#1e293b;border:1px dashed #334155;border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px;color:#cbd5e1}
+  .mnemonic strong{color:#06b6d4}
+  .quiz-block{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:16px 0}
+  .quiz-q{font-weight:700;color:#e2e8f0;margin-bottom:10px}
+  .quiz-options{list-style:none;padding:0}
+  .quiz-options li{padding:6px 0;font-size:14px;color:#94a3b8;cursor:pointer;transition:color .15s}
+  .quiz-options li:hover{color:#3b82f6}
+  .quiz-answer{display:none;margin-top:10px;padding:10px 14px;background:#0f172a;border-radius:6px;font-size:13px;color:#10b981;font-weight:600}
+  .quiz-btn{background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s}
+  .quiz-btn:hover{background:#2563eb}
+  .next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+  .np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+  .np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+  .res-list{list-style:none;padding:0}
+  .res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+  .res-list li:last-child{border-bottom:none}
+  .res-list a{color:#3b82f6}
+  .res-list a:hover{color:#06b6d4}
+  .encap-flow{display:flex;align-items:stretch;gap:0;margin:24px 0;flex-wrap:wrap}
+  .encap-step{flex:1;min-width:120px;background:#1e293b;border:1px solid #334155;padding:14px;text-align:center;border-radius:8px;margin:4px}
+  .encap-step:first-child{border-radius:8px 0 0 8px}
+  .encap-step:last-child{border-radius:0 8px 8px 0}
+  .encap-step .step-label{font-size:11px;font-weight:700;text-transform:uppercase;color:#94a3b8;letter-spacing:.5px}
+  .encap-step .step-data{font-size:15px;font-weight:700;color:#f8fafc;margin-top:4px}
+  .encap-arrow{display:flex;align-items:center;color:#334155;font-size:20px;padding:0 4px}
+  .progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+  .progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+  .tab-nav{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid #1e293b}
+  .tab-btn{padding:10px 20px;font-size:13px;font-weight:700;color:#94a3b8;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+  .tab-btn.active{color:#3b82f6;border-bottom-color:#3b82f6}
+  .tab-btn:hover{color:#e2e8f0}
+  .tab-content{display:none;padding:20px 0}
+  .tab-content.active{display:block}
+  footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">&#8592; Learning Paths</a>
+  <span class="nav-title">Phase 3 — OSI &amp; TCP/IP Models</span>
+  <a href="phase-3-ip-addressing-subnetting.html">Next: IP Addressing &rarr;</a>
+</nav>
+
+<div class="container">
+  <div class="progress-bar"><div class="fill"></div></div>
+  <span class="badge">PHASE 3 · MODULE 1</span>
+  <h1>OSI &amp; TCP/IP Model Deep Dive</h1>
+  <p class="subtitle">Master the layered architecture that underpins every network you'll troubleshoot.</p>
+
+  <h2>Learning Objectives</h2>
+  <div class="obj-grid">
+    <label class="obj-item"><input type="checkbox"> Explain the purpose and function of each OSI layer (1–7)</label>
+    <label class="obj-item"><input type="checkbox"> Describe the TCP/IP 4-layer model and how it maps to OSI</label>
+    <label class="obj-item"><input type="checkbox"> Identify key protocols at each layer</label>
+    <label class="obj-item"><input type="checkbox"> Explain encapsulation and de-encapsulation with PDU names</label>
+    <label class="obj-item"><input type="checkbox"> Compare and contrast OSI vs TCP/IP models</label>
+    <label class="obj-item"><input type="checkbox"> Use the layered model for systematic troubleshooting</label>
+    <label class="obj-item"><input type="checkbox"> Apply memory techniques to recall layers in order</label>
+    <label class="obj-item"><input type="checkbox"> Complete quiz and self-assessment</label>
+  </div>
+
+  <!-- ===== SECTION 1: OSI 7 LAYERS ===== -->
+  <h2>The OSI 7-Layer Model</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">The Open Systems Interconnection (OSI) model, developed by ISO in 1984, provides a conceptual framework for understanding network interactions as seven distinct layers. Each layer serves the one above it and is served by the one below.</p>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#ec4899">7</span>
+    <span class="layer-name">Application Layer</span>
+    <div class="layer-body">
+      <p><strong>What it does:</strong> Provides network services directly to end-user applications. This is where users interact with the network through software like browsers, email clients, and file transfer apps.</p>
+      <p><strong>Key functions:</strong> Service discovery, user authentication, data format conversion, session management coordination.</p>
+      <div class="proto-tags">
+        <span class="proto-tag">HTTP/HTTPS</span>
+        <span class="proto-tag">FTP</span>
+        <span class="proto-tag">SMTP</span>
+        <span class="proto-tag">DNS</span>
+        <span class="proto-tag">SSH</span>
+        <span class="proto-tag">SNMP</span>
+      </div>
+      <div class="info-box pink">
+        <div class="info-box-title">Real-World Example</div>
+        <p>When you open a web browser and type google.com, the Application layer prepares your request — formatting the HTTP GET method, adding headers, and passing it down to the next layer for transport.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#f59e0b">6</span>
+    <span class="layer-name">Presentation Layer</span>
+    <div class="layer-body">
+      <p><strong>What it does:</strong> Translates data between the application format and the network format. Handles encryption, compression, and character encoding so that data from one system can be read by another.</p>
+      <p><strong>Key functions:</strong> Data encryption/decryption (TLS/SSL), compression/decompression, character set conversion (ASCII to UTF-8).</p>
+      <div class="proto-tags">
+        <span class="proto-tag">TLS/SSL</span>
+        <span class="proto-tag">JPEG</span>
+        <span class="proto-tag">GIF</span>
+        <span class="proto-tag">MPEG</span>
+        <span class="proto-tag">ASCII</span>
+        <span class="proto-tag">UTF-8</span>
+      </div>
+      <div class="info-box orange">
+        <div class="info-box-title">Real-World Example</div>
+        <p>TLS (Transport Layer Security) sits at this boundary — when your browser establishes an HTTPS connection, the Presentation layer encrypts the data before handing it to the Transport layer.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#3b82f6">5</span>
+    <span class="layer-name">Session Layer</span>
+    <div class="layer-body">
+      <p><strong>What it does:</strong> Establishes, manages, and terminates connections (sessions) between two applications. Handles dialogue control — whether communication is simplex, half-duplex, or full-duplex.</p>
+      <p><strong>Key functions:</strong> Session establishment and tear-down, checkpointing (for long transfers), dialog control.</p>
+      <div class="proto-tags">
+        <span class="proto-tag">NetBIOS</span>
+        <span class="proto-tag">RPC</span>
+        <span class="proto-tag">SIP</span>
+        <span class="proto-tag">NFS</span>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Real-World Example</div>
+        <p>A video conferencing app uses the Session layer to establish a dialogue with a remote participant, manage the exchange of audio and video streams, and cleanly terminate the session when either party hangs up.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#06b6d4">4</span>
+    <span class="layer-name">Transport Layer</span>
+    <div class="layer-body">
+      <p><strong>What it does:</strong> Provides end-to-end communication between devices. Ensures complete data transfer with error checking, flow control, and segmentation/reassembly. Determines whether to use connection-oriented (reliable) or connectionless (fast) delivery.</p>
+      <p><strong>Key functions:</strong> Segmentation, error detection/correction, flow control, congestion control, multiplexing via ports.</p>
+      <div class="proto-tags">
+        <span class="proto-tag">TCP</span>
+        <span class="proto-tag">UDP</span>
+        <span class="proto-tag">SCTP</span>
+      </div>
+      <div class="info-box cyan">
+        <div class="info-box-title">Real-World Example</div>
+        <p>When downloading a file, TCP (Transport Control Protocol) segments the data, acknowledges each piece received, retransmits lost packets, and manages the speed to avoid overwhelming the receiver. A live video stream may use UDP instead for lower latency despite occasional packet loss.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#10b981">3</span>
+    <span class="layer-name">Network Layer</span>
+    <div class="layer-body">
+      <p><strong>What it does:</strong> Handles logical addressing and routing. Determines the best path for data to travel from source to destination across multiple networks (internetworking).</p>
+      <p><strong>Key functions:</strong> Logical addressing (IP addresses), routing decisions, path determination, fragmentation, reverse path forwarding.</p>
+      <div class="proto-tags">
+        <span class="proto-tag">IPv4</span>
+        <span class="proto-tag">IPv6</span>
+        <span class="proto-tag">ICMP</span>
+        <span class="proto-tag">IPsec</span>
+        <span class="proto-tag">OSPF</span>
+        <span class="proto-tag">BGP</span>
+        <span class="proto-tag">Router</span>
+      </div>
+      <div class="info-box green">
+        <div class="info-box-title">Real-World Example</div>
+        <p>Your router examines the destination IP address in each packet and consults its routing table to determine which interface should forward the packet toward its final destination — possibly hopping through several routers across the internet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#8b5cf6">2</span>
+    <span class="layer-name">Data Link Layer</span>
+    <div class="layer-body">
+      <p><strong>What it does:</strong> Provides node-to-node data transfer on the same physical network segment. Handles physical addressing (MAC addresses), error detection (not correction), and access to the physical medium.</p>
+      <p><strong>Sub-layers:</strong> <strong>LLC</strong> (Logical Link Control) — frames packets and handles error checking. <strong>MAC</strong> (Media Access Control) — controls how devices gain access to the medium and permission to transmit.</p>
+      <div class="proto-tags">
+        <span class="proto-tag">Ethernet (IEEE 802.3)</span>
+        <span class="proto-tag">Wi-Fi (IEEE 802.11)</span>
+        <span class="proto-tag">PPP</span>
+        <span class="proto-tag">ARP</span>
+        <span class="proto-tag">Switch</span>
+        <span class="proto-tag">Bridge</span>
+        <span class="proto-tag">VLAN</span>
+      </div>
+      <div class="info-box purple">
+        <div class="info-box-title">Real-World Example</div>
+        <p>When your computer sends a frame to your router on the local LAN, the Data Link layer adds the source and destination MAC addresses, wraps the IP packet in a frame, and appends a Frame Check Sequence (FCS) for error detection.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#ef4444">1</span>
+    <span class="layer-name">Physical Layer</span>
+    <div class="layer-body">
+      <p><strong>What it does:</strong> Transmits raw bit streams over a physical medium. Defines electrical, mechanical, procedural, and functional specifications for activating, maintaining, and deactivating the physical link.</p>
+      <p><strong>Key functions:</strong> Bit-level transmission, cabling specifications, connector types, signal encoding, voltage levels, topologies.</p>
+      <div class="proto-tags">
+        <span class="proto-tag">Ethernet cables (Cat5e/6/6a)</span>
+        <span class="proto-tag">Fiber optic</span>
+        <span class="proto-tag">RS-232</span>
+        <span class="proto-tag">Hubs</span>
+        <span class="proto-tag">Repeaters</span>
+      </div>
+      <div class="info-box" style="border-left-color:#ef4444">
+        <div class="info-box-title">Real-World Example</div>
+        <p>A Cat6 Ethernet cable carrying 1 Gbps signals uses specific voltage levels, wire pair twisting patterns, and RJ-45 connectors. The Physical layer defines exactly how those electrical pulses represent 1s and 0s traveling across the copper wires.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Memory Technique -->
+  <h2>Memory Techniques</h2>
+  <div class="mnemonic">
+    <strong>Mnemonic for OSI Layers (Top → Bottom):</strong><br>
+    <em>"<strong>A</strong>ll <strong>P</strong>eople <strong>S</strong>eem <strong>T</strong>o <strong>D</strong>ownload <strong>M</strong>assive <strong>P</strong>ackages"</em><br>
+    <span style="color:#64748b;font-size:13px">Application · Presentation · Session · Transport · Network · Data Link · Physical</span>
+  </div>
+  <div class="mnemonic">
+    <strong>Mnemonic for OSI Layers (Bottom → Top):</strong><br>
+    <em>"<strong>P</strong>lease <strong>D</strong>on't <strong>T</strong>oss <strong>S</strong>ausage <strong>P</strong>izza <strong>A</strong>way"</em><br>
+    <span style="color:#64748b;font-size:13px">Physical · Data Link · Network · Transport · Session · Presentation · Application</span>
+  </div>
+
+  <!-- ===== SECTION 2: TCP/IP MODEL ===== -->
+  <h2>The TCP/IP 4-Layer Model</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">The TCP/IP model, developed by the U.S. Department of Defense, is the practical model that powers the modern Internet. It condenses the OSI's 7 layers into 4 functional layers.</p>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#10b981">4</span>
+    <span class="layer-name">Application Layer</span>
+    <div class="layer-body">
+      <p><strong>Covers:</strong> OSI Application + Presentation + Session layers combined.</p>
+      <p><strong>Protocols:</strong> HTTP, HTTPS, FTP, SMTP, DNS, SSH, SNMP, DHCP</p>
+      <div class="info-box green">
+        <div class="info-box-title">Why Combined?</div>
+        <p>In practice, the concerns of session management, data formatting, and application interaction are handled together by application-layer protocols. The TCP/IP model prioritizes practical implementation over strict theoretical separation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#3b82f6">3</span>
+    <span class="layer-name">Transport Layer</span>
+    <div class="layer-body">
+      <p><strong>Covers:</strong> Same as OSI Transport layer.</p>
+      <p><strong>Protocols:</strong> TCP, UDP</p>
+      <p><strong>Key concept:</strong> End-to-end reliability. TCP guarantees delivery; UDP provides fastest delivery without guarantees.</p>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#06b6d4">2</span>
+    <span class="layer-name">Internet Layer</span>
+    <div class="layer-body">
+      <p><strong>Covers:</strong> Same as OSI Network layer.</p>
+      <p><strong>Protocols:</strong> IP (IPv4/IPv6), ICMP, IGMP, ARP (sometimes placed at Link layer)</p>
+      <p><strong>Key concept:</strong> Logical addressing and routing across networks. Packets are addressed with IP and routed hop-by-hop.</p>
+    </div>
+  </div>
+
+  <div class="layer-card">
+    <span class="layer-num" style="background:#8b5cf6">1</span>
+    <span class="layer-name">Network Access (Link) Layer</span>
+    <div class="layer-body">
+      <p><strong>Covers:</strong> Same as OSI Data Link + Physical layers combined.</p>
+      <p><strong>Protocols:</strong> Ethernet, Wi-Fi (802.11), PPP, ARP, VLAN tagging</p>
+      <p><strong>Key concept:</strong> Physical transmission media and local network delivery using MAC addresses.</p>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: LAYER-BY-LAYER PROTOCOL MAPPING ===== -->
+  <h2>Layer-by-Layer Protocol Mapping</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>OSI Layer</th>
+          <th>Protocol Data Unit (PDU)</th>
+          <th>Key Protocols</th>
+          <th>Primary Devices</th>
+          <th>Addressing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#ec4899">7 — Application</strong></td>
+          <td>Data</td>
+          <td>HTTP, FTP, SMTP, DNS, SSH, SNMP</td>
+          <td>—</td>
+          <td>Application-level identifiers</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#f59e0b">6 — Presentation</strong></td>
+          <td>Data</td>
+          <td>TLS/SSL, JPEG, MPEG, ASCII, UTF-8</td>
+          <td>—</td>
+          <td>Encoding formats</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#3b82f6">5 — Session</strong></td>
+          <td>Data</td>
+          <td>NetBIOS, RPC, SIP, NFS</td>
+          <td>—</td>
+          <td>Session IDs</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#06b6d4">4 — Transport</strong></td>
+          <td>Segment (TCP) / Datagram (UDP)</td>
+          <td>TCP, UDP, SCTP</td>
+          <td>Firewall, Load Balancer</td>
+          <td>Port numbers</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#10b981">3 — Network</strong></td>
+          <td>Packet</td>
+          <td>IPv4, IPv6, ICMP, IPsec, OSPF, BGP</td>
+          <td>Router, Layer 3 Switch</td>
+          <td>IP addresses</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#8b5cf6">2 — Data Link</strong></td>
+          <td>Frame</td>
+          <td>Ethernet, PPP, ARP, VLAN, HDLC</td>
+          <td>Switch, Bridge, Hub</td>
+          <td>MAC addresses</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#ef4444">1 — Physical</strong></td>
+          <td>Bits</td>
+          <td>USB, DSL, T1/E1, Fiber, Copper</td>
+          <td>Hub, Repeater, NIC</td>
+          <td>Electrical/optical signals</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 4: ENCAPSULATION ===== -->
+  <h2>Encapsulation &amp; De-encapsulation</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">Encapsulation is the process of wrapping data with protocol information as it moves <strong>down</strong> the layers on the sending side. De-encapsulation is the reverse — stripping headers as data moves <strong>up</strong> the layers on the receiving side.</p>
+
+  <div class="encap-flow">
+    <div class="encap-step" style="border-top:3px solid #ec4899">
+      <div class="step-label">App / Pres / Ses</div>
+      <div class="step-data">DATA</div>
+    </div>
+    <div class="encap-arrow">&rsaquo;</div>
+    <div class="encap-step" style="border-top:3px solid #06b6d4">
+      <div class="step-label">Transport</div>
+      <div class="step-data">+ TCP/UDP Header</div>
+      <div class="step-label" style="margin-top:4px">= Segment</div>
+    </div>
+    <div class="encap-arrow">&rsaquo;</div>
+    <div class="encap-step" style="border-top:3px solid #10b981">
+      <div class="step-label">Network</div>
+      <div class="step-data">+ IP Header</div>
+      <div class="step-label" style="margin-top:4px">= Packet</div>
+    </div>
+    <div class="encap-arrow">&rsaquo;</div>
+    <div class="encap-step" style="border-top:3px solid #8b5cf6">
+      <div class="step-label">Data Link</div>
+      <div class="step-data">+ MAC Headers/FCS</div>
+      <div class="step-label" style="margin-top:4px">= Frame</div>
+    </div>
+    <div class="encap-arrow">&rsaquo;</div>
+    <div class="encap-step" style="border-top:3px solid #ef4444">
+      <div class="step-label">Physical</div>
+      <div class="step-data">Bits on wire</div>
+    </div>
+  </div>
+
+  <div class="info-box cyan">
+    <div class="info-box-title">De-encapsulation (Receiving Side)</div>
+    <p>At the destination, each layer removes its corresponding header: Physical converts bits back to frames → Data Link strips MAC headers to reveal packets → Network strips IP headers to reveal segments → Transport strips port info to reveal data → Upper layers process the original application data.</p>
+  </div>
+
+  <h3>Protocol Data Unit (PDU) Quick Reference</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>PDU Name</th><th>What Gets Added</th></tr></thead>
+      <tbody>
+        <tr><td>Application / Presentation / Session</td><td>Data</td><td>User data / API calls</td></tr>
+        <tr><td>Transport</td><td>Segment (TCP) / Datagram (UDP)</td><td>Source port, Destination port, Seq/Ack numbers, Flags</td></tr>
+        <tr><td>Network</td><td>Packet</td><td>Source IP, Destination IP, TTL, Protocol field</td></tr>
+        <tr><td>Data Link</td><td>Frame</td><td>Source MAC, Destination MAC, EtherType, FCS</td></tr>
+        <tr><td>Physical</td><td>Bits</td><td>Electrical/optical signal representation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 5: COMPARISON ===== -->
+  <h2>OSI vs TCP/IP Comparison</h2>
+  <div class="comparison">
+    <div class="comp-col osi">
+      <h4>OSI Model</h4>
+      <ul style="color:#94a3b8;font-size:14px;padding-left:18px">
+        <li>7 layers — more granular</li>
+        <li>Theoretical reference model</li>
+        <li>Developed by ISO (1984)</li>
+        <li>Layers are strictly separated</li>
+        <li>Both connectionless &amp; connection-oriented at Network layer</li>
+        <li>Used primarily for education/troubleshooting</li>
+        <li>No specific protocols attached originally</li>
+      </ul>
+    </div>
+    <div class="comp-col tcp">
+      <h4>TCP/IP Model</h4>
+      <ul style="color:#94a3b8;font-size:14px;padding-left:18px">
+        <li>4 layers — more consolidated</li>
+        <li>Practical implementation model</li>
+        <li>Developed by DoD (1970s)</li>
+        <li>Some layers combine functions</li>
+        <li>Connection-oriented only at Transport layer</li>
+        <li>The actual basis of the Internet</li>
+        <li>Built around real protocols (TCP, IP)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Aspect</th><th>OSI</th><th>TCP/IP</th></tr></thead>
+      <tbody>
+        <tr><td>Number of layers</td><td>7</td><td>4</td></tr>
+        <tr><td>Model type</td><td>Reference model</td><td>Protocol suite</td></tr>
+        <tr><td>Development</td><td>Theory first, protocols later</td><td>Protocols first, model later</td></tr>
+        <tr><td>Transport reliability</td><td>Both connectionless &amp; oriented at Network layer</td><td>Only Transport layer supports both</td></tr>
+        <tr><td>Real-world use</td><td>Troubleshooting framework</td><td>Actual Internet operation</td></tr>
+        <tr><td>Adoption</td><td>Educational standard</td><td>Internet standard</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 6: TROUBLESHOOTING ===== -->
+  <h2>Using the Model for Troubleshooting</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">A structured, layer-by-layer approach prevents wasted effort. Start at the bottom (Physical) and work up — most problems are at lower layers.</p>
+
+  <div class="info-box">
+    <div class="info-box-title">Systematic Troubleshooting Method</div>
+    <p><strong>Step 1:</strong> Identify the symptom and scope (one host? entire subnet? internet-wide?)<br>
+    <strong>Step 2:</strong> Check Layer 1 — cables connected? link lights on? correct cable type?<br>
+    <strong>Step 3:</strong> Check Layer 2 — MAC learning? VLAN configuration? spanning tree blocking?<br>
+    <strong>Step 4:</strong> Check Layer 3 — IP configuration? routing tables? ACLs blocking traffic?<br>
+    <strong>Step 5:</strong> Check Layer 4 — firewall rules? port conflicts? service listening?<br>
+    <strong>Step 6:</strong> Check Layers 5-7 — application errors? DNS resolution? certificate issues?</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Common Symptoms</th><th>Diagnostic Commands</th><th>Common Fixes</th></tr></thead>
+      <tbody>
+        <tr><td style="color:#ef4444;font-weight:700">L1 — Physical</td><td>No link, intermittent connectivity, collisions</td><td>show interfaces, cable tester, ping localhost</td><td>Replace cable, renegotiate duplex, check power</td></tr>
+        <tr><td style="color:#8b5cf6;font-weight:700">L2 — Data Link</td><td>Same-subnet unreachable, MAC Flooding, VLAN mismatch</td><td>arp -a, show mac address-table, show vlan</td><td>Verify VLAN config, clear ARP cache, check switch port</td></tr>
+        <tr><td style="color:#10b981;font-weight:700">L3 — Network</td><td>Can't reach remote networks, routing loops</td><td>ping, traceroute, show ip route, ipconfig /all</td><td>Fix default gateway, update routing table, check ACLs</td></tr>
+        <tr><td style="color:#06b6d4;font-weight:700">L4 — Transport</td><td>Service unreachable, connection refused</td><td>netstat -an, telnet &lt;host&gt; &lt;port&gt;, ss -tulpn</td><td>Start service, adjust firewall, verify port not blocked</td></tr>
+        <tr><td style="color:#3b82f6;font-weight:700">L5-7 — Session/App</td><td>Application errors, slow responses, auth failures</td><td>nslookup, curl -v, browser dev tools, log inspection</td><td>Restart service, renew certificates, fix DNS, update config</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 7: QUIZ ===== -->
+  <h2>Knowledge Check</h2>
+
+  <div class="quiz-block" id="q1">
+    <div class="quiz-q">Q1: At which OSI layer does routing occur?</div>
+    <ul class="quiz-options">
+      <li onclick="this.style.color='#3b82f6'">A. Data Link</li>
+      <li onclick="this.style.color='#3b82f6'">B. Network</li>
+      <li onclick="this.style.color='#3b82f6'">C. Transport</li>
+      <li onclick="this.style.color='#3b82f6'">D. Session</li>
+    </ul>
+    <button class="quiz-btn" onclick="document.getElementById('a1').style.display='block'">Show Answer</button>
+    <div class="quiz-answer" id="a1">Correct answer: <strong>B. Network Layer</strong> — Routing is the core function of Layer 3, using logical IP addresses to determine paths across networks.</div>
+  </div>
+
+  <div class="quiz-block" id="q2">
+    <div class="quiz-q">Q2: Which PDU is associated with the Transport layer?</div>
+    <ul class="quiz-options">
+      <li onclick="this.style.color='#3b82f6'">A. Frame</li>
+      <li onclick="this.style.color='#3b82f6'">B. Bit</li>
+      <li onclick="this.style.color='#3b82f6'">C. Segment</li>
+      <li onclick="this.style.color='#3b82f6'">D. Packet</li>
+    </ul>
+    <button class="quiz-btn" onclick="document.getElementById('a2').style.display='block'">Show Answer</button>
+    <div class="quiz-answer" id="a2">Correct answer: <strong>C. Segment</strong> (or Datagram for UDP). The Transport layer creates segments that contain source/destination port numbers and sequence information.</div>
+  </div>
+
+  <div class="quiz-block" id="q3">
+    <div class="quiz-q">Q3: Which layer handles encryption and data formatting?</div>
+    <ul class="quiz-options">
+      <li onclick="this.style.color='#3b82f6'">A. Session</li>
+      <li onclick="this.style.color='#3b82f6'">B. Application</li>
+      <li onclick="this.style.color='#3b82f6'">C. Presentation</li>
+      <li onclick="this.style.color='#3b82f6'">D. Transport</li>
+    </ul>
+    <button class="quiz-btn" onclick="document.getElementById('a3').style.display='block'">Show Answer</button>
+    <div class="quiz-answer" id="a3">Correct answer: <strong>C. Presentation Layer</strong> — Encryption (TLS/SSL), compression, and character encoding are all Presentation layer responsibilities.</div>
+  </div>
+
+  <div class="quiz-block" id="q4">
+    <div class="quiz-q">Q4: In the TCP/IP model, which layer combines OSI's Application, Presentation, and Session layers?</div>
+    <ul class="quiz-options">
+      <li onclick="this.style.color='#3b82f6'">A. Internet</li>
+      <li onclick="this.style.color='#3b82f6'">B. Transport</li>
+      <li onclick="this.style.color='#3b82f6'">C. Application</li>
+      <li onclick="this.style.color='#3b82f6'">D. Network Access</li>
+    </ul>
+    <button class="quiz-btn" onclick="document.getElementById('a4').style.display='block'">Show Answer</button>
+    <div class="quiz-answer" id="a4">Correct answer: <strong>C. Application Layer</strong> — The TCP/IP Application layer subsumes the functionality of OSI's top three layers.</div>
+  </div>
+
+  <div class="quiz-block" id="q5">
+    <div class="quiz-q">Q5: A server's link light is off and no traffic flows. Which OSI layer should you investigate first?</div>
+    <ul class="quiz-options">
+      <li onclick="this.style.color='#3b82f6'">A. Network</li>
+      <li onclick="this.style.color='#3b82f6'">B. Transport</li>
+      <li onclick="this.style.color='#3b82f6'">C. Physical</li>
+      <li onclick="this.style.color='#3b82f6'">D. Data Link</li>
+    </ul>
+    <button class="quiz-btn" onclick="document.getElementById('a5').style.display='block'">Show Answer</button>
+    <div class="quiz-answer" id="a5">Correct answer: <strong>C. Physical Layer</strong> — No link light means a Layer 1 issue. Always start troubleshooting from the bottom (Physical) and work upward. Check cables, NICs, switch ports, and power.</div>
+  </div>
+
+  <!-- ===== SECTION 8: RESOURCES ===== -->
+  <h2>Resources</h2>
+  <ul class="res-list">
+    <li>&#x1f517; <a href="https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model/" target="_blank">Cloudflare — OSI Model Explained</a></li>
+    <li>&#x1f517; <a href="https://www.amazon.com/Computer-Networks-5th-Andrew-Tanenbaum/dp/0132126958" target="_blank">Computer Networks, 5th Ed. — Andrew Tanenbaum</a></li>
+    <li>&#x1f517; <a href="https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html" target="_blank">Cisco — How Cisco Swaps Packets (Routing Process)</a></li>
+    <li>&#x1f517; <a href="https://en.wikipedia.org/wiki/OSI_model" target="_blank">Wikipedia — OSI Model</a></li>
+    <li>&#x1f517; <a href="https://www.geeksforgeeks.org/osi-model/" target="_blank">GeeksforGeeks — OSI Model Tutorial</a></li>
+    <li>&#x1f517; <a href="https://www.tutorialslink.com/tcpip/tcpip.html" target="_blank">TCP/IP Tutorial — Internic</a></li>
+  </ul>
+
+  <div class="next-prev">
+    <a href="../index.html" class="np-btn">&#8592; Phase 3 Overview</a>
+    <a href="phase-3-ip-addressing-subnetting.html" class="np-btn">Next: IP Addressing & Subnetting &#8594;</a>
+  </div>
+</div>
+
+<footer>Phase 3 Networking Learning Paths &copy; 2026</footer>
+</body>
+</html>

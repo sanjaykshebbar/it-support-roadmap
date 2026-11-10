@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 5 — Cloud & Automation</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --card: #1e293b;
+  --border: #334155;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f59e0b;
+  --accent-pink: #ec4899;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+/* Nav */
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 100; }
+.nav-brand { font-size: 1.05rem; font-weight: 700; color: var(--text); text-decoration: none; }
+.nav-breadcrumbs { display: flex; gap: 0.3rem; align-items: center; font-size: 0.82rem; color: var(--text-muted); }
+.nav-breadcrumbs a { color: var(--text-muted); text-decoration: none; }
+.nav-breadcrumbs a:hover { color: var(--accent-orange); }
+.nav-breadcrumbs .sep { color: var(--text-dim); }
+.nav-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; padding: 0.35rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); transition: all 0.2s; }
+.nav-link:hover { color: var(--text); border-color: var(--accent-orange); background: rgba(245,158,11,0.08); }
+
+/* Hero */
+.hero { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+.hero-badge { display: inline-block; background: rgba(245,158,11,0.15); color: var(--accent-orange); border-radius: 6px; padding: 0.2rem 0.7rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.8rem; }
+.hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.6rem; letter-spacing: -0.5px; }
+.hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; }
+.hero-meta { display: flex; gap: 1.5rem; margin-top: 1.2rem; flex-wrap: wrap; }
+.hero-meta-item { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
+.hero-meta-item strong { color: var(--text); }
+
+/* Summary box */
+.summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; }
+.summary-icon { font-size: 2.5rem; }
+.summary-text h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.summary-text p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Section titles */
+.section-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+
+/* Cards grid */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+.card-link { text-decoration: none; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: all 0.2s; position: relative; overflow: hidden; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.card[data-color="blue"]::before { background: var(--accent-blue); }
+.card[data-color="cyan"]::before { background: var(--accent-cyan); }
+.card[data-color="green"]::before { background: var(--accent-green); }
+.card[data-color="purple"]::before { background: var(--accent-purple); }
+.card[data-color="orange"]::before { background: var(--accent-orange); }
+.card[data-color="pink"]::before { background: var(--accent-pink); }
+.card:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+.card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+.card .card-subtitle { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.8rem; }
+.card .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+.tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+.tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+.tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+.tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+.tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+.tag-pink { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+.card .card-duration { font-size: 0.8rem; color: var(--text-dim); }
+.card .card-arrow { position: absolute; bottom: 1.5rem; right: 1.5rem; font-size: 1.2rem; color: var(--text-dim); transition: all 0.2s; }
+.card:hover .card-arrow { color: var(--accent-blue); transform: translate(2px, -2px); }
+
+/* Outcomes */
+.outcomes { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+.outcomes ul { list-style: none; padding: 0; }
+.outcomes li { padding: 0.5rem 0; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.6rem; border-bottom: 1px solid var(--border); }
+.outcomes li:last-child { border-bottom: none; }
+.outcomes li::before { content: "✓"; color: var(--accent-green); font-weight: 700; flex-shrink: 0; }
+
+/* Next steps */
+.next-steps { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+.next-steps ol { padding-left: 1.2rem; }
+.next-steps li { padding: 0.4rem 0; font-size: 0.9rem; color: var(--text-muted); }
+.next-steps a { color: var(--accent-blue); }
+
+/* Page nav */
+.page-nav { display: flex; gap: 1rem; margin-top: 2rem; }
+.page-nav-link { flex: 1; display: flex; flex-direction: column; padding: 1rem 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: inherit; transition: all 0.2s; }
+.page-nav-link:hover { border-color: var(--accent-blue); }
+.page-nav-link .label { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+.page-nav-link .title { font-size: 0.95rem; font-weight: 600; }
+.page-nav-link.next { text-align: right; }
+
+/* Footer */
+footer { margin-top: 3rem; padding: 1.5rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.82rem; }
+footer a { color: var(--accent-blue); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="nav-brand">📚 <span>Learning Paths</span></a>
+  <div class="nav-breadcrumbs">
+    <a href="../index.html">Home</a>
+    <span class="sep">›</span>
+    <span>Phase 5</span>
+  </div>
+  <div class="nav-links">
+    <a href="../index.html" class="nav-link">All Phases</a>
+    <a href="../../it-support-roadmap.html" class="nav-link">🗺️ Main Roadmap</a>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">PHASE 5</div>
+    <h1>Cloud Computing &amp; Automation</h1>
+    <p>Build the cloud infrastructure knowledge and scripting skills that every modern IT support professional needs.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>4 Modules</strong></div>
+      <div class="hero-meta-item"><strong>Total ~8 hours</strong></div>
+      <div class="hero-meta-item"><span class="tag tag-orange">Intermediate</span></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-box">
+    <div class="summary-icon">☁️</div>
+    <div class="summary-text">
+      <h3>What You'll Master</h3>
+      <p>This phase covers the essentials of cloud computing — from core concepts through hands-on Azure and AWS practice — plus automation scripting in both PowerShell and Bash. By the end, you'll be able to provision cloud resources, write scripts that automate routine IT tasks, and understand how cloud services fit into enterprise IT support workflows.</p>
+    </div>
+  </div>
+
+  <!-- MODULES GRID -->
+  <h2 class="section-title">📘 Course Modules</h2>
+  <div class="cards-grid">
+    <a href="phase-5-cloud-fundamentals.html" class="card-link">
+      <div class="card" data-color="blue">
+        <h3>Cloud Computing Fundamentals</h3>
+        <div class="card-subtitle">IaaS, PaaS, SaaS, deployment models, and the shared responsibility framework</div>
+        <div class="card-tags">
+          <span class="tag tag-blue">Core Concepts</span>
+          <span class="tag tag-cyan">Cloud Theory</span>
+        </div>
+        <div class="card-duration">⏱ ~2 hours</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a href="phase-5-azure-aws-basics.html" class="card-link">
+      <div class="card" data-color="cyan">
+        <h3>Azure &amp; AWS Basics</h3>
+        <div class="card-subtitle">Hands-on portal navigation, VM creation, storage configuration, and core service exploration</div>
+        <div class="card-tags">
+          <span class="tag tag-cyan">AWS</span>
+          <span class="tag tag-blue">Azure</span>
+          <span class="tag tag-green">Hands-on</span>
+        </div>
+        <div class="card-duration">⏱ ~2.5 hours</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a href="phase-5-powershell-scripting.html" class="card-link">
+      <div class="card" data-color="green">
+        <h3>PowerShell Scripting for IT Support</h3>
+        <div class="card-subtitle">Automate AD management, file operations, and scheduled tasks on Windows systems</div>
+        <div class="card-tags">
+          <span class="tag tag-green">Windows</span>
+          <span class="tag tag-purple">Scripting</span>
+        </div>
+        <div class="card-duration">⏱ ~2 hours</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a href="bash-ticketing-systems.html" class="card-link">
+      <div class="card" data-color="orange">
+        <h3>Bash Scripting &amp; IT Service Management</h3>
+        <div class="card-subtitle">Shell scripting fundamentals combined with ITIL practices and ticketing tool awareness</div>
+        <div class="card-tags">
+          <span class="tag tag-orange">Linux</span>
+          <span class="tag tag-purple">ITIL</span>
+          <span class="tag tag-cyan">Scripting</span>
+        </div>
+        <div class="card-duration">⏱ ~1.5 hours</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- LEARNING OUTCOMES -->
+  <h2 class="section-title">✅ Learning Outcomes</h2>
+  <div class="outcomes">
+    <ul>
+      <li>Explain cloud service models (IaaS, PaaS, SaaS) and deployment types with real-world examples</li>
+      <li>Navigate Azure and AWS consoles to create VMs, configure storage, and manage security groups</li>
+      <li>Write PowerShell scripts for Active Directory user management and system administration tasks</li>
+      <li>Create Bash scripts that automate routine Linux/Unix system checks and maintenance</li>
+      <li>Understand ITIL service management concepts including ticket lifecycles and SLA definitions</li>
+      <li>Compare major ticketing platforms (Jira Service Management, Freshservice, Zendesk) for enterprise use</li>
+      <li>Schedule automated tasks using cron jobs and Windows Task Scheduler</li>
+      <li>Apply cloud and automation knowledge to real IT support scenarios</li>
+    </ul>
+  </div>
+
+  <!-- NEXT STEPS -->
+  <div class="next-steps">
+    <h2 class="section-title">🚀 What Comes Next</h2>
+    <ol>
+      <li>Start with <a href="phase-5-cloud-fundamentals.html">Cloud Computing Fundamentals</a> to build your theory foundation</li>
+      <li>Follow the hands-on labs in <a href="phase-5-azure-aws-basics.html">Azure &amp; AWS Basics</a> for practical cloud experience</li>
+      <li>Complete <a href="phase-5-powershell-scripting.html">PowerShell Scripting</a> for Windows automation skills</li>
+      <li>Finish with <a href="bash-ticketing-systems.html">Bash Scripting &amp; IT Service Management</a> for Linux and ITSM knowledge</li>
+      <li>Once all four modules are done, move to <a href="../phase-6-career-prep/index.html">Phase 6: Career Preparation</a></li>
+    </ol>
+  </div>
+
+  <!-- PAGE NAV -->
+  <div class="page-nav">
+    <a href="../index.html" class="page-nav-link">
+      <span class="label">← Back to Hub</span>
+      <span class="title">All Learning Paths</span>
+    </a>
+    <a href="../phase-6-career-prep/index.html" class="page-nav-link next">
+      <span class="label">Next Phase →</span>
+      <span class="title">Career Preparation</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>Phase 5: Cloud Computing &amp; Automation · IT Support Learning Paths</p>
+  <p style="margin-top:0.3rem"><a href="../index.html">← Back to Learning Paths Hub</a> · <a href="../../it-support-roadmap.html">Main Roadmap</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 5 — Azure & AWS Basics for IT Support</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+.nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+.nav a{color:#94a3b8;font-size:14px;font-weight:500}
+.nav a:hover{color:#3b82f6}
+.nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px}
+h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+.subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+.badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:28px 0 10px}
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+.obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+.obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+.info-box{background:#1e293b;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
+.info-box.green{border-left-color:#10b981}
+.info-box.orange{border-left-color:#f59e0b}
+.info-box.purple{border-left-color:#8b5cf6}
+.info-box.pink{border-left-color:#ec4899}
+.info-box.cyan{border-left-color:#06b6d4}
+.info-box-title{font-weight:700;color:#e2e8f0;font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.info-box p{font-size:14px;color:#94a3b8}
+.table-wrap{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#1e293b}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+@media(max-width:700px){.comparison{grid-template-columns:1fr}}
+.comp-col{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px}
+.comp-col h4{font-size:15px;font-weight:700;margin-bottom:12px}
+.quiz-block{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:16px 0}
+.quiz-q{font-weight:700;color:#e2e8f0;margin-bottom:10px}
+.quiz-answer{display:none;margin-top:10px;padding:10px 14px;background:#0f172a;border-radius:6px;font-size:13px;color:#10b981;font-weight:600}
+.quiz-btn{background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s}
+.quiz-btn:hover{background:#2563eb}
+.next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+.np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+.np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+.res-list{list-style:none;padding:0}
+.res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+.res-list li:last-child{border-bottom:none}
+.res-list a{color:#3b82f6}
+.progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+.module-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px 24px;margin-bottom:16px}
+.module-card h3{margin-top:0;color:#f8fafc}
+.module-meta{display:flex;gap:16px;margin-bottom:12px;font-size:13px;color:#94a3b8}
+.module-meta span{display:inline-flex;align-items:center;gap:4px}
+.code-block{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;margin:12px 0;overflow-x:auto;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;color:#94a3b8;line-height:1.6}
+.checklist{list-style:none;padding:0;margin:12px 0}
+.checklist li{padding:6px 0;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+.checklist li::before{content:"\2610";font-size:16px}
+.tab-nav{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid #1e293b}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:700;color:#94a3b8;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn.active{color:#3b82f6;border-bottom-color:#3b82f6}
+.tab-btn:hover{color:#e2e8f0}
+.tab-content{display:none;padding:20px 0}
+.tab-content.active{display:block}
+footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-right:4px}
+.tag-blue{background:rgba(59,130,246,0.15);color:#3b82f6}
+.tag-green{background:rgba(16,185,129,0.15);color:#10b981}
+.tag-orange{background:rgba(245,158,11,0.15);color:#f59e0b}
+.tag-purple{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.tag-pink{background:rgba(236,72,153,0.15);color:#ec4899}
+.screenshot-desc{background:#0f172a;border:1px dashed #334155;border-radius:8px;padding:14px 18px;margin:12px 0;font-size:13px;color:#94a3b8;font-style:italic}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">&#8592; Learning Paths</a>
+  <span class="nav-title">Phase 5 — Azure &amp; AWS Basics for IT Support</span>
+  <a href="phase-5-powershell-scripting.html">Next: PowerShell Scripting &rarr;</a>
+</nav>
+
+<div class="container">
+  <div class="progress-bar"><div class="fill"></div></div>
+  <span class="badge" style="border-color:#06b6d4;color:#06b6d4">PHASE 5 &#183; MODULE 2</span>
+  <h1>Azure &amp; AWS Basics for IT Support</h1>
+  <p class="subtitle">Hands-on introduction to the two cloud platforms you are most likely to encounter in an enterprise IT support role.</p>
+
+  <h2>Learning Objectives</h2>
+  <div class="obj-grid">
+    <label class="obj-item"><input type="checkbox"> Navigate the Microsoft Azure portal and locate core services</label>
+    <label class="obj-item"><input type="checkbox"> Understand Azure AD / Entra ID identity concepts</label>
+    <label class="obj-item"><input type="checkbox"> Create and configure an Azure virtual machine</label>
+    <label class="obj-item"><input type="checkbox"> Store and retrieve files in Azure Blob Storage</label>
+    <label class="obj-item"><input type="checkbox"> Interpret basic Azure Monitor metrics and alerts</label>
+    <label class="obj-item"><input type="checkbox"> Navigate the AWS Management Console confidently</label>
+    <label class="obj-item"><input type="checkbox"> Launch and manage EC2 instances</label>
+    <label class="obj-item"><input type="checkbox"> Create and manage S3 buckets for object storage</label>
+    <label class="obj-item"><input type="checkbox"> Configure IAM users, groups, and roles</label>
+    <label class="obj-item"><input type="checkbox"> Review basic CloudWatch alarms and logs</label>
+    <label class="obj-item"><input type="checkbox"> Apply cost management best practices in both platforms</label>
+    <label class="obj-item"><input type="checkbox"> Complete all hands-on labs and knowledge checks</label>
+  </div>
+
+  <!-- MODULE BREAKDOWN -->
+  <h2>Module Breakdown</h2>
+  <div class="module-card">
+    <h3>Module A: Microsoft Azure Essentials</h3>
+    <div class="module-meta">
+      <span>&#128336; ~3 hours</span>
+      <span>&#128218; 5 topics</span>
+      <span><span class="tag tag-blue">Hands-on</span></span>
+    </div>
+    <ul class="checklist">
+      <li>Azure portal navigation and resource organization</li>
+      <li>Azure AD / Entra ID fundamentals</li>
+      <li>Creating and managing virtual machines</li>
+      <li>Azure Blob Storage basics</li>
+      <li>Azure Monitor essentials</li>
+    </ul>
+  </div>
+  <div class="module-card">
+    <h3>Module B: AWS Essentials</h3>
+    <div class="module-meta">
+      <span>&#128336; ~3 hours</span>
+      <span>&#128218; 5 topics</span>
+      <span><span class="tag tag-green">Hands-on</span></span>
+    </div>
+    <ul class="checklist">
+      <li>AWS Console navigation and regions/zones</li>
+      <li>EC2 instance lifecycle management</li>
+      <li>S3 bucket creation and access control</li>
+      <li>IAM users, groups, and policies</li>
+      <li>CloudWatch monitoring and alarms</li>
+    </ul>
+  </div>
+  <div class="module-card">
+    <h3>Module C: Cost Management Across Clouds</h3>
+    <div class="module-meta">
+      <span>&#128336; ~1.5 hours</span>
+      <span>&#128218; 2 topics</span>
+      <span><span class="tag tag-orange">Practical</span></span>
+    </div>
+    <ul class="checklist">
+      <li>Azure cost analysis and Budget alerts</li>
+      <li>AWS Cost Explorer and Budgets</li>
+    </ul>
+  </div>
+
+  <!-- ==================== AZURE SECTION ==================== -->
+  <h2>Module A: Microsoft Azure Essentials</h2>
+
+  <h3>Azure Portal Navigation</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">The Azure portal (<a href="https://portal.azure.com" target="_blank">portal.azure.com</a>) is the web-based management interface for all Azure services. All screenshots described below are based on the standard portal layout as of 2025.</p>
+
+  <div class="info-box cyan">
+    <div class="info-box-title">Portal Layout Description</div>
+    <p><strong>Top bar:</strong> Search box ("Search resources, services, and docs") spanning the width. To the right: notification bell, user profile, and settings gear. <strong>Left sidebar:</strong> Collapsible menu with Home, Resource groups, All services, Marketplace, Cost management. <strong>Main area:</strong> Dashboard tiles showing recently used resources, quick action buttons, and recommendation cards.</p>
+  </div>
+
+  <div class="screenshot-desc">[Screenshot description: The Azure portal home screen shows a left sidebar with icons for Home, + Create a resource, Resource groups (2), Virtual machines (1), and Storage accounts (3). The main dashboard displays a "Quick Start" section with links to tutorials, and a "Resource groups" tile showing your organizational containers.]</div>
+
+  <p style="color:#94a3b8;margin-top:16px"><strong>Key navigation tip:</strong> Use the global search at the top for any service. Type the service name and press Enter to jump directly to it. For example, typing "virtual machines" shows the VM blade immediately.</p>
+
+  <h3>Azure AD / Entra ID Basics</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">Azure Active Directory (now called <strong>Microsoft Entra ID</strong>) is Microsoft's cloud-based identity and access management service. It authenticates and authorizes users for Azure resources and hundreds of SaaS applications.</p>
+
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#0078d4">Entra ID Core Concepts</h4>
+      <ul style="font-size:14px;color:#cbd5e1;padding-left:18px;line-height:2">
+        <li><strong>Tenant:</strong> Your organization's dedicated instance of Entra ID. Created when you sign up for Azure.</li>
+        <li><strong>Users:</strong> Individual identities (employees, service accounts) assigned to the tenant.</li>
+        <li><strong>Groups:</strong> Collections of users used for permission assignment (no passwords needed).</li>
+        <li><strong>Roles:</strong> Predefined permission sets (Global Admin, User Admin, Helpdesk Admin, etc.).</li>
+        <li><strong>Conditional Access:</strong> Policies requiring MFA or compliant devices before granting access.</li>
+        <li><strong>Enterprise Applications:</strong> SaaS apps integrated with Entra ID for single sign-on (SSO).</li>
+      </ul>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#10b981">Common IT Support Scenarios</h4>
+      <ul style="font-size:14px;color:#cbd5e1;padding-left:18px;line-height:2">
+        <li><strong>Password reset:</strong> Reset a user's password via the Entra ID portal (Admin Center > Users).</li>
+        <li><strong>New employee:</strong> Create a user account, assign a license (Microsoft 365), and add to relevant groups.</li>
+        <li><strong>Offboarding:</strong> Disable the account (don't delete), reassign licenses, remove from groups.</li>
+        <li><strong>Group policy:</strong> Add users to "Finance Team" group to grant access to SharePoint finance site.</li>
+        <li><strong>MFA enrollment:</strong> Guide users through the Microsoft Authenticator app setup.</li>
+        <li><strong>Access review:</strong> Audit which users have access to sensitive applications quarterly.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Lab: Creating a Virtual Machine in Azure</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">Follow these steps to deploy your first Azure VM. Use the free-tier eligible <code>B1s</code> or <code>Dsv2</code> series instances.</p>
+
+  <div class="step-num" style="display:inline-flex">1</div> Go to the Azure portal and click <strong>+ Create a resource</strong> &gt; <strong>Virtual Machine</strong>.
+
+  <div class="step-num" style="display:inline-flex">2</div> Under <strong>Project details</strong>, select your subscription. Click <strong>Create new</strong> for Resource Group and name it <code>rg-training-vm</code>.</div>
+
+  <div class="step-num" style="display:inline-flex">3</div> Under <strong>Instance details</strong>: VM name = <code>win-test-01</code>, Region = pick closest to you (e.g., East US), Image = <strong>Windows Server 2022 Datacenter</strong> or <strong>Windows 11 Enterprise</strong>, Size = <code>B1s</code> (1 vCPU, 1 GB RAM -- cheapest option).
+
+  <div class="step-num" style="display:inline-flex">4</div> Under <strong>Administrator account</strong>: Username = <code>azureadmin</code>, Password = create a strong password (must include uppercase, lowercase, number, special character). Authentication method = <strong>Password</strong>.
+
+  <div class="step-num" style="display:inline-flex">5</div> Under <strong>Inbound ports</strong>, select <strong>RDP (3389)</strong> from the dropdown. Allow from = <strong>My IP address</strong> (restricts access to only your current IP).
+
+  <div class="step-num" style="display:inline-flex">6</div> Review all settings, then click <strong>Create</strong>. Wait approximately 2-3 minutes for deployment to complete.
+
+  <div class="step-num" style="display:inline-flex">7</div> Once deployed, click <strong>Go to resource</strong>. Note the Public IP address shown on the Overview page.
+
+  <div class="screenshot-desc">[Screenshot description: The VM Overview blade in Azure shows the VM name "win-test-01", Status "Running" in green, the Public IP address (e.g., 20.85.xxx.xxx), and action buttons including Connect, Stop, Restart, Delete along the top.]</div>
+
+  <div class="step-num" style="display:inline-flex">8</div> Click <strong>Connect</strong> &gt; <strong>RDP</strong>. Download the RDP file, open it, and connect using the credentials you created.
+
+  <div class="info-box green">
+    <div class="info-box-title">Expected Outcome</div>
+    <p>You now have a Windows virtual machine running in Azure. You should see a remote desktop session showing the Windows desktop. From here, you could install software, test network connectivity, or configure the OS just like a physical machine.</p>
+  </div>
+
+  <h3>Lab: Storing Files in Azure Blob Storage</h3>
+  <ol style="padding-left:20px;color:#cbd5e1;font-size:14px;line-height:2">
+    <li>In the Azure portal, click <strong>+ Create a resource</strong> and search for "Storage account".</li>
+    <li>Create a new storage account named <code>sttraining&lt;random4chars&gt;</code> (storage names must be unique globally).</li>
+    <li>Once deployed, navigate to the storage account and click <strong>Containers</strong> under Data storage in the left menu.</li>
+    <li>Click <strong>+ Container</strong>, name it <code>logs</code>, and set Public access level to <strong>Private (no anonymous access)</strong>.</li>
+    <li>Click into the container, then <strong>Upload</strong> any small text file (e.g., a log file or CSV).</li>
+    <li>After upload completes, click the uploaded blob and copy its URL. Note that the URL ends with <code>?sp=r</code> when accessed privately.</li>
+  </ol>
+
+  <div class="info-box orange">
+    <div class="info-box-title">Blob Storage Access Levels</div>
+    <p><strong>Private:</strong> Only authenticated users with keys can access. Safest option. <strong>Container:</strong> Anyone with the container URL can read but not modify. <strong>Blob:</strong> Anyone with the specific blob URL can read it. Never use public access for sensitive data.</p>
+  </div>
+
+  <h3>Azure Monitor Basics</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">Azure Monitor collects telemetry from Azure resources and provides dashboards, alerts, and insights.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>Purpose</th><th>IT Support Use Case</th></tr></thead>
+      <tbody>
+        <tr><td>Metrics</td><td>Numeric values over time (CPU %, memory, disk)</td><td>Check if a VM is consuming excessive resources</td></tr>
+        <tr><td>Logs (Log Analytics)</td><td>Query structured event data with KQL</td><td>Search for error events across multiple VMs</td></tr>
+        <tr><td>Alerts</td><td>Notifications when thresholds are breached</td><td>Email when CPU exceeds 90% for 5 minutes</td></tr>
+        <tr><td>Diagnostics</td><td>Infrastructure-level health data</td><td>Investigate why a VM restarted unexpectedly</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="color:#94a3b8;margin-top:12px">To set a simple metric alert: Navigate to your VM &gt; Alerts &gt; + Create &gt; Metric alert. Set Condition = <strong>CPU Percentage</strong> &gt; <strong>Greater than</strong> <strong>90</strong> for <strong>Last 5 minutes</strong>. Add an action group with an email notification. Save and test by running a CPU-intensive process on the VM.</p>
+
+  <!-- ==================== AWS SECTION ==================== -->
+  <h2>Module B: AWS Essentials</h2>
+
+  <h3>AWS Console Navigation</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">The AWS Management Console (<a href="https://console.aws.amazon.com" target="_blank">console.aws.amazon.com</a>) is organized differently from Azure but follows similar principles.</p>
+
+  <div class="info-box cyan">
+    <div class="info-box-title">Console Layout Description</div>
+    <p><strong>Top nav bar:</strong> AWS logo (left), service search bar (center), Regions dropdown (e.g., us-east-1), Account name (right), Notifications bell. <strong>Main content:</strong> Dashboard with widgets showing recent activity, cost estimates, and service quotas. <strong>Navigation:</strong> Left hamburger menu expands to show all AWS services grouped by category (Compute, Storage, Database, Networking, etc.).</p>
+  </div>
+
+  <p style="color:#94a3b8;margin-top:12px"><strong>Regions &amp; Availability Zones:</strong> AWS organizes infrastructure into Regions (geographic areas like US East N. Virginia, EU West Ireland) and within each Region are multiple isolated Availability Zones (data centers). Always check your current region -- resources are created in the selected region only.</p>
+
+  <h3>EC2 Instances</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">Amazon EC2 (Elastic Compute Cloud) provides resizable virtual servers. Key concepts:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Concept</th><th>Description</th><th>IT Support Context</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AMI</strong> (Amazon Machine Image)</td><td>A template containing OS and software for your instance</td><td>Like a Golden Image for VM deployment</td></tr>
+        <tr><td><strong>Instance Type</strong></td><td>CPU, memory, storage combination (e.g., t3.micro, m5.large)</td><td>Choose based on workload requirements</td></tr>
+        <tr><td><strong>Key Pair</strong></td><td>SSH certificate for secure login (Linux) or RDP credential (Windows)</td><td>Store .pem files securely; loss = locked out</td></tr>
+        <tr><td><strong>Security Group</strong></td><td>Virtuall firewall controlling inbound/outbound traffic</td><td>Only allow required ports (SSH 22, RDP 3389)</td></tr>
+        <tr><td><strong>Elastic IP</strong></td><td>Static public IPv4 address that can be remapped</td><td>Maintain a consistent endpoint for clients</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Lab: Launching an EC2 Instance</h3>
+  <ol style="padding-left:20px;color:#cbd5e1;font-size:14px;line-height:2">
+    <li>Open the AWS Console and search for "EC2" in the top search bar.</li>
+    <li>Click <strong>Launch Instance</strong> (yellow button near top right).</li>
+    <li>Name it <code>aws-test-vm</code> and select <strong>Amazon Linux 2023</strong> as the AMI.</li>
+    <li>Instance type: <code>t2.micro</code> or <code>t3.micro</code> (eligible for free tier).</li>
+    <li>Key pair: Select <strong>Create new key pair</strong>, name it <code>training-key</code>, format <strong>.pem</strong>, then click Create and download.</li>
+    <li>Network settings: Ensure Security group allows <strong>SSH (port 22)</strong> from My IP only.</li>
+    <li>Click <strong>Launch Instance</strong> and wait for it to reach "running" status.</li>
+    <li>Click <strong>Connect</strong> &gt; select the SSH tab. Copy the command provided.</li>
+    <li>Open Terminal/PowerShell and run: <code>chmod 400 training-key.pem</code> then <code>ssh -i "training-key.pem" ec2-user@&lt;public-ip&gt;</code></li>
+    <li>Verify connection by running <code>whoami</code> and <code>df -h</code>.</li>
+  </ol>
+
+  <div class="info-box green">
+    <div class="info-box-title">Expected Outcome</div>
+    <p>You are logged into a live Amazon Linux instance via SSH. You can run Linux commands, install packages with <code>sudo dnf install -y nginx</code>, and manage the server. The session proves the VM is provisioned and network-accessible.</p>
+  </div>
+
+  <h3>S3 Storage Basics</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">Amazon S3 (Simple Storage Service) is object storage designed for durability (99.999999999% = 11 nines) and availability.</p>
+
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#ff9900">S3 Storage Classes</h4>
+      <table style="width:100%;margin-top:8px">
+        <tr><td style="padding:4px 0;font-size:13px;color:#cbd5e1"><strong>S3 Standard</strong></td><td style="padding:4px 0;font-size:13px;color:#94a3b8">General purpose, frequent access</td></tr>
+        <tr><td style="padding:4px 0;font-size:13px;color:#cbd5e1"><strong>S3 Intelligent-Tiering</strong></td><td style="padding:4px 0;font-size:13px;color:#94a3b8">Automatically moves objects to cheapest tier</td></tr>
+        <tr><td style="padding:4px 0;font-size:13px;color:#cbd5e1"><strong>S3 Glacier Instant</strong></td><td style="padding:4px 0;font-size:13px;color:#94a3b8">Archival, sub-second retrieval, lowest cost</td></tr>
+        <tr><td style="padding:4px 0;font-size:13px;color:#cbd5e1"><strong>S3 One Zone-IA</strong></td><td style="padding:4px 0;font-size:13px;color:#94a3b8">Lower-cost, single availability zone storage</td></tr>
+      </table>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#10b981">S3 Bucket Policy Example</h4>
+      <div class="code-block">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {"Service": "ec2.amazonaws.com"},
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::my-support-bucket/*"
+    }
+  ]
+}</div>
+      <p style="font-size:13px;color:#94a3b8;margin-top:8px">This policy allows EC2 instances to read objects from the bucket but denies all other actions. Principle of least privilege in action.</p>
+    </div>
+  </div>
+
+  <h3>IAM Fundamentals</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">IAM (Identity and Access Management) is AWS's way of controlling who can do what. This maps directly to Entra ID in the Azure world.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>IAM Entity</th><th>What It Is</th><th>Best Practice</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Root User</strong></td><td>Account creator with unlimited access</td><td>Enable MFA, don't use for daily tasks</td></tr>
+        <tr><td><strong>IAM Users</strong></td><td>Individual people or services</td><td>One user per person, attach groups</td></tr>
+        <tr><td><strong>IAM Groups</strong></td><td>Collection of users</td><td>Add/remove users to grant/revoke permissions</td></tr>
+        <tr><td><strong>IAM Roles</strong></td><td>Temporary permissions for AWS services</td><td>Assign to EC2 instead of embedding credentials</td></tr>
+        <tr><td><strong>Policies</strong></td><td>JSON documents defining permissions</td><td>Use AWS-managed policies first, then customize</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box purple">
+    <div class="info-box-title">IAM Policy Structure</div>
+    <p>AWS IAM policies are JSON documents with four key elements: <strong>Version</strong> (policy language version, always "2012-10-17"), <strong>Statement</strong> (array of rules), <strong>Effect</strong> (Allow or Deny), <strong>Action</strong> (what API operations are permitted), and <strong>Resource</strong> (which AWS resources the action applies to). Always follow the principle of least privilege -- grant only the minimum permissions needed.</p>
+  </div>
+
+  <h3>AWS CloudWatch Basics</h3>
+  <p style="color:#94a3b8;margin-bottom:16px">CloudWatch is AWS's monitoring and observability service, analogous to Azure Monitor.</p>
+
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#ff9900">CloudWatch Components</h4>
+      <ul style="font-size:14px;color:#cbd5e1;padding-left:18px;line-height:2">
+        <li><strong>CloudWatch Metrics</strong> -- numeric data points (CPU, disk, network) with graphs</li>
+        <li><strong>CloudWatch Logs</strong> -- collect, store, and analyze log files from EC2, Lambda, etc.</li>
+        <li><strong>CloudWatch Alarms</strong> -- trigger notifications or auto-actions when metrics cross thresholds</li>
+        <li><strong>CloudWatch Events (EventBridge)</strong> -- react to state changes (e.g., instance stopped)</li>
+        <li><strong>CloudWatch Dashboards</strong> -- custom panels combining multiple metrics and logs</li>
+      </ul>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#10b981">Lab: Create a CloudWatch Alarm</h4>
+      <ol style="padding-left:18px;font-size:13px;color:#cbd5e1;line-height:2">
+        <li>Open the CloudWatch console and click <strong>Alarms</strong> &gt; <strong>Create alarm</strong>.</li>
+        <li>Select metric: <strong>EC2</strong> &gt; <strong>By Instance</strong> &gt; select your test VM.</li>
+        <li>Condition: <strong>CPUUtilization &gt; 80</strong> for <strong>2 consecutive periods</strong> of 1 minute.</li>
+        <li>Action: Send notification to an SNS topic (create a new one with your email).</li>
+        <li>Name the alarm <code>high-cpu-alert</code> and create it.</li>
+        <li>Test: SSH into the VM and run <code>dd if=/dev/zero of=/dev/null bs=1M</code> to spike CPU.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- COST MANAGEMENT -->
+  <h2>Module C: Cost Management</h2>
+
+  <h3>Azure Cost Management</h3>
+  <p style="color:#94a3b8;margin-bottom:12px">In the Azure portal, navigate to <strong>Cost management + Billing</strong> &gt; <strong>Budgets</strong> to set spending limits.</p>
+  <div class="code-block"># Create a budget alert via Azure CLI
+az monitoring alert-rule budget create \
+  --name "Monthly-Budget-$50" \
+  --resource-group rg-training-vm \
+  --amount 50 \
+  --time-grain Monthly \
+  --operator GreaterThan \
+  --threshold 80 \
+  --email admin@company.com</div>
+  <p style="color:#94a3b8;margin-bottom:12px">Set budgets at 50%, 80%, and 100% thresholds to catch overspending early. Azure also provides Cost Analysis reports showing spend by service, resource, and tag.</p>
+
+  <h3>AWS Cost Explorer &amp; Budgets</h3>
+  <p style="color:#94a3b8;margin-bottom:12px">Navigate to the <strong>Billing Dashboard</strong> &gt; <strong>Budgets</strong> &gt; <strong>Create budget</strong>. Choose <strong>Cost budget</strong>, set monthly amount (e.g., $25), and configure email alerts at 80% and 100% thresholds.</p>
+  <div class="info-box orange">
+    <div class="info-box-title">Cost Optimization Checklist</div>
+    <p>Before ending every cloud session: (1) Stop or terminate any VMs you no longer need, (2) Delete unattached EBS volumes and orphaned snapshots, (3) Release unused Elastic IPs, (4) Remove old snapshot images you won't reuse, (5) Turn off dev/test environments outside business hours.</p>
+  </div>
+
+  <!-- QUIZ -->
+  <h2>Knowledge Check</h2>
+
+  <div class="quiz-block">
+    <div class="quiz-q">1. Where in the Azure portal would you go to reset a user's password?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Azure Monitor &gt; Diagnostics</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Microsoft Entra ID &gt; Users &gt; Select user &gt; Reset password</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Virtual Machines &gt; Restart</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Cost Management &gt; Budgets</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: B) Microsoft Entra ID &gt; Users. Navigate to Entra ID, find the user, and click "Reset password" from the user's detail blade.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">2. What is the minimum information required to connect to a Windows Azure VM via RDP?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) SSH key pair and public DNS</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Username, password, and public IP address</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Subnet mask and gateway address</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Resource group name and subscription ID</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: B) Username, password, and public IP address. Windows VMs in Azure use RDP (Remote Desktop Protocol) with username/password authentication. Linux VMs use SSH with key pairs.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">3. In AWS, what does an IAM Role differ from an IAM User?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) There is no difference; they are interchangeable</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Roles are for humans, Users are for services</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Users are permanent identities; Roles are temporary credentials assumed by services or trusted entities</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Roles cannot have any permissions attached</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: C. IAM Users are long-lived identities bound to specific individuals or applications. IAM Roles are assumed temporarily and are the preferred way to grant permissions to AWS services (like EC2 instances accessing S3).</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">4. Which S3 storage class would be most cost-effective for storing backup archives that you rarely access?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) S3 Standard</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) S3 Intelligent-Tiering</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) S3 Glacier Instant Retrieval</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) S3 Standard-IA</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: C) S3 Glacier Instant Retrieval (or S3 Glacier Deep Archive for even lower cost with longer retrieval times). Glacier classes are designed for archival data that is rarely accessed but must be retained.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">5. What is the FIRST thing you should do in AWS before creating any IAM users or resources?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Launch an EC2 instance</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Enable MFA on the root account</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Create a CloudWatch alarm</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Set up a VPC</li>
+    </ul>
+    <button class="quiz-btn" onclick="toggleAnswer(this)">Show Answer</button>
+    <div class="quiz-answer">Answer: B) Enable MFA on the root account. The root user has unrestricted access to everything in your account. Securing it with MFA is the single most important first step to protect your AWS account from compromise.</div>
+  </div>
+
+  <!-- RESOURCES -->
+  <h2>Recommended Resources</h2>
+  <ul class="res-list">
+    <li>&#128203; <a href="https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/" target="_blank">Microsoft Learn: AZ-900 Cloud Fundamentals</a> -- Free structured learning path</li>
+    <li>&#128203; <a href="https://explore.skillbuilder.aws/learn/course/external/view/elearning/125" target="_blank">AWS Cloud Practitioner Essentials (Free)</a> -- Official AWS training course</li>
+    <li>&#128203; <a href="https://azure.microsoft.com/en-us/free/" target="_blank">Azure Free Account</a> -- $200 credits + 12 months free services</li>
+    <li>&#128203; <a href="https://aws.amazon.com/free/" target="_blank">AWS Free Tier</a> -- 12 months free, 750 hrs EC2/month</li>
+    <li>&#128203; <a href="https://www.youtube.com/@TechWithTim" target="_blank">AWS/Azure tutorial playlists on YouTube</a> -- Visual walkthroughs</li>
+    <li>&#128203; <a href="https://docs.aws.amazon.com/IAM/latest/userguide/introduction.html" target="_blank">AWS IAM User Guide</a> -- Official documentation</li>
+    <li>&#128203; <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/" target="_blank">Microsoft Entra ID Documentation</a> -- Identity management guide</li>
+    <li>&#128203; <a href="https://aws.amazon.com/blogs/security/a-sre-introduction-to-iam/" target="_blank">AWS Well-Architected Security Pillar</a> -- Best practices reference</li>
+  </ul>
+
+  <!-- PROGRESS CHECKLIST -->
+  <h2>Progress Checklist</h2>
+  <ul class="checklist">
+    <li>I can navigate the Azure portal and locate key services</li>
+    <li>I understand Entra ID users, groups, and roles</li>
+    <li>I have successfully created a Windows VM in Azure</li>
+    <li>I have uploaded a file to Azure Blob Storage</li>
+    <li>I have viewed metrics and created an alert in Azure Monitor</li>
+    <li>I can navigate the AWS Management Console</li>
+    <li>I have launched an EC2 instance and connected via SSH</li>
+    <li>I have created an S3 bucket and managed objects</li>
+    <li>I understand IAM users, groups, and roles in AWS</li>
+    <li>I have created a CloudWatch alarm for a CPU threshold</li>
+    <li>I have set up cost budget alerts in both Azure and AWS</li>
+    <li>I have scored at least 4 out of 5 on the knowledge check quiz</li>
+  </ul>
+
+  <!-- NEXT STEPS -->
+  <h2>Next Steps</h2>
+  <div class="info-box">
+    <div class="info-box-title">Where to Go From Here</div>
+    <p>Great job getting hands-on with both Azure and AWS! Now that you can navigate cloud portals and provision resources, the next logical step is to automate routine IT tasks using <a href="phase-5-powershell-scripting.html">PowerShell scripting</a>. PowerShell works natively with both Azure and AWS and is the backbone of cloud automation in enterprise environments. After mastering PowerShell, wrap up the phase with Bash scripting for Linux environments.</p>
+  </div>
+
+  <div class="next-prev">
+    <a href="phase-5-cloud-fundamentals.html" class="np-btn">&#8592; Previous: Cloud Fundamentals</a>
+    <a href="phase-5-powershell-scripting.html" class="np-btn">Next: PowerShell Scripting &#8594;</a>
+  </div>
+</div>
+
+<footer>&copy; 2025 IT Support Roadmap -- Phase 5 Learning Paths</footer>
+
+<script>
+function toggleAnswer(btn) {
+  var ans = btn.nextElementSibling;
+  if (ans.style.display === 'block') {
+    ans.style.display = 'none';
+    btn.textContent = 'Show Answer';
+  } else {
+    ans.style.display = 'block';
+    btn.textContent = 'Hide Answer';
+  }
+}
+// Preserve checkbox state across page loads using sessionStorage
+(function() {
+  var checkboxes = document.querySelectorAll('.obj-item input[type=checkbox], .checklist input[type=checkbox]');
+  checkboxes.forEach(function(cb, i) {
+    var saved = sessionStorage.getItem('cb_' + i);
+    if (saved === 'true') cb.checked = true;
+    cb.addEventListener('change', function() {
+      sessionStorage.setItem('cb_' + i, this.checked);
+    });
+  });
+})();
+</script>
+</body>
+</html>

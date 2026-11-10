@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — Essential Network Protocols</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+  a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+  .nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+  .nav a{color:#94a3b8;font-size:14px;font-weight:500}
+  .nav a:hover{color:#3b82f6}
+  .nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+  .container{max-width:1100px;margin:0 auto;padding:40px 32px}
+  h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+  .subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+  .badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+  h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+  h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:24px 0 10px}
+  .obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+  .obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+  .obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+  .prot-section{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:20px}
+  .prot-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .prot-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+  .prot-title{font-size:18px;font-weight:700;color:#f8fafc}
+  .prot-port{font-size:12px;color:#94a3b8;margin-top:2px}
+  .prot-body{color:#94a3b8;font-size:14px}
+  .prot-body p{margin-bottom:10px}
+  .prot-body ul{padding-left:18px;margin-bottom:10px}
+  .prot-body li{margin-bottom:4px}
+  .port-badge{display:inline-block;background:#0f172a;border:1px solid #334155;color:#06b6d4;font-family:monospace;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;margin-right:6px}
+  .security-box{background:#0f172a;border-radius:8px;padding:14px 16px;margin:12px 0;font-size:13px}
+  .security-box-title{font-weight:700;color:#f59e0b;font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .issue-box{background:#0f172a;border-radius:8px;padding:14px 16px;margin:12px 0;font-size:13px}
+  .issue-box-title{font-weight:700;color:#ec4899;font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .ref-table{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+  .ref-table table{width:100%;border-collapse:collapse;font-size:14px}
+  .ref-table th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+  .ref-table td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+  .ref-table tr:last-child td{border-bottom:none}
+  .ref-table tr:hover td{background:#1e293b}
+  .lab-box{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:20px 0}
+  .lab-box h4{color:#10b981;font-size:14px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+  .lab-box ol{padding-left:20px;color:#94a3b8;font-size:14px}
+  .lab-box li{margin-bottom:6px}
+  .progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+  .progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+  .next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+  .np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+  .np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+  .res-list{list-style:none;padding:0}
+  .res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+  .res-list li:last-child{border-bottom:none}
+  .res-list a{color:#3b82f6}
+  .res-list a:hover{color:#06b6d4}
+  footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+  .tab-nav{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid #1e293b}
+  .tab-btn{padding:10px 20px;font-size:13px;font-weight:700;color:#94a3b8;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+  .tab-btn.active{color:#3b82f6;border-bottom-color:#3b82f6}
+  .tab-btn:hover{color:#e2e8f0}
+  .tab-content{display:none;padding:20px 0}
+  .tab-content.active{display:block}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">&#8592; Learning Paths</a>
+  <span class="nav-title">Phase 3 — Essential Network Protocols</span>
+  <a href="phase-3-network-troubleshooting.html">Next: Troubleshooting &rarr;</a>
+</nav>
+
+<div class="container">
+  <div class="progress-bar"><div class="fill"></div></div>
+  <span class="badge">PHASE 3 · MODULE 3</span>
+  <h1>Essential Network Protocols</h1>
+  <p class="subtitle">The protocols that make networking possible — how they work, what ports they use, and what to watch for.</p>
+
+  <h2>Learning Objectives</h2>
+  <div class="obj-grid">
+    <label class="obj-item"><input type="checkbox"> Explain DHCP DORA process, scopes, and reservations</label>
+    <label class="obj-item"><input type="checkbox"> Describe DNS record types and the resolution process</label>
+    <label class="obj-item"><input type="checkbox"> Understand HTTP/S headers, status codes, and TLS basics</label>
+    <label class="obj-item"><input type="checkbox"> Differentiate FTP vs SFTP vs SCP protocols</label>
+    <label class="obj-item"><input type="checkbox"> Explain SSH, RDP, and SNMP functionality and security</label>
+    <label class="obj-item"><input type="checkbox"> Understand ARP resolution and ICMP message types</label>
+    <label class="obj-item"><input type="checkbox"> Build a protocol quick-reference table from memory</label>
+  </div>
+
+  <!-- ===== DHPC ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#3b82f6">DH</div>
+      <div><div class="prot-title">DHCP — Dynamic Host Configuration Protocol</div>
+      <div class="prot-port">Ports: <span class="port-badge">UDP 67 (server)</span> <span class="port-badge">UDP 68 (client)</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> Automatically assign IP configuration (IP address, subnet mask, default gateway, DNS servers) to devices on a network, eliminating manual configuration.</p>
+      <p><strong>How it works — DORA Process:</strong></p>
+      <ul>
+        <li><strong>Discover:</strong> Client broadcasts DHCPDISCOVER (source 0.0.0.0, dest 255.255.255.255)</li>
+        <li><strong>Offer:</strong> Servers respond with DHCPOFFER containing an available IP lease</li>
+        <li><strong>Request:</strong> Client broadcasts DHCPREQUEST requesting the chosen offer</li>
+        <li><strong>ACK:</strong> Server sends DHCPACK confirming the lease with full configuration</li>
+      </ul>
+      <p><strong>Scopes:</strong> A scope is the pool of IP addresses a DHCP server can assign. It includes the range, exclusion list (addresses not to hand out), lease duration, and options (gateway, DNS, etc.).</p>
+      <p><strong>Reservations:</strong> Binding a specific MAC address to a permanent IP within a scope. Useful for printers, servers, and infrastructure devices that need stable addresses without static configuration.</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>Rogue DHCP servers (evil twin attack) can distribute malicious DNS/gateway settings. Mitigate with <strong>DHCP snooping</strong> on switches, which trusts only designated uplink ports. Also watch for DHCP starvation attacks that exhaust the address pool.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p>APIPA address (169.254.x.x) indicates DHCP failure — client couldn't reach any server. Causes: DHCP server down, network isolation, scope exhaustion, or corrupted lease. Fix: check server status, verify scope availability, try <code>ipconfig /release && ipconfig /renew</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DNS ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#10b981">DN</div>
+      <div><div class="prot-title">DNS — Domain Name System</div>
+      <div class="prot-port">Port: <span class="port-badge">UDP/TCP 53</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> Translates human-readable domain names (google.com) into machine-readable IP addresses (142.250.80.46). Without DNS, we'd need to memorize IP addresses for every website.</p>
+      <p><strong>Resolution process (recursive query):</strong></p>
+      <ul>
+        <li>Client queries its configured <strong>recursive resolver</strong> (usually the ISP's or a public resolver like 8.8.8.8)</li>
+        <li>Resolver checks its <strong>cache</strong>; if miss, queries a <strong>root nameserver</strong> (.)</li>
+        <li>Root directs to the <strong>TLD nameserver</strong> (.com)</li>
+        <li>TLD directs to the <strong>authoritative nameserver</strong> (google.com's NS)</li>
+        <li>Authoritative returns the <strong>A record</strong> (IP address)</li>
+        <li>Resolver caches the result and returns it to the client</li>
+      </ul>
+      <p><strong>Key Record Types:</strong></p>
+      <ul>
+        <li><strong>A</strong> — IPv4 address record</li>
+        <li><strong>AAAA</strong> — IPv6 address record</li>
+        <li><strong>CNAME</strong> — Canonical name (alias for another domain)</li>
+        <li><strong>MX</strong> — Mail exchange (points to mail server)</li>
+        <li><strong>NS</strong> — Name server (delegates a zone)</li>
+        <li><strong>TXT</strong> — Text record (SPF, DKIM, domain verification)</li>
+        <li><strong>PTR</strong> — Pointer (reverse DNS lookup: IP to name)</li>
+        <li><strong>SOA</strong> — Start of authority (zone metadata)</li>
+        <li><strong>SRV</strong> — Service locator (ports for specific services)</li>
+      </ul>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>DNS cache poisoning injects false records. Mitigate with <strong>DNSSEC</strong> (digital signatures on records), randomize source ports, and use encrypted DNS (<strong>DoH</strong> on port 443 or <strong>DoT</strong> on port 853). DNS tunneling can exfiltrate data via encoded subdomain queries.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p><code>nslookup</code> or <code>dig</code> timeouts suggest DNS server unreachable. Stale cache causes old IP resolution. DNS hijacking redirects queries to malicious servers. Fix: flush cache (<code>ipconfig /flushdns</code>), verify resolver IP, check DNSSEC validation.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HTTP/S ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#f59e0b">HT</div>
+      <div><div class="prot-title">HTTP / HTTPS — Hypertext Transfer Protocol (Secure)</div>
+      <div class="prot-port">Ports: <span class="port-badge">TCP 80 (HTTP)</span> <span class="port-badge">TCP 443 (HTTPS)</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> HTTP is the foundation of web communication — requesting and delivering resources (HTML, images, APIs). HTTPS adds encryption via TLS/SSL.</p>
+      <p><strong>How it works:</strong> Client sends an HTTP request (method + URI + headers). Server responds with a status code + headers + optional body. Methods: <strong>GET</strong> (retrieve), <strong>POST</strong> (submit data), <strong>PUT</strong> (update), <strong>DELETE</strong> (remove), <strong>PATCH</strong> (partial update).</p>
+      <p><strong>Key Status Codes:</strong></p>
+      <ul>
+        <li><strong>2xx Success:</strong> 200 OK, 201 Created, 204 No Content</li>
+        <li><strong>3xx Redirection:</strong> 301 Moved Permanently, 302 Found, 304 Not Modified</li>
+        <li><strong>4xx Client Error:</strong> 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 429 Too Many Requests</li>
+        <li><strong>5xx Server Error:</strong> 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout</li>
+      </ul>
+      <p><strong>TLS Basics:</strong> HTTPS uses TLS to establish an encrypted channel. The handshake involves: (1) Client Hello with supported cipher suites, (2) Server Hello with chosen suite + certificate, (3) Key exchange to establish a shared symmetric key, (4) Encrypted communication begins.</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>Always prefer HTTPS. Watch for expired certificates, weak cipher suites, and misconfigured HSTS headers. HTTP Strict Transport Security (HSTS) forces browsers to use HTTPS. Certificate pinning and OCSP stapling improve security further.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p>Browser certificate warnings (expired cert, hostname mismatch, self-signed). Connection refused on port 443 means the web service isn't running or a firewall blocks it. Use <code>curl -v https://example.com</code> to see the handshake details.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FTP/SFTP ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#ec4899">FT</div>
+      <div><div class="prot-title">FTP / SFTP — File Transfer Protocol (Secure)</div>
+      <div class="prot-port">FTP: <span class="port-badge">TCP 20 (data)</span> <span class="port-badge">TCP 21 (control)</span> | SFTP: <span class="port-badge">TCP 22</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>FTP Purpose:</strong> Transferring files between client and server over a network. Uses separate control (commands) and data (file contents) channels — hence two ports.</p>
+      <p><strong>FTP Modes:</strong> <strong>Active mode</strong> — server initiates data connection back to client (port 20 → client ephemeral). <strong Passive mode</strong> — client initiates data connection to server (safer through firewalls).</p>
+      <p><strong>SFTP (SSH File Transfer Protocol):</strong> Runs over SSH (port 22). Encrypts both commands and data in a single secure tunnel. Replaces insecure FTP entirely in modern environments.</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>Classic FTP transmits credentials in cleartext — easily captured. Use SFTP or FTPS (FTP over SSL/TLS on port 990) instead. FTP active mode can expose the server to inbound attacks. Disable anonymous FTP unless explicitly required.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p>Passive mode failing behind firewalls — the server advertises an IP/port the client can't reach. FTP data connection timeout — check NAT/firewall stateful inspection for established data channels. SFTP failures usually relate to SSH key auth or permissions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SSH ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#8b5cf6">SS</div>
+      <div><div class="prot-title">SSH — Secure Shell</div>
+      <div class="prot-port">Port: <span class="port-badge">TCP 22</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> Encrypted remote login and command execution. Replaces insecure telnet. Also used for secure file transfer (scp, sftp), port forwarding/tunneling, and key-based authentication.</p>
+      <p><strong>How it works:</strong> Client connects to server on port 22. They negotiate a symmetric session key using Diffie-Hellman key exchange. Server authenticates using password or public key. All subsequent traffic is encrypted.</p>
+      <p><strong>Common flags:</strong> <code>ssh -i key.pem user@host</code> (specify key), <code>ssh -L 8080:localhost:80</code> (local port forward), <code>scp file.txt user@host:/path/</code> (secure copy).</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>Disable password authentication — use key-based auth exclusively. Change default port (22) to reduce automated scanning (does not provide real security, only obscurity). Use <strong>fail2ban</strong> to block brute-force attempts. Restrict access with <strong>AllowUsers</strong> or <strong>Match</strong> directives in sshd_config. Keep OpenSSH updated.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p>"Connection refused" — SSH service not running or firewall blocking port 22. "Permission denied (publickey)" — wrong key or disabled key auth. "Host key verification failed" — server was reinstalled; remove old key from ~/.ssh/known_hosts.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RDP ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#06b6d4">RD</div>
+      <div><div class="prot-title">RDP — Remote Desktop Protocol</div>
+      <div class="prot-port">Port: <span class="port-badge">TCP 3389</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> Graphical remote desktop access to Windows machines. Sends screen updates and receives keyboard/mouse input over an encrypted channel.</p>
+      <p><strong>How it works:</strong> RDP uses the Remote Desktop Protocol (RDP) over TCP. It negotiates security (TLS or RDP), authenticates the user, then streams a compressed graphical session. NLA (Network Level Authentication) authenticates before the full session is established, reducing attack surface.</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>RDP is a prime target for attackers (BlueKeep, Farflame). Never expose RDP directly to the internet. Use VPN access, enforce NLA, apply all security patches, use strong passwords, enable MFA where supported, and limit RDP access via firewall rules to specific source IPs.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p>"Cannot connect to remote computer" — RDP service not running (check TermService), firewall blocking 3389, or Network Level Authentication mismatch. "Authentication error" — often caused by credential caching or group policy restrictions on RDP access.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SNMP ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#10b981">SN</div>
+      <div><div class="prot-title">SNMP — Simple Network Management Protocol</div>
+      <div class="prot-port">Ports: <span class="port-badge">UDP 161 (agent)</span> <span class="port-badge">UDP 162 (manager)</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> Monitoring and managing network devices (routers, switches, servers, printers). Collects performance data and triggers alerts on thresholds.</p>
+      <p><strong>How it works:</strong> The <strong>manager</strong> (monitoring server) polls <strong>agents</strong> (devices) using <strong>GET</strong> and <strong>GETNEXT</strong> requests. Agents respond with values from the <strong>MIB</strong> (Management Information Base) — a hierarchical database of managed objects. Devices can also send unsolicited <strong>TRAP</strong> or <strong>INFORM</strong> messages to the manager.</p>
+      <p><strong>Versions:</strong> SNMPv1 (community strings, no encryption — insecure), SNMPv2c (improved performance, still community-based), SNMPv3 (adds authentication and encryption — use this).</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>Never use SNMPv1/v2c in production — community strings traverse the network in cleartext. SNMPv3 provides auth (SHA/MD5) and privacy (AES/DES). Restrict SNMP access with ACLs — only allow specific monitoring servers to query devices.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p>Monitoring tool shows no data — SNMP service not enabled on device, wrong community string/version, or firewall blocking UDP 161. OID mismatches cause "no such object" errors.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ARP ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#f59e0b">AR</div>
+      <div><div class="prot-title">ARP — Address Resolution Protocol</div>
+      <div class="prot-port">Layer: <span class="port-badge">Link Layer (Layer 2/3 boundary)</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> Resolves an IP address to a MAC (physical) address on the local network segment. Every IP packet needs a destination MAC to be delivered on the local link.</p>
+      <p><strong>How it works:</strong></p>
+      <ul>
+        <li>Host A wants to send to IP X.X.X.Y but doesn't know the MAC</li>
+        <li>Host A broadcasts <strong>ARP REQUEST</strong>: "Who has X.X.X.Y? Tell X.X.X.A"</li>
+        <li>Host Y recognizes its IP and replies with <strong>ARP REPLY</strong> (unicast): "X.X.X.Y is at MAC-AA:BB:CC:DD:EE:FF"</li>
+        <li>Host A caches the mapping in its <strong>ARP table</strong></li>
+      </ul>
+      <p><strong>Commands:</strong> <code>arp -a</code> (Windows) or <code>ip neigh show</code> (Linux) to view the ARP cache.</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>ARP spoofing/poisoning lets an attacker intercept traffic by sending fake ARP replies. Defend with <strong>static ARP entries</strong> for critical servers, <strong>DHCP snooping</strong> + <strong>DAI (Dynamic ARP Inspection)</strong> on switches, and <strong>ARPwatch</strong> for anomaly detection.</p>
+      </div>
+      <div class="issue-box">
+        <div class="issue-box-title">Common Issues</div>
+        <p>"Incomplete" ARP entries indicate the target didn't respond (device offline or wrong VLAN). Stale entries persist until timeout — clear with <code>arp -d</code> if needed. MAC address flapping suggests a loop or ARP poisoning attempt.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ICMP ===== -->
+  <div class="prot-section">
+    <div class="prot-header">
+      <div class="prot-icon" style="background:#3b82f6">IC</div>
+      <div><div class="prot-title">ICMP — Internet Control Message Protocol</div>
+      <div class="prot-port">Protocol: <span class="port-badge">IP Protocol 1</span></div></div>
+    </div>
+    <div class="prot-body">
+      <p><strong>Purpose:</strong> Error reporting and diagnostic messaging between IP devices. ICMP messages are embedded inside IP packets (protocol number 1) and carry type/code information.</p>
+      <p><strong>Key Message Types:</strong></p>
+      <ul>
+        <li><strong>Type 0 — Echo Reply:</strong> Response to a ping request</li>
+        <li><strong>Type 3 — Destination Unreachable:</strong> Can't reach target (net/unreachable, host unreachable, port unreachable, fragmentation needed)</li>
+        <li><strong>Type 11 — Time Exceeded:</strong> TTL reached zero (used by traceroute)</li>
+        <li><strong>Type 8 — Echo Request:</strong> Ping request</li>
+        <li><strong>Type 5 — Redirect:</strong> Advise a better route exists</li>
+      </ul>
+      <p><strong>Important:</strong> ICMP is often mistakenly called "the ping protocol." Ping is just one ICMP message type. Traceroute relies heavily on ICMP Type 11 (Time Exceeded) messages.</p>
+      <div class="security-box">
+        <div class="security-box-title">Security Considerations</div>
+        <p>Unrestricted ICMP can leak information (path MTU discovery, topology mapping). Some organizations block all ICMP, but this breaks PMTU discovery and causes blackhole framing. Best practice: allow ICMP Type 3/11/12 (unreachable/time exceeded/path MTU) inbound and outbound; restrict echo request/reply.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROTOCOL REFERENCE TABLE ===== -->
+  <h2>Protocol Quick Reference Table</h2>
+  <div class="ref-table">
+    <table>
+      <thead><tr><th>Protocol</th><th>Port(s)</th><th>Transport</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>DHCP</td><td><span class="port-badge">67/68 UDP</span></td><td>UDP</td><td>Auto IP assignment</td></tr>
+        <tr><td>DNS</td><td><span class="port-badge">53 TCP/UDP</span></td><td>UDP (queries), TCP (zone xfer)</td><td>Name resolution</td></tr>
+        <tr><td>HTTP</td><td><span class="port-badge">80 TCP</span></td><td>TCP</td><td>Web traffic (unencrypted)</td></tr>
+        <tr><td>HTTPS</td><td><span class="port-badge">443 TCP</span></td><td>TCP</td><td>Encrypted web traffic</td></tr>
+        <tr><td>FTP</td><td><span class="port-badge">20, 21 TCP</span></td><td>TCP</td><td>File transfer (unencrypted)</td></tr>
+        <tr><td>SFTP</td><td><span class="port-badge">22 TCP</span></td><td>TCP</td><td>File transfer over SSH</td></tr>
+        <tr><td>SSH</td><td><span class="port-badge">22 TCP</span></td><td>TCP</td><td>Encrypted remote shell</td></tr>
+        <tr><td>RDP</td><td><span class="port-badge">3389 TCP</span></td><td>TCP</td><td>Remote desktop (Windows)</td></tr>
+        <tr><td>SNMP</td><td><span class="port-badge">161/162 UDP</span></td><td>UDP</td><td>Network device management</td></tr>
+        <tr><td>ARP</td><td>— (Layer 2)</td><td>—</td><td>IP-to-MAC resolution</td></tr>
+        <tr><td>ICMP</td><td>Protocol 1</td><td>—</td><td>Error reporting & diagnostics</td></tr>
+        <tr><td>Telnet</td><td><span class="port-badge">23 TCP</span></td><td>TCP</td><td>Unencrypted remote terminal (deprecated)</td></tr>
+        <tr><td>SMTP</td><td><span class="port-badge">25 TCP</span> / <span class="port-badge">587 TCP</span></td><td>TCP</td><td>Email submission</td></tr>
+        <tr><td>POP3</td><td><span class="port-badge">110 TCP</span> / <span class="port-badge">995 TCP (POP3S)</span></td><td>TCP</td><td>Email retrieval</td></tr>
+        <tr><td>IMAP</td><td><span class="port-badge">143 TCP</span> / <span class="port-badge">993 TCP (IMAPS)</span></td><td>TCP</td><td>Email retrieval with server-side sync</td></tr>
+        <tr><td>NTP</td><td><span class="port-badge">123 UDP</span></td><td>UDP</td><td>Time synchronization</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== LAB ===== -->
+  <h2>Hands-On Labs</h2>
+
+  <div class="lab-box">
+    <h4>Laboratory 1: DHCP & DNS Investigation</h4>
+    <ol>
+      <li>On a Windows machine, run <code>ipconfig /all</code> and identify your DHCP server, lease obtained/expired times, and DNS servers.</li>
+      <li>Run <code>ipconfig /flushdns</code>, then <code>nslookup google.com</code> — observe the resolution process.</li>
+      <li>Use <code>nslookup -type=mx gmail.com</code> to find mail exchange records.</li>
+      <li>Check the ARP cache with <code>arp -a</code> — note the interface IP, physical address, and type (dynamic/static).</li>
+      <li>Ping a remote host and watch the ICMP echo request/reply timing with <code>ping -t google.com</code>.</li>
+    </ol>
+  </div>
+
+  <div class="lab-box">
+    <h4>Laboratory 2: Protocol Capture & Analysis</h4>
+    <ol>
+      <li>Install Wireshark and start capturing on your primary interface.</li>
+      <li>Open a web browser and visit http://example.com (insecure HTTP — notice cleartext!).</li>
+      <li>Filter with <code>http</code> in Wireshark — examine request/response headers.</li>
+      <li>Visit https://example.com — filter with <code>tls</code> — observe the TLS handshake (ClientHello, ServerHello, Certificate, KeyExchange).</li>
+      <li>Stop capture and analyze: how many packets for TLS handshake vs plain HTTP?</li>
+    </ol>
+  </div>
+
+  <div class="lab-box">
+    <h4>Laboratory 3: DNS Diagnostics Deep Dive</h4>
+    <ol>
+      <li>Run <code>dig example.com ANY</code> to see all record types.</li>
+      <li>Trace the DNS resolution chain: <code>dig @8.8.8.8 example.com NS</code>, then query the authoritative nameserver directly.</li>
+      <li>Test reverse DNS: <code>dig -x 8.8.8.8</code> (PTR record lookup).</li>
+      <li>Check your local DNS cache: on Windows <code>ipconfig /displaydns</code>, on Linux <code>sudo resolvectl statistics</code>.</li>
+    </ol>
+  </div>
+
+  <!-- ===== RESOURCES ===== -->
+  <h2>Resources</h2>
+  <ul class="res-list">
+    <li>&#x1f517; <a href="https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers" target="_blank">Wikipedia — List of TCP/UDP Port Numbers</a></li>
+    <li>&#x1f517; <a href="https://httpwg.org/specs/rfc9110.html" target="_blank">RFC 9110 — HTTP Semantics</a></li>
+    <li>&#x1f517; <a href="https://www.ietf.org/rfc/rfc2131.txt" target="_blank">RFC 2131 — DHCP Specification</a></li>
+    <li>&#x1f517; <a href="https://www.ietf.org/rfc/rfc1034.txt" target="_blank">RFC 1034 — DNS: Concepts and Facilities</a></li>
+    <li>&#x1f517; <a href="https://wiki.wireshark.org/SampleCaptures" target="_blank">Wireshark Sample Captures</a></li>
+    <li>&#x1f517; <a href="https://github.com/WilliamVenner/PPCT/blob/master/README.md" target="_blank">Ports, Protocols & Callouts Cheat Sheet — Will Venner</a></li>
+  </ul>
+
+  <div class="next-prev">
+    <a href="phase-3-ip-addressing-subnetting.html" class="np-btn">&#8592; IP Addressing & Subnetting</a>
+    <a href="phase-3-network-troubleshooting.html" class="np-btn">Next: Troubleshooting & Diagnostics &#8594;</a>
+  </div>
+</div>
+
+<footer>Phase 3 Networking Learning Paths &copy; 2026</footer>
+</body>
+</html>

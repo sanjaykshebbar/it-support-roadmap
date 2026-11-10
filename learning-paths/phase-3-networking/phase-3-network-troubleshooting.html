@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — Network Troubleshooting & Diagnostics</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+  a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+  .nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+  .nav a{color:#94a3b8;font-size:14px;font-weight:500}
+  .nav a:hover{color:#3b82f6}
+  .nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+  .container{max-width:1100px;margin:0 auto;padding:40px 32px}
+  h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+  .subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+  .badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+  h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+  h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:28px 0 10px}
+  .obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+  .obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+  .obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+  .info-box{background:#1e293b;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
+  .info-box.green{border-left-color:#10b981}
+  .info-box.orange{border-left-color:#f59e0b}
+  .info-box.purple{border-left-color:#8b5cf6}
+  .info-box.cyan{border-left-color:#06b6d4}
+  .info-box.pink{border-left-color:#ec4899}
+  .info-box-title{font-weight:700;color:#e2e8f0;font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .info-box p,.info-box li{font-size:14px;color:#94a3b8}
+  .info-box ul{padding-left:18px;margin-top:6px}
+  .table-wrap{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+  td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#1e293b}
+  .code-block{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px 20px;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;color:#94a3b8;margin:16px 0;overflow-x:auto;white-space:pre}
+  .code-block .hl-blue{color:#3b82f6}
+  .code-block .hl-cyan{color:#06b6d4}
+  .code-block .hl-green{color:#10b981}
+  .code-block .hl-orange{color:#f59e0b}
+  .code-block .hl-purple{color:#8b5cf6}
+  .code-block .hl-pink{color:#ec4899}
+  .code-block .hl-comment{color:#475569}
+  .case-study{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin:20px 0}
+  .case-study-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .case-num{width:36px;height:36px;border-radius:8px;background:#3b82f6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+  .case-title{font-size:16px;font-weight:700;color:#f8fafc}
+  .case-body{color:#94a3b8;font-size:14px}
+  .case-body p{margin-bottom:10px}
+  .case-body ul{padding-left:18px;margin-bottom:10px}
+  .case-body li{margin-bottom:4px}
+  .flow-step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+  .flow-num{width:28px;height:28px;border-radius:50%;background:#1e293b;border:2px solid #3b82f6;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#3b82f6;flex-shrink:0;margin-top:2px}
+  .flow-content{flex:1;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 18px}
+  .flow-content strong{color:#f8fafc}
+  .lab-box{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:20px 0}
+  .lab-box h4{color:#10b981;font-size:14px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+  .lab-box ol{padding-left:20px;color:#94a3b8;font-size:14px}
+  .lab-box li{margin-bottom:6px}
+  .sop-table{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+  .sop-table table{width:100%;border-collapse:collapse;font-size:14px}
+  .sop-table th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+  .sop-table td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+  .sop-table tr:last-child td{border-bottom:none}
+  .sop-table tr:hover td{background:#1e293b}
+  .progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+  .progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+  .next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+  .np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+  .np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+  .res-list{list-style:none;padding:0}
+  .res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+  .res-list li:last-child{border-bottom:none}
+  .res-list a{color:#3b82f6}
+  .res-list a:hover{color:#06b6d4}
+  footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+  .command-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0}
+  .command-card{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 16px}
+  .command-name{font-family:monospace;font-size:13px;font-weight:700;color:#06b6d4;margin-bottom:4px}
+  .command-desc{font-size:13px;color:#94a3b8}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">&#8592; Learning Paths</a>
+  <span class="nav-title">Phase 3 — Network Troubleshooting</span>
+  <a href="../index.html">Back to Overview &rarr;</a>
+</nav>
+
+<div class="container">
+  <div class="progress-bar"><div class="fill"></div></div>
+  <span class="badge">PHASE 3 · MODULE 4</span>
+  <h1>Network Troubleshooting &amp; Diagnostics</h1>
+  <p class="subtitle">A systematic approach to diagnosing and resolving network problems — from physical cables to application layers.</p>
+
+  <h2>Learning Objectives</h2>
+  <div class="obj-grid">
+    <label class="obj-item"><input type="checkbox"> Follow a structured troubleshooting methodology for any network issue</label>
+    <label class="obj-item"><input type="checkbox"> Use ping, traceroute, nslookup, dig, and curl effectively</label>
+    <label class="obj-item"><input type="checkbox"> Perform basic Wireshark packet capture and analysis</label>
+    <label class="obj-item"><input type="checkbox"> Diagnose cable and wireless connectivity issues</label>
+    <label class="obj-item"><input type="checkbox"> Identify and resolve common connectivity problems</label>
+    <label class="obj-item"><input type="checkbox"> Document findings and create repeatable SOPs</label>
+    <label class="obj-item"><input type="checkbox"> Apply diagnostic skills in hands-on labs and case studies</label>
+  </div>
+
+  <!-- ===== SECTION 1: TROUBLESHOOTING METHODOLOGY ===== -->
+  <h2>Troubleshooting Methodology</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">Effective troubleshooting follows a structured approach rather than randomly trying fixes. The CompTIA vendor-neutral model adapted for networking:</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-content"><strong>Identify the problem.</strong> Gather information from the user: what happened, when did it start, what changed recently? Check for patterns — is it one host or many?</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-content"><strong>Establish a theory.</strong> Based on symptoms, hypothesize the most likely cause. Consider both single-point failures and systemic issues. "If it were X, what else would you expect to see?"</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-content"><strong>Test the theory.</strong> Use diagnostic commands to confirm or rule out your hypothesis. Don't jump to conclusions — gather evidence first. Test one variable at a time.</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-content"><strong>Establish a plan of action.</strong> Once you know the root cause, decide on the fix. Consider impact, rollback options, and whether this needs change management approval.</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-content"><strong>Implement the solution.</strong> Apply the fix carefully. If multiple changes are needed, apply them one at a time with verification between each.</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">6</div>
+    <div class="flow-content"><strong>Verify functionality.</strong> Confirm the original problem is resolved. Check that no new problems were introduced. Test from multiple perspectives (source, destination, intermediate).</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">7</div>
+    <div class="flow-content"><strong>Document findings.</strong> Record the problem, root cause, resolution steps, and any lessons learned. Update SOPs if processes were missing or inadequate.</div>
+  </div>
+
+  <div class="info-box orange">
+    <div class="info-box-title">Golden Rule: Bottom-Up Approach</div>
+    <p>When starting fresh, always check Layer 1 (Physical) first, then work upward. Statistically, ~60% of network issues are Layer 1 or Layer 2. A loose cable will never be found by checking firewall rules.</p>
+  </div>
+
+  <!-- ===== SECTION 2: DIAGNOSTIC COMMANDS ===== -->
+  <h2>Diagnostic Command Reference</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">Master these tools and you can diagnose 90% of everyday network issues.</p>
+
+  <div class="command-grid">
+    <div class="command-card">
+      <div class="command-name">ping</div>
+      <div class="command-desc">Tests reachability using ICMP Echo Request/Reply. Send packets to verify a host is online and measure round-trip time.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">traceroute / tracert</div>
+      <div class="command-desc">Shows the path packets take to a destination, listing every router hop and its response time. Uses ICMP Time Exceeded messages.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">nslookup</div>
+      <div class="command-desc">Queries DNS servers for record lookups. Useful for testing DNS resolution and finding misconfigured records.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">dig</div>
+      <div class="command-desc">Advanced DNS lookup tool with detailed output showing query time, server used, and all record types. Preferred over nslookup by professionals.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">curl</div>
+      <div class="command-desc">Transfers data with URLs. Use <code>-v</code> for verbose output to see HTTP headers and TLS handshake details. Excellent for web service debugging.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">netstat / ss</div>
+      <div class="command-desc">Shows network connections, routing tables, interface stats, and listening ports. Critical for verifying services are running.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">ipconfig / ifconfig / ip</div>
+      <div class="command-desc">Displays IP configuration of all interfaces. Windows: <code>ipconfig /all</code>. Linux: <code>ip addr show</code>.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">arp -a</div>
+      <div class="command-desc">Shows the ARP cache — IP-to-MAC address mappings on the local machine. Essential for diagnosing Layer 2 issues.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">pathmtu</div>
+      <div class="command-desc">Discovers the Path MTU to avoid fragmentation. On Linux: <code>ping -M do -s 1472 &lt;target&gt;</code>. On macOS: <code>tracepath</code>.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-name">mtr</div>
+      <div class="command-desc">Combines ping and traceroute into one continuous diagnostic tool. Shows per-hop packet loss and latency in real-time.</div>
+    </div>
+  </div>
+
+  <h3>Ping Deep Dive</h3>
+  <div class="code-block"><span class="hl-comment"># Basic ping</span>
+<span class="hl-green">ping</span> 8.8.8.8
+
+<span class="hl-comment"># Continuous ping (Ctrl+C to stop)</span>
+<span class="hl-green">ping</span> -t google.com          <span class="hl-comment"># Windows</span>
+<span class="hl-green">ping</span> -c 10 google.com       <span class="hl-comment"># Linux/Mac (10 packets)</span>
+
+<span class="hl-comment"># With custom packet size (test MTU)</span>
+<span class="hl-green">ping</span> -s 1472 -M do 8.8.8.8  <span class="hl-comment"># Linux: -s=size, -M=do-not-fragment</span>
+
+<span class="hl-comment"># Quick timing (no DNS reverse lookup)</span>
+<span class="hl-green">ping</span> -n 4 -R 192.168.1.1   <span class="hl-comment"># Windows: -n=count, -R=record route</span></div>
+
+  <div class="info-box cyan">
+    <div class="info-box-title">Reading Ping Results</div>
+    <p><strong>Reply from...</strong> = connection is working. Watch the <em>time</em> value — under 50ms is excellent (LAN), 50-150ms good (WAN), over 200ms sluggish. <strong>Request timed out</strong> = packet dropped somewhere (firewall, unreachable, or overloaded). <strong>Destination host unreachable</strong> = local routing problem (wrong gateway or no route). <strong>TTL expired</strong> = seen in traceroute when a router drops packets with exhausted TTL.</p>
+  </div>
+
+  <h3>Traceroute Deep Dive</h3>
+  <div class="code-block"><span class="hl-comment"># Windows</span>
+<span class="hl-green">tracert</span> -d google.com         <span class="hl-comment"># -d skips DNS resolution (faster)</span>
+<span class="hl-green">tracert</span> -h 30 -w 2000 8.8.8.8 <span class="hl-comment"># max hops=30, timeout=2000ms</span>
+
+<span class="hl-comment"># Linux / Mac</span>
+<span class="hl-green">traceroute</span> -n google.com      <span class="hl-comment"># -n skips DNS lookup</span>
+<span class="hl-green">tracepath</span> google.com          <span class="hl-comment"># Mac/Linux: auto-discovers MTU</span>
+
+<span class="hl-comment"># Modern alternative: mtr (continuous)</span>
+<span class="hl-green">mtr</span> -n --report google.com</div>
+
+  <div class="info-box">
+    <div class="info-box-title">Interpreting Traceroute Output</div>
+    <p>Asterisks (<code>*</code>) at a hop mean the router didn't respond (often ICMP is filtered). This doesn't necessarily mean the path is broken — the next hop may still receive traffic. A consistent asterisk pattern throughout usually indicates a transparent router. Look for <strong>latency spikes</strong> at specific hops — that's where the problem likely lives.</p>
+  </div>
+
+  <h3>DNS Diagnostics</h3>
+  <div class="code-block"><span class="hl-comment"># Windows</span>
+<span class="hl-green">nslookup</span> google.com              <span class="hl-comment"># Default resolver query</span>
+<span class="hl-green">nslookup</span> -type=mx gmail.com     <span class="hl-comment"># Find mail servers</span>
+<span class="hl-green">nslookup</span> -type=txt example.com  <span class="hl-comment"># SPF/DKIM records</span>
+<span class="hl-green">nslookup</span> google.com 8.8.8.8     <span class="hl-comment"># Query specific DNS server</span>
+<span class="hl-green">nslookup</span> 8.8.8.8               <span class="hl-comment"># Reverse lookup (PTR)</span>
+
+<span class="hl-comment"># Linux/macOS — dig (more powerful)</span>
+<span class="hl-green">dig</span> google.com                  <span class="hl-comment"># Full query with answer section</span>
+<span class="hl-green">dig</span> +short google.com           <span class="hl-comment"># Just the IP(s)</span>
+<span class="hl-green">dig</span> @ns1.google.com google.com  <span class="hl-comment"># Query specific nameserver</span>
+<span class="hl-green">dig</span> -x 8.8.8.8                 <span class="hl-comment"># Reverse DNS</span>
+<span class="hl-green">dig</span> google.com ANY              <span class="hl-comment"># All record types</span>
+<span class="hl-green">dig</span> +trace google.com           <span class="hl-comment"># Trace full resolution chain</span></div>
+
+  <h3>Curl Deep Dive</h3>
+  <div class="code-block"><span class="hl-comment"># Verbose request — see full headers</span>
+<span class="hl-green">curl</span> -v https://example.com
+
+<span class="hl-comment"># Only show response headers (fast)</span>
+<span class="hl-green">curl</span> -I https://example.com
+
+<span class="hl-comment"># Follow redirects (-L) and include body (-o)</span>
+<span class="hl-green">curl</span> -L -o page.html https://example.com
+
+<span class="hl-comment"># Test specific port connectivity (TCP layer check)</span>
+<span class="hl-green">curl</span> -v telnet://192.168.1.1:22     <span class="hl-comment"># Check if SSH port responds</span>
+
+<span class="hl-comment"># Show timing breakdown</span>
+<span class="hl-green">curl</span> -w "\nDNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\nTotal: %{time_total}s\n" -o /dev/null -s https://example.com</div>
+
+  <!-- ===== SECTION 3: WIRESHARK BASICS ===== -->
+  <h2>Wireshark Basics</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">Wireshark captures packets as they pass through a network interface, letting you inspect every byte of traffic. It's the ultimate diagnostic tool when other commands fall short.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Capture Filter</strong></td><td>BPF syntax applied BEFORE capturing (e.g., <code>host 192.168.1.1</code>). Reduces disk usage by filtering at the driver level.</td></tr>
+        <tr><td><strong>Display Filter</strong></td><td>Applied AFTER capture to view specific traffic (e.g., <code>tcp.port == 80</code>). Doesn't discard data, just hides it.</td></tr>
+        <tr><td><strong>Three-pane view</strong></td><td>Top: packet list. Middle: packet details (protocol tree). Bottom: raw packet bytes (hex + ASCII).</td></tr>
+        <tr><td><strong>Color coding</strong></td><td>Green=normal, Red=error/tls warning, Yellow=warning, Blue=selected. Customizable.</td></tr>
+        <tr><td><strong>Follow Stream</strong></td><td>Right-click a packet → Follow → TCP Stream to reconstruct the entire conversation in readable format.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box green">
+    <div class="info-box-title">Essential Display Filters</div>
+    <ul>
+      <li><code>ip.addr == 192.168.1.1</code> — All traffic to/from an IP</li>
+      <li><code>tcp.port == 80</code> — All HTTP traffic</li>
+      <li><code>dns.qr == 0</code> — DNS queries only (not responses)</li>
+      <li><code>tcp.flags.syn == 1 && tcp.flags.ack == 0</code> — TCP three-way handshake initiation</li>
+      <li><code>tcp.analysis.retransmission</code> — Retransmitted packets</li>
+      <li><code>icmp</code> — All ICMP traffic</li>
+      <li><code>tls.handshake.type == 1</code> — TLS Client Hello</li>
+      <li><code>eth.dst == ff:ff:ff:ff:ff:ff</code> — Broadcast traffic</li>
+      <li><code>telnet</code> — Unencrypted login attempts (security hunting)</li>
+    </ul>
+  </div>
+
+  <div class="lab-box">
+    <h4>Hands-On Lab: Wireshark Capture</h4>
+    <ol>
+      <li>Install Wireshark from <a href="https://www.wireshark.org/download.html" target="_blank">wireshark.org</a>. Run as administrator (Windows) or with sudo (Linux) for best results.</li>
+      <li>Select your active network interface and click the blue shark-fin icon to start capture.</li>
+      <li>Open a browser and visit http://example.com (intentionally use HTTP, not HTTPS).</li>
+      <li>Stop the capture and apply filter: <code>http.request</code></li>
+      <li>Right-click any HTTP packet → Follow → TCP Stream. You'll see the full cleartext request and response.</li>
+      <li>Now visit https://example.com and filter with <code>tls</code> — observe the encrypted handshake instead.</li>
+      <li>Apply <code>dns</code> filter and examine a DNS query/response pair. Note the difference between UDP (query) and potentially TCP (if response is large).</li>
+    </ol>
+  </div>
+
+  <!-- ===== SECTION 4: CABLE TESTING ===== -->
+  <h2>Cable Testing</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">Physical media failures account for a significant portion of network incidents. Cable testers range from $20 continuity testers to $2,000+ certification instruments.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tool</th><th>What It Tests</th><th>Cost Range</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td>LED Continuity Tester</td><td>Basic wire map (pin 1 to pin 1, etc.), open/short detection</td><td>$10–$50</td><td>Quick field verification of patch cables</td></tr>
+        <tr><td>TONER & probe kit</td><td>Trace cables through walls/closets, identify cable ends</td><td>$20–$100</td><td>Cable identification in patch panels</td></tr>
+        <tr><td>Certificate Cable Tester</td><td>Wire map, length, attenuation, crosstalk, return loss, near-end crosstalk (NEXT)</td><td>$500–$2,000+</td><td>Compliance testing per TIA/EIA standards</td></tr>
+        <tr><td>OTDR (Optical Time Domain Reflectometer)</td><td>Fiber loss, break location, splice points, connector loss</td><td>$2,000–$15,000+</td><td>Fiber optic installation and troubleshooting</td></tr>
+        <tr><td>Multimeter</td><td>Voltage on PoE ports, continuity, resistance</td><td>$20–$200</td><td>Verifying PoE power delivery, basic electrical checks</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box purple">
+    <div class="info-box-title">Cable Standards Quick Reference</div>
+    <p><strong>T568A:</strong> White-Green, Green, White-Orange, Blue, White-Blue, Orange, White-Brown, Brown<br>
+    <strong>T568B:</strong> White-Orange, Orange, White-Green, Blue, White-Blue, Green, White-Brown, Brown<br>
+    Patch cables should use the same standard on both ends (T568B-T568B). Crossover cables use different standards on each end (rarely needed with modern auto-MDI/X NICs).</p>
+  </div>
+
+  <!-- ===== SECTION 5: WIRELESS TROUBLESHOOTING ===== -->
+  <h2>Wireless Troubleshooting</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">Wi-Fi issues are among the most frustrating to diagnose because symptoms are often intermittent and environment-dependent.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Issue</th><th>Likely Causes</th><th>Diagnostics</th><th>Fixes</th></tr></thead>
+      <tbody>
+        <tr><td>Poor signal strength</td><td>Distance, obstacles, interference</td><td>wifi analyzer apps, <code>iwconfig</code>, <code>netsh wlan show networks</code></td><td>Reposition AP, add repeater, reduce obstacles</td></tr>
+        <tr><td>Channel congestion</td><td>Too many APs on same channel, neighboring networks</td><td>Spectrum analyzer, WiFi scanner app</td><td>Switch to less congested channel (1, 6, 11 for 2.4GHz)</td></tr>
+        <tr><td>Slow throughput</td><td>Wrong security mode, old client, co-channel interference</td><td>Speed tests, <code>ethtool</code>, check negotiated rate</td><td>Upgrade to WPA3, disable legacy 802.11b/g, increase bandwidth</td></tr>
+        <tr><td>Auth failures</td><td>Wrong passphrase, RADIUS issues, certificate problems</td><li>Check AP logs, <code>wpa_supplicant</code> debug output</td><td>Verify credentials, check RADIUS server, renew certificates</td></tr>
+        <tr><td>Roaming issues</td><td>Client won't deauth from old AP, signal threshold misconfigured</td><td>Check roaming thresholds, test with client probe requests</td><td>Adjust RSSI kickback threshold, enable 802.11r/k/v fast transition</td></tr>
+        <tr><td>Intermittent drops</td><td>Interference from microwaves, Bluetooth, bad cabling to AP</td><td> Spectrum scan, cable tester on backhaul</td><td>Change channels, upgrade cabling, move AP away from sources</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box orange">
+    <div class="info-box-title">2.4 GHz vs 5 GHz Trade-offs</div>
+    <p><strong>2.4 GHz:</strong> Better range and penetration through walls, but crowded (microwaves, Bluetooth, neighbors) and slower max speeds. Use for IoT devices and distant clients.<br>
+    <strong>5 GHz:</strong> Faster speeds, more non-overlapping channels, less interference — but shorter range and poorer wall penetration. Use for high-bandwidth tasks (video, large files).</p>
+  </div>
+
+  <!-- ===== SECTION 6: COMMON ISSUES & FIXES ===== -->
+  <h2>Common Connectivity Issues & Fixes</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Symptom</th><th>Probable Cause</th><th>Diagnostic Steps</th><th>Resolution</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">No internet, LAN works</td>
+          <td>Default gateway or DNS failure</td>
+          <td><code>ipconfig /all</code> check gateway and DNS; <code>ping 8.8.8.8</code> (works) vs <code>ping google.com</code> (fails)</td>
+          <td>Renew DHCP lease; verify ISP uplink; check DNS settings</td>
+        </tr>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">169.254.x.x address</td>
+          <td>DHCP failure — APIPA assigned</td>
+          <td><code>ipconfig /release &amp;&amp; ipconfig /renew</code>; check DHCP server status and scope availability</td>
+          <td>Restart DHCP server; check scope exhaustion; verify switch port isn't blocking DHCP (port 67/68)</td>
+        </tr>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">Intermittent connectivity</td>
+          <td>Cable fault, duplex mismatch, interference</td>
+          <td><code>show interface</code> for errors/drops; cable tester; check link lights</td>
+          <td>Replace cable; set correct duplex/speed (prefer auto-negotiate); move away from interference source</td>
+        </tr>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">Can ping IP but not hostname</td>
+          <td>DNS resolution failure</td>
+          <td><code>nslookup</code> / <code>dig</code>; check <code>/etc/resolv.conf</code> or DNS server config</td>
+          <td>Configure correct DNS server; flush DNS cache; check DNS forwarder on gateway</td>
+        </tr>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">Limited/no connectivity (Windows)</td>
+          <td>IP conflict or incorrect subnet mask</td>
+          <td><code>arp -a</code> check duplicate MAC; <code>ipconfig</code> verify mask matches network</td>
+          <td>Assign static IP outside DHCP range; correct subnet mask; enable DHCP snooping</td>
+        </tr>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">Can't reach remote subnet</td>
+          <td>Missing route, ACL blocking, NAT misconfiguration</td>
+          <td><code>tracert</code> to find where packets drop; <code>show ip route</code> on router</td>
+          <td>Add missing route; adjust ACL; verify NAT translation table entries</td>
+        </tr>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">High latency on local network</td>
+          <td>Switch loop, duplex mismatch, overloaded link</td>
+          <td><code>show spanning-tree</code>; <code>show interfaces counters</code> for collisions/crc errors</td>
+          <td>Fix STP topology; ensure matched duplex settings; aggregate links with LACP</td>
+        </tr>
+        <tr>
+          <td style="color:#ef4444;font-weight:700">SSL/TLS certificate errors</td>
+          <td>Expired cert, wrong hostname, untrusted CA</td>
+          <td>Browser error details; <code>openssl s_client -connect host:443</code></td>
+          <td>Renew certificate; fix hostname matching; install missing CA bundle</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 7: CASE STUDIES ===== -->
+  <h2>Case Studies</h2>
+
+  <div class="case-study">
+    <div class="case-study-header">
+      <div class="case-num">1</div>
+      <div class="case-title">The Office That Lost Internet at 9 AM Daily</div>
+    </div>
+    <div class="case-body">
+      <p><strong>Symptom:</strong> Every weekday at approximately 9:00 AM, the entire office loses internet access for 5–10 minutes. Internal LAN continues working fine.</p>
+      <p><strong>Investigation:</strong></p>
+      <ul>
+        <li>Confirmed internal LAN works (can ping switches, printers, local servers)</li>
+        <li>Traceroute to external IPs shows hang at the edge router at exactly 9 AM</li>
+        <li>Checked ISP circuits — one circuit shows CRC errors correlating with the outage window</li>
+        <li>Found that the building's main elevator motor starts at 8:58 AM and causes electromagnetic interference on the faulty coaxial cable run</li>
+      </ul>
+      <p><strong>Root Cause:</strong> Aging coaxial drop cable inside the building, weakened by years of elevator vibration, creating intermittent signal degradation when the motor cycles on.</p>
+      <p><strong>Resolution:</strong> Replaced the coaxial cable with shielded CAT6 runs to the optical converter. Added a fiber uplink as backup path. Outages eliminated entirely.</p>
+      <p><strong>Lesson:</strong> Pattern-based issues require correlating timing with environmental factors. Layer 1 problems can manifest as seemingly higher-layer symptoms.</p>
+    </div>
+  </div>
+
+  <div class="case-study">
+    <div class="case-study-header">
+      <div class="case-num">2</div>
+      <div class="case-title">The Printer Everyone Could See Except Each Other</div>
+    </div>
+    <div class="case-body">
+      <p><strong>Symptom:</strong> Several departments report they cannot print to a network printer, though everyone can ping it. The print queue appears full but jobs never process.</p>
+      <p><strong>Investigation:</strong></p>
+      <ul>
+        <li>Ping succeeds — Layer 3 connectivity confirmed</li>
+        <li>Traceroute shows normal path</li>
+        <li>From the print server: can't connect to printer on port 9100 (JetDirect)</li>
+        <li>Wireshark capture on the printer's VLAN shows ARP requests going out but no replies from some subnets</li>
+        <li>Discovered the switch port connected to the printer was configured with <code>storm-control broadcast level 10%</code> and the printer was generating broadcast storms due to a misconfigured protocol</li>
+      </ul>
+      <p><strong>Root Cause:</strong> Storm control on the switch port was dropping excessive broadcast traffic during surge periods, preventing some clients' ARP requests from reaching the printer.</p>
+      <p><strong>Resolution:</strong> Adjusted storm-control threshold to 30%, replaced the printer's firmware, and moved the printer to a dedicated access vlan with appropriate QoS priority for control traffic.</p>
+      <p><strong>Lesson:</strong> When connectivity seems inconsistent (some can reach, others can't), consider Layer 2 broadcast behaviors and switch configurations.</p>
+    </div>
+  </div>
+
+  <div class="case-study">
+    <div class="case-study-header">
+      <div class="case-num">3</div>
+      <div class="case-title">The SSL Certificate That Broke Everything</div>
+    </div>
+    <div class="case-body">
+      <p><strong>Symptom:</strong> Users report browsers showing security warnings on multiple internal sites after a routine maintenance window. Some applications fail to authenticate.</p>
+      <p><strong>Investigation:</strong></p>
+      <ul>
+        <li>Multiple sites affected — not isolated to one server</li>
+        <li>Error: "Certificate chain incomplete" or "Unable to verify the first certificate"</li>
+        <li>Checked the web servers: certificates were valid and renewed</li>
+        <li>Used <code>openssl s_client -showcerts -connect site:443</code> — saw the intermediate certificate was missing from the chain</li>
+        <li>The maintenance script had purged the intermediate CA bundle from the reverse proxy's SSL configuration</li>
+      </ul>
+      <p><strong>Root Cause:</strong> Maintenance automation removed the intermediate certificate from Nginx's <code>ssl_certificate</code> directive, keeping only the leaf cert. Browsers that cached the full chain before still worked; fresh connections failed.</p>
+      <p><strong>Resolution:</strong> Restored the full certificate chain (leaf + intermediates) in the correct order. Added a pre-deployment validation step that runs <code>openssl s_client -showcerts</code> against each endpoint.</p>
+      <p><strong>Lesson:</strong> SSL certificate chain issues often affect only some users (those without cached chains). Always validate the full certificate chain, not just individual certs.</p>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8: DOCUMENTATION & SOPs ===== -->
+  <h2>Documenting Findings & Creating SOPs</h2>
+  <p style="color:#94a3b8;margin-bottom:16px">Good documentation turns individual heroics into organizational capability. An incident you solve today shouldn't become someone else's emergency next month.</p>
+
+  <div class="sop-table">
+    <table>
+      <thead><tr><th>Element</th><th>What to Include</th><th>Why It Matters</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Incident Summary</strong></td><td>Date/time, affected systems, severity, duration</td><td>Quick reference for pattern analysis and reporting</td></tr>
+        <tr><td><strong>Symptoms Observed</strong></td><td>Exact error messages, user descriptions, affected scope</td><td>Enables rapid symptom-to-cause matching for future incidents</td></tr>
+        <tr><td><strong>Diagnostic Steps Taken</strong></td><td>Commands run, outputs captured, hypotheses tested and ruled out</td><td>Prevents re-investigation and documents what was tried</td></tr>
+        <tr><td><strong>Root Cause</strong></td><td>Specific technical cause with evidence (logs, captures, configs)</td><td>Addresses the actual problem, not just the symptom</td></tr>
+        <tr><td><strong>Resolution</strong></td><td>Step-by-step fix applied, verification performed</td><td>Repeatable recovery if the issue recurs</td></tr>
+        <tr><td><strong>Preventive Actions</strong></td><td>Configuration changes, monitoring alerts, process updates</td><td>Stops the same issue from happening again</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box green">
+    <div class="info-box-title">SOP Template: Network Connectivity Check</div>
+    <p><strong>Trigger:</strong> User reports "can't get internet" or "slow network"<br>
+    <strong>Step 1:</strong> Determine scope — one device or multiple? One floor or entire building?<br>
+    <strong>Step 2:</strong> Physical check — link lights on NIC and switch port? Correct cable?<br>
+    <strong>Step 3:</strong> IP config — <code>ipconfig /all</code> or <code>ip addr</code>. Is there an APIPA (169.254.x.x)?<br>
+    <strong>Step 4:</strong> Local reachability — <code>ping 127.0.0.1</code> (loopback), then <code>ping &lt;own_IP&gt;</code>, then <code>ping &lt;gateway&gt;</code><br>
+    <strong>Step 5:</strong> External reachability — <code>ping 8.8.8.8</code>. If this works, it's a DNS issue.<br>
+    <strong>Step 6:</strong> DNS check — <code>nslookup google.com</code>. If it fails, check DNS server config.<br>
+    <strong>Step 7:</strong> Trace the path — <code>traceroute 8.8.8.8</code> to find where packets are dropping.<br>
+    <strong>Step 8:</strong> If all above passes but app still fails, check application-specific ports with <code>telnet &lt;host&gt; &lt;port&gt;</code> or <code>nc -zv &lt;host&gt; &lt;port&gt;</code>.</p>
+  </div>
+
+  <!-- ===== SECTION 9: LABS ===== -->
+  <h2>Hands-On Labs</h2>
+
+  <div class="lab-box">
+    <h4>Laboratory 1: End-to-End Diagnostic Walkthrough</h4>
+    <ol>
+      <li>Open a terminal. Run <code>ipconfig /all</code> (Windows) or <code>ip addr</code> (Linux). Record your IP, subnet mask, gateway, and DNS servers.</li>
+      <li>Ping your default gateway. Does it respond? What's the average RTT?</li>
+      <li>Ping an external IP (8.8.8.8). Does it respond? Compare timing to the gateway ping.</li>
+      <li>Ping a domain name (google.com). Does DNS resolve correctly?</li>
+      <li>Run <code>traceroute 8.8.8.8</code> (or <code>tracert</code> on Windows). How many hops to reach Google's DNS? Which hops show highest latency?</li>
+      <li>Use <code>netstat -an | grep LISTEN</code> (Linux) or <code>netstat -an</code> (Windows) to identify all listening services on your machine.</li>
+      <li>Test connectivity to a specific port: <code>nc -zv google.com 443</code>. Does it succeed?</li>
+      <li>Perform a DNS lookup using both <code>nslookup</code> and <code>dig</code>. Compare the output detail levels.</li>
+    </ol>
+  </div>
+
+  <div class="lab-box">
+    <h4>Laboratory 2: Wireless Site Survey Simulation</h4>
+    <ol>
+      <li>On a laptop with WiFi, run <code>netsh wlan show networks mode=bssid</code> (Windows) or <code> iw dev wlan0 scan</code> (Linux) to discover nearby networks.</li>
+      <li>Note the SSIDs, channels, signal strengths (dBm), and security types you discover.</li>
+      <li>Identify which 2.4 GHz channel has the least congestion (channels 1, 6, 11 are non-overlapping).</li>
+      <li>If available, use a mobile WiFi analyzer app to visualize signal heat maps across your home/office.</li>
+      <li>Recommend optimal AP placement based on your observations — prioritize line-of-sight and distance from interference sources.</li>
+    </ol>
+  </div>
+
+  <div class="lab-box">
+    <h4>Laboratory 3: Wireshark Deep Analysis</h4>
+    <ol>
+      <li>Start a Wireshark capture on your primary interface.</li>
+      <li>Generate various traffic: browse to an HTTP site, then an HTTPS site, send an email (if configured), and ping an external host.</li>
+      <li>Stop capture and apply these filters sequentially: <code>http</code>, then <code>tls</code>, then <code>dns</code>, then <code>icmp</code>.</li>
+      <li>Find a DNS query packet. Expand the details pane to see the query name, type, and flags.</li>
+      <li>Find a TLS Client Hello packet. Note the cipher suites advertised by your client.</li>
+      <li>Look for any TCP retransmissions: <code>tcp.analysis.retransmission</code>. If none appear, try downloading a large file and re-checking.</li>
+      <li>Practice "Follow TCP Stream" on an HTTP session and note how readable the cleartext looks compared to the TLS stream.</li>
+    </ol>
+  </div>
+
+  <!-- ===== SECTION 10: RESOURCES ===== -->
+  <h2>Resources</h2>
+  <ul class="res-list">
+    <li>&#x1f517; <a href="https://wiki.wireshark.org/" target="_blank">Wireshark Wiki — Official Documentation</a></li>
+    <li>&#x1f517; <a href="https://github.com/bmainwood/github-archive/blob/master/docs/tcp.md" target="_blank">Real-world TCP/IP Examples with Wireshark</a></li>
+    <li>&#x1f517; <a href="https://www.cloudflare.com/learning/ddos/glossary/traceroute/" target="_blank">Cloudflare — How Traceroute Works</a></li>
+    <li>&#x1f517; <a href="https://serverfault.com/questions/143894/how-do-i-diagnose-my-network-connection-problems" target="_blank">ServerFault — Network Diagnostic Guide</a></li>
+    <li>&#x1f517; <a href="https://en.wikipedia.org/wiki/Packet_loss" target="_blank">Wikipedia — Packet Loss and Diagnostic Techniques</a></li>
+    <li>&#x1f517; <a href="https://www.ncac.gov.uk/policy-and-advice/computing-guidance/network-diagnostic-commands.aspx" target="_blank">NCSC — Network Diagnostic Commands (UK National Cyber Security Centre)</a></li>
+  </ul>
+
+  <div class="next-prev">
+    <a href="phase-3-network-protocols.html" class="np-btn">&#8592; Essential Protocols</a>
+    <a href="../index.html" class="np-btn">Back to Phase 3 Overview &#8594;</a>
+  </div>
+</div>
+
+<footer>Phase 3 Networking Learning Paths &copy; 2026</footer>
+</body>
+</html>

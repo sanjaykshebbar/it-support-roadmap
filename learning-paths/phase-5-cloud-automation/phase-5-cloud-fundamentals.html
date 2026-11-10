@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 5 — Cloud Computing Fundamentals</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+.nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+.nav a{color:#94a3b8;font-size:14px;font-weight:500}
+.nav a:hover{color:#3b82f6}
+.nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px}
+h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+.subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+.badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:28px 0 10px}
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+.obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+.obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+.info-box{background:#1e293b;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
+.info-box.green{border-left-color:#10b981}
+.info-box.orange{border-left-color:#f59e0b}
+.info-box.purple{border-left-color:#8b5cf6}
+.info-box.pink{border-left-color:#ec4899}
+.info-box.cyan{border-left-color:#06b6d4}
+.info-box-title{font-weight:700;color:#e2e8f0;font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.info-box p{font-size:14px;color:#94a3b8}
+.table-wrap{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#1e293b}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+@media(max-width:700px){.comparison{grid-template-columns:1fr}}
+.comp-col{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px}
+.comp-col h4{font-size:15px;font-weight:700;margin-bottom:12px}
+.quiz-block{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:16px 0}
+.quiz-q{font-weight:700;color:#e2e8f0;margin-bottom:10px}
+.quiz-answer{display:none;margin-top:10px;padding:10px 14px;background:#0f172a;border-radius:6px;font-size:13px;color:#10b981;font-weight:600}
+.quiz-btn{background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s}
+.quiz-btn:hover{background:#2563eb}
+.next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+.np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+.np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+.res-list{list-style:none;padding:0}
+.res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+.res-list li:last-child{border-bottom:none}
+.res-list a{color:#3b82f6}
+.progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+.module-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px 24px;margin-bottom:16px}
+.module-card h3{margin-top:0;color:#f8fafc}
+.module-meta{display:flex;gap:16px;margin-bottom:12px;font-size:13px;color:#94a3b8}
+.module-meta span{display:inline-flex;align-items:center;gap:4px}
+.code-block{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;margin:12px 0;overflow-x:auto;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;color:#94a3b8;line-height:1.6}
+.checklist{list-style:none;padding:0;margin:12px 0}
+.checklist li{padding:6px 0;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+.checklist li::before{content:"\2610";font-size:16px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#3b82f6;color:#fff;font-size:13px;font-weight:700;margin-right:10px;flex-shrink:0}
+footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+.decision-tree{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin:20px 0}
+.decision-tree p{margin-bottom:12px;color:#94a3b8}
+.flow-arrow{color:#3b82f6;font-size:20px;text-align:center;margin:8px 0}
+.flex-row{display:flex;gap:16px;flex-wrap:wrap}
+.flex-col{flex:1;min-width:280px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-right:4px}
+.tag-blue{background:rgba(59,130,246,0.15);color:#3b82f6}
+.tag-green{background:rgba(16,185,129,0.15);color:#10b981}
+.tag-purple{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.tag-orange{background:rgba(245,158,11,0.15);color:#f59e0b}
+.tag-cyan{background:rgba(6,182,212,0.15);color:#06b6d4}
+.tag-pink{background:rgba(236,72,153,0.15);color:#ec4899}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">&#8592; Learning Paths</a>
+  <span class="nav-title">Phase 5 — Cloud Computing Fundamentals</span>
+  <a href="phase-5-azure-aws-basics.html">Next: Azure &amp; AWS Basics &rarr;</a>
+</nav>
+
+<div class="container">
+  <div class="progress-bar"><div class="fill"></div></div>
+  <span class="badge" style="border-color:#10b981;color:#10b981">PHASE 5 &#183; MODULE 1</span>
+  <h1>Cloud Computing Fundamentals</h1>
+  <p class="subtitle">Understand the core concepts, models, and services that power modern cloud infrastructure.</p>
+
+  <h2>Learning Objectives</h2>
+  <div class="obj-grid">
+    <label class="obj-item"><input type="checkbox"> Explain cloud service models: IaaS, PaaS, SaaS with real-world examples</label>
+    <label class="obj-item"><input type="checkbox"> Compare deployment models: public, private, hybrid, and multi-cloud</label>
+    <label class="obj-item"><input type="checkbox"> Identify major cloud providers and their core services</label>
+    <label class="obj-item"><input type="checkbox"> Understand cloud pricing models and cost optimization basics</label>
+    <label class="obj-item"><input type="checkbox"> Learn the 6 Rs of cloud migration strategies</label>
+    <label class="obj-item"><input type="checkbox"> Explain the shared responsibility model for cloud security</label>
+    <label class="obj-item"><input type="checkbox"> Define scalability vs elasticity and why both matter</label>
+    <label class="obj-item"><input type="checkbox"> Complete quiz and self-assessment checklist</label>
+  </div>
+
+  <!-- MODULE BREAKDOWN -->
+  <h2>Module Breakdown</h2>
+  <div class="module-card">
+    <h3>Module 1: Cloud Service &amp; Deployment Models</h3>
+    <div class="module-meta">
+      <span>&#128336; ~3 hours</span>
+      <span>&#128218; 4 topics</span>
+      <span><span class="tag tag-green">Foundational</span></span>
+    </div>
+    <ul class="checklist">
+      <li>Cloud service models (IaaS, PaaS, SaaS)</li>
+      <li>Deployment models (public, private, hybrid, multi-cloud)</li>
+      <li>Major cloud providers overview</li>
+      <li>Cloud pricing models</li>
+    </ul>
+  </div>
+  <div class="module-card">
+    <h3>Module 2: Migration Strategies &amp; Security</h3>
+    <div class="module-meta">
+      <span>&#128336; ~2.5 hours</span>
+      <span>&#128218; 3 topics</span>
+      <span><span class="tag tag-purple">Intermediate</span></span>
+    </div>
+    <ul class="checklist">
+      <li>The 6 Rs of cloud migration</li>
+      <li>Benefits and risks of cloud adoption</li>
+      <li>Shared responsibility model</li>
+    </ul>
+  </div>
+  <div class="module-card">
+    <h3>Module 3: Core Cloud Concepts &amp; Labs</h3>
+    <div class="module-meta">
+      <span>&#128336; ~2 hours</span>
+      <span>&#128218; 3 topics</span>
+      <span><span class="tag tag-cyan">Hands-on</span></span>
+    </div>
+    <ul class="checklist">
+      <li>Scalability, elasticity, and redundancy</li>
+      <li>Cloud-native architecture patterns</li>
+      <li>Hands-on lab: Explore a free cloud tier</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1: SERVICE MODELS -->
+  <h2>Cloud Service Models</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">Cloud computing offers three primary service models that abstract different layers of infrastructure. Understanding where responsibility lies in each model is critical for IT support professionals.</p>
+
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#3b82f6">IaaS <span class="tag tag-blue">Infrastructure</span></h4>
+      <p style="color:#cbd5e1;font-size:14px;margin-bottom:12px">Infrastructure as a Service provides fundamental computing resources: servers, storage, and networking on demand.</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>You manage:</strong> OS, runtime, data, applications</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Provider manages:</strong> Physical hardware, virtualization, networking, storage</p>
+      <p style="font-size:13px;color:#94a3b8;margin-top:8px"><strong>Examples:</strong> Amazon EC2, Azure Virtual Machines, Google Compute Engine</p>
+      <p style="font-size:13px;color:#94a3b8;margin-top:4px"><strong>Best for:</strong> Organizations needing full control over their infrastructure stack without maintaining physical hardware.</p>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#10b981">PaaS <span class="tag tag-green">Platform</span></h4>
+      <p style="color:#cbd5e1;font-size:14px;margin-bottom:12px">Platform as a Service provides a managed environment for developing, running, and managing applications without infrastructure concerns.</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>You manage:</strong> Data, applications, runtime configuration</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Provider manages:</strong> OS, middleware, runtime, servers, storage</p>
+      <p style="font-size:13px;color:#94a3b8;margin-top:8px"><strong>Examples:</strong> Azure App Service, AWS Elastic Beanstalk, Google App Engine</p>
+      <p style="font-size:13px;color:#94a3b8;margin-top:4px"><strong>Best for:</strong> Developers who want to focus on code without worrying about server maintenance.</p>
+    </div>
+  </div>
+  <div class="comp-col" style="margin-top:16px">
+    <h4 style="color:#f59e0b">SaaS <span class="tag tag-orange">Software</span></h4>
+    <p style="color:#cbd5e1;font-size:14px;margin-bottom:12px">Software as a Service delivers fully managed applications over the internet on a subscription basis.</p>
+    <p style="font-size:13px;color:#94a3b8"><strong>You manage:</strong> Your data and user access settings only</p>
+    <p style="font-size:13px;color:#94a3b8"><strong>Provider manages:</strong> Everything -- infrastructure, platform, application, updates, security patches</p>
+    <p style="font-size:13px;color:#94a3b8;margin-top:8px"><strong>Examples:</strong> Microsoft 365, Google Workspace, Salesforce, Dropbox Business</p>
+    <p style="font-size:13px;color:#94a3b8;margin-top:4px"><strong>Best for:</strong> End-users and organizations wanting ready-to-use software with zero infrastructure management.</p>
+  </div>
+
+  <div class="info-box cyan" style="margin-top:24px">
+    <div class="info-box-title">Memory Aid: The Pizza Analogy</div>
+    <p><strong>IaaS</strong> = You order ingredients and bake the pizza yourself (you get the kitchen). <strong>PaaS</strong> = You order a homemade-style pizza from a delivery service (they provide the oven). <strong>SaaS</strong> = You go to a restaurant and eat someone else's pizza (everything is handled for you).</p>
+  </div>
+
+  <h2>Deployment Models</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">Organizations choose deployment models based on their security requirements, regulatory needs, cost constraints, and operational flexibility preferences.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Model</th><th>Description</th><th>Best For</th><th>Cost</th><th>Control Level</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Public Cloud</strong></td>
+          <td>Resources owned and operated by a third-party provider, delivered over the public internet</td>
+          <td>Startups, teams needing quick scaling, non-sensitive workloads</td>
+          <td><span class="tag tag-green">Lowest</span> Pay-as-you-go</td>
+          <td>Low to medium</td>
+        </tr>
+        <tr>
+          <td><strong>Private Cloud</strong></td>
+          <td>Exclusive cloud resources used by a single organization, hosted on-premises or by a third party</td>
+          <td>Government, healthcare, finance -- regulated industries</td>
+          <td><span class="tag tag-orange">Higher</span> Capital investment</td>
+          <td>High</td>
+        </tr>
+        <tr>
+          <td><strong>Hybrid Cloud</strong></td>
+          <td>Combination of public and private clouds, allowing data and applications to share between them</td>
+          <td>Organizations with mixed workloads and compliance requirements</td>
+          <td><span class="tag tag-orange">Medium-High</span> Flexible mix</td>
+          <td>Medium to high</td>
+        </tr>
+        <tr>
+          <td><strong>Multi-Cloud</strong></td>
+          <td>Using services from multiple cloud providers to avoid vendor lock-in and optimize capabilities</td>
+          <td>Large enterprises seeking best-of-breed services across providers</td>
+          <td><span class="tag tag-orange">Variable</span> Provider-dependent</td>
+          <td>Medium</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="decision-tree">
+    <h3 style="margin-top:0;color:#f8fafc">Decision Framework: Which Deployment Model?</h3>
+    <p><strong>Q1:</strong> Do you have strict data residency or compliance requirements? &#8594; Yes = Private Cloud | No = continue</p>
+    <p><strong>Q2:</strong> Do you need to handle variable traffic spikes? &#8594; Yes = Public Cloud | No = continue</p>
+    <p><strong>Q3:</strong> Do you have sensitive workloads AND need burst capacity? &#8594; Yes = Hybrid Cloud | No = Multi-Cloud</p>
+  </div>
+
+  <!-- MAJOR PROVIDERS -->
+  <h2>Major Cloud Providers Overview</h2>
+
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#ff9900">&#9733; AWS (Amazon Web Services)</h4>
+      <p style="font-size:13px;color:#94a3b8;margin-bottom:8px"><strong>Market position:</strong> ~31% market share, the largest cloud provider globally</p>
+      <p style="font-size:13px;color:#cbd5e1"><strong>Key strengths:</strong></p>
+      <ul style="font-size:13px;color:#94a3b8;padding-left:16px;margin:6px 0">
+        <li>Most extensive service catalog (200+ services)</li>
+        <li>Largest global infrastructure footprint</li>
+        <li>Maturest ecosystem and partner network</li>
+        <li>Strong enterprise feature set</li>
+      </ul>
+      <p style="font-size:13px;color:#94a3b8;margin-top:10px"><strong>Core compute:</strong> EC2, Lambda, ECS, EKS</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Core storage:</strong> S3, EBS, EFS, Glacier</p>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#0078d4">&#9679; Microsoft Azure</h4>
+      <p style="font-size:13px;color:#94a3b8;margin-bottom:8px"><strong>Market position:</strong> ~25% market share, second largest, fastest-growing in enterprise</p>
+      <p style="font-size:13px;color:#cbd5e1"><strong>Key strengths:</strong></p>
+      <ul style="font-size:13px;color:#94a3b8;padding-left:16px;margin:6px 0">
+        <li>Deep integration with Microsoft ecosystem</li>
+        <li>Strong hybrid cloud offerings (Azure Arc, Azure Stack)</li>
+        <li>Azure Active Directory / Entra ID maturity</li>
+        <li>Excellent for Windows-based environments</li>
+      </ul>
+      <p style="font-size:13px;color:#94a3b8;margin-top:10px"><strong>Core compute:</strong> Virtual Machines, Azure Functions, AKS</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Core storage:</strong> Blob Storage, File Shares, Disk Storage</p>
+    </div>
+  </div>
+  <div class="comp-col" style="margin-top:16px">
+    <h4 style="color:#4285f4">&#9733; Google Cloud Platform (GCP)</h4>
+    <p style="font-size:13px;color:#94a3b8;margin-bottom:8px"><strong>Market position:</strong> ~11% market share, strong in AI/ML and data analytics</p>
+    <p style="font-size:13px;color:#cbd5e1"><strong>Key strengths:</strong></p>
+    <ul style="font-size:13px;color:#94a3b8;padding-left:16px;margin:6px 0">
+      <li>Leading AI and machine learning services (TensorFlow, Vertex AI)</li>
+      <li>Best-in-class big data and analytics tools (BigQuery, Dataflow)</li>
+      <li>Premium network backbone with low-latency global connectivity</li>
+      <li>Strong Kubernetes innovation (GKE was first certified)</li>
+    </ul>
+    <p style="font-size:13px;color:#94a3b8;margin-top:10px"><strong>Core compute:</strong> Compute Engine, Cloud Run, GKE</p>
+    <p style="font-size:13px;color:#94a3b8"><strong>Core storage:</strong> Cloud Storage, Persistent Disks, Cloud SQL</p>
+  </div>
+
+  <div class="info-box green">
+    <div class="info-box-title">IT Support Relevance</div>
+    <p>As an IT support professional, you will most commonly encounter <strong>Azure</strong> (due to Microsoft ecosystem dominance in enterprises) and <strong>AWS</strong> (most common general-purpose cloud). Focus your learning on these two first, then explore GCP if needed for your organization.</p>
+  </div>
+
+  <!-- PRICING MODELS -->
+  <h2>Cloud Pricing Models</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">Cloud pricing operates on an operational expenditure (OpEx) model rather than capital expenditure (CapEx). Understanding cost structures helps you advocate for budget decisions.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Pricing Model</th><th>How It Works</th><th>Best Use Case</th><th>Risk</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>On-Demand</strong></td>
+          <td>Pay per second/hour for resources as consumed, no commitment</td>
+          <td>Short-term workloads, testing, unpredictable traffic</td>
+          <td>Highest unit cost</td>
+        </tr>
+        <tr>
+          <td><strong>Reserved Instances</strong></td>
+          <td>Commit to 1-3 years for significant discounts (up to 72%)</td>
+          <td>Steady-state workloads with predictable usage</td>
+          <td>Obligation even if unused</td>
+        </tr>
+        <tr>
+          <td><strong>Spot Instances</strong></td>
+          <td>Bid on unused capacity at steep discounts (up to 90% off)</td>
+          <td>Fault-tolerant, interruptible workloads (batch processing)</td>
+          <td>Can be reclaimed with short notice</td>
+        </tr>
+        <tr>
+          <td><strong>Savings Plans</strong></td>
+          <td>Commit to consistent spend ($/hour) for 1-3 years</td>
+          <td>Flexible commitment across multiple service types</td>
+          <td>Must meet minimum spend</td>
+        </tr>
+        <tr>
+          <td><strong>Free Tier</strong></td>
+          <td>Limited free resources permanently or for 12 months</td>
+          <td>Learning, experimentation, small projects</td>
+          <td>Usage limits apply strictly</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box orange">
+    <div class="info-box-title">Cost Control Tip for IT Support</div>
+    <p>Always check for active instances before shutting down a VM. A common rookie mistake is terminating a running production instance. Always verify resource ownership and labels before making changes in any cloud console.</p>
+  </div>
+
+  <!-- MIGRATION STRATEGIES -->
+  <h2>The 6 Rs of Cloud Migration</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">The 6 Rs framework (introduced by AWS) helps organizations decide how to migrate workloads from on-premises to the cloud.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Strategy</th><th>What Happens</th><th>Effort</th><th>Business Value</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Rehost</strong> (Lift &amp; Shift)</td>
+          <td>Move applications as-is to cloud VMs</td>
+          <td><span class="tag tag-green">Low</span></td>
+          <td>Moderate</td>
+          <td>Migrate on-prem VM to EC2/Azure VM</td>
+        </tr>
+        <tr>
+          <td><strong>Replatform</strong></td>
+          <td>Minor optimizations during migration (e.g., switch DB engine)</td>
+          <td><span class="tag tag-orange">Medium</span></td>
+          <td>Moderate-High</td>
+          <td>Migrate MySQL to Amazon RDS</td>
+        </tr>
+        <tr>
+          <td><strong>Repurchase</strong> (Drop &amp; Replace)</td>
+          <td>Replace existing app with a cloud SaaS alternative</td>
+          <td><span class="tag tag-orange">Medium</span></td>
+          <td>High (new features)</td>
+          <td>Switch from on-prem Exchange to Microsoft 365</td>
+        </tr>
+        <tr>
+          <td><strong>Refactor</strong> (Re-architect)</td>
+          <td>Rewrite application to use cloud-native features</td>
+          <td><span class="tag tag-pink">High</span></td>
+          <td>Highest</td>
+          <td>Convert monolith to microservices on Kubernetes</td>
+        </tr>
+        <tr>
+          <td><strong>Retain</strong> (Hold)</td>
+          <td>Keep workloads on-premises (not ready to migrate)</td>
+          <td>None</td>
+          <td>N/A</td>
+          <td>Legacy system with compliance restrictions</td>
+        </tr>
+        <tr>
+          <td><strong>Retire</strong></td>
+          <td>Decommission unused or redundant applications</td>
+          <td>Low</td>
+          <td>Cost savings</td>
+          <td>Remove duplicate systems identified in audit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BENEFITS AND RISKS -->
+  <h2>Benefits and Risks of Cloud Adoption</h2>
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#10b981">&#10003; Benefits</h4>
+      <ul style="font-size:14px;color:#cbd5e1;padding-left:18px">
+        <li style="margin-bottom:8px"><strong>No upfront hardware costs</strong> -- shift from CapEx to OpEx</li>
+        <li style="margin-bottom:8px"><strong>Global reach</strong> -- deploy in multiple regions with clicks</li>
+        <li style="margin-bottom:8px"><strong>Automatic updates</strong> -- provider handles patching and upgrades</li>
+        <li style="margin-bottom:8px"><strong>Disaster recovery</strong> -- built-in backup and replication options</li>
+        <li style="margin-bottom:8px"><strong>Innovation speed</strong> -- access to cutting-edge AI/ML services</li>
+        <li><strong>Environmental efficiency</strong> -- shared infrastructure reduces carbon footprint</li>
+      </ul>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#ef4444">&#10007; Risks &amp; Challenges</h4>
+      <ul style="font-size:14px;color:#cbd5e1;padding-left:18px">
+        <li style="margin-bottom:8px"><strong>Vendor lock-in</strong> -- migrating between providers is costly</li>
+        <li style="margin-bottom:8px"><strong>Unpredictable bills</strong> -- without monitoring, costs can spiral</li>
+        <li style="margin-bottom:8px"><strong>Security concerns</strong> -- shared responsibility requires vigilance</li>
+        <li style="margin-bottom:8px"><strong>Downtime risk</strong> -- dependent on provider uptime SLAs</li>
+        <li style="margin-bottom:8px"><strong>Compliance gaps</strong> -- not all certifications cover all regions</li>
+        <li><strong>Skill gap</strong> -- team may need retraining for cloud-native operations</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SHARED RESPONSIBILITY MODEL -->
+  <h2>Cloud Security: Shared Responsibility Model</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">Every cloud provider uses a shared responsibility model. Understanding what YOU are responsible for versus what the PROVIDER handles is essential for security compliance.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Responsibility Area</th><th>Provider Handles</th><th>You (Customer) Handle</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Physical security</td><td>Data centers, hardware, environmental controls</td><td>--</td></tr>
+        <tr><td>Infrastructure</td><td>Compute, storage, networking hardware</td><td>--</td></tr>
+        <tr><td>Virtualization layer</td><td>Hypervisor, guest OS isolation</td><td>--</td></tr>
+        <tr><td>Guest operating system</td><td>--</td><td>Patching, configuration, hardening</td></tr>
+        <tr><td>Data protection</td><td>--</td><td>Encryption at rest, backups, classification</td></tr>
+        <tr><td>Identity &amp; Access</td><td> IAM platform availability</td><td>User policies, MFA, permissions</td></tr>
+        <tr><td>Application security</td><td>--</td><td>Secure coding, vulnerability management</td></tr>
+        <tr><td>Network firewall</td><td>Physical/network perimeter</td><td>Security groups, NACLs, WAF rules</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box purple">
+    <div class="info-box-title">Critical Distinction by Service Type</div>
+    <p>In <strong>IaaS</strong>, you manage the most (OS, apps, data). In <strong>PaaS</strong>, the provider manages more (OS, runtime). In <strong>SaaS</strong>, the provider manages almost everything except your data and user access. As you move up the service model ladder, your security responsibility decreases but your data governance responsibility remains constant.</p>
+  </div>
+
+  <!-- CORE CONCEPTS -->
+  <h2>Fundamental Cloud Concepts</h2>
+
+  <h3>Scalability vs. Elasticity</h3>
+  <div class="comparison">
+    <div class="comp-col">
+      <h4 style="color:#3b82f6">&#9650; Scalability</h4>
+      <p style="font-size:14px;color:#cbd5e1;margin-bottom:10px">The ability to handle increased load by adding resources. Can be vertical (scale up) or horizontal (scale out).</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Vertical scaling (Scale Up):</strong> Adding more CPU/RAM to an existing VM. Limited by maximum instance size.</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Horizontal scaling (Scale Out):</strong> Adding more VM instances behind a load balancer. More flexible and resilient.</p>
+      <p style="font-size:13px;color:#94a3b8;margin-top:10px"><strong>When to choose:</strong> Vertical for databases and single-instance apps. Horizontal for web services and stateless applications.</p>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:#06b6d4">&#9851; Elasticity</h4>
+      <p style="font-size:14px;color:#cbd5e1;margin-bottom:10px">The ability to automatically scale resources UP and DOWN based on real-time demand. This dynamic adjustment is what makes cloud economically attractive.</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Auto-scaling example:</strong> An e-commerce site automatically adds 10 servers during Black Friday and removes them at midnight.</p>
+      <p style="font-size:13px;color:#94a3b8"><strong>Key benefit:</strong> You only pay for what you actually use at any given moment.</p>
+      <p style="font-size:13px;color:#94a3b8;margin-top:10px"><strong>When to choose:</strong> Any workload with variable or unpredictable traffic patterns.</p>
+    </div>
+  </div>
+
+  <h3>Redundancy &amp; High Availability</h3>
+  <p style="color:#94a3b8;margin-bottom:12px">Redundancy means having backup components ready to take over if primary ones fail. High availability ensures services remain accessible with minimal downtime.</p>
+  <div class="flex-row">
+    <div class="flex-col">
+      <div class="info-box green">
+        <div class="info-box-title">Availability Zones (AZs)</div>
+        <p>Physically separate data centers within a cloud region. Each AZ has independent power, cooling, and networking. Distributing instances across multiple AZs protects against single-point failures.</p>
+      </div>
+    </div>
+    <div class="flex-col">
+      <div class="info-box orange">
+        <div class="info-box-title">Regions &amp; Disaster Recovery</div>
+        <p>A region is a geographic area containing multiple AZs. For disaster recovery, replicate data to a secondary region. Cross-region replication ensures business continuity during regional outages.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAB SECTION -->
+  <h2>Hands-On Lab: Explore a Free Cloud Tier</h2>
+  <p style="color:#94a3b8;margin-bottom:20px">Get practical experience by setting up a free account and launching your first cloud resource.</p>
+
+  <h3>Lab 1A: Navigate the AWS Free Tier Console</h3>
+  <ol style="padding-left:20px;color:#cbd5e1;font-size:14px;line-height:2">
+    <li>Create an AWS account at aws.amazon.com (requires credit card, but charges $0 for eligible free-tier services)</li>
+    <li>Sign in to the AWS Management Console and locate the search bar at the top</li>
+    <li>Type "EC2" and click to open the EC2 Dashboard</li>
+    <li>Explore the left navigation: Instances, Volumes, Snapshots, Security Groups</li>
+    <li>Take a screenshot of the EC2 dashboard and note the region selector (top right)</li>
+    <li><strong>Expected outcome:</strong> You should see an empty instances list (since no VMs are running yet) and understand the console layout</li>
+  </ol>
+
+  <h3>Lab 1B: Create Your First Virtual Machine (AWS t2.micro / t3.micro)</h3>
+  <ol style="padding-left:20px;color:#cbd5e1;font-size:14px;line-height:2">
+    <li>From EC2 Dashboard, click "Launch Instance"</li>
+    <li>Name it <code>my-first-vm</code>, select Amazon Linux 2023 AMI (free-tier eligible)</li>
+    <li>Choose <code>t2.micro</code> or <code>t3.micro</code> instance type (both free-tier eligible)</li>
+    <li>Leave default network settings and security group (allows SSH inbound)</li>
+    <li>Create a new key pair (.pem file) -- download and save it securely</li>
+    <li>Click Launch and wait for the instance to reach "running" status</li>
+    <li>Connect via SSH: <code>ssh -i "your-key.pem" ec2-user@your-public-ip</code></li>
+    <li>Run <code>sudo dnf update -y</code> and <code>hostname -f</code> inside the terminal</li>
+    <li><strong>Expected outcome:</strong> Successful SSH connection to a live cloud VM</li>
+  </ol>
+
+  <h3>Lab 1C: Clean Up (Avoid Unexpected Charges)</h3>
+  <ol style="padding-left:20px;color:#cbd5e1;font-size:14px;line-height:2">
+    <li>Terminate the instance from the EC2 Console (Actions &gt; Instance State &gt; Terminate)</li>
+    <li>Delete the associated key pair and any attached volumes</li>
+    <li><strong>Why this matters:</strong> Leaving idle resources running is the #1 cause of unexpected cloud bills</li>
+  </ol>
+
+  <!-- QUIZ -->
+  <h2>Knowledge Check</h2>
+
+  <div class="quiz-block">
+    <div class="quiz-q">1. Which cloud service model gives you the LEAST control over the underlying infrastructure?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) IaaS</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) PaaS</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) SaaS</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) They all provide equal control</li>
+    </ul>
+    <button class="quiz-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">Show Answer</button>
+    <div class="quiz-answer">Answer: C) SaaS. In Software as a Service, the provider manages everything including the application, platform, and infrastructure. Users only interact with the finished software.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">2. Your company stores customer financial data on-premises but runs its website on AWS. What deployment model is this?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Public cloud</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Private cloud</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Hybrid cloud</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Multi-cloud</li>
+    </ul>
+    <button class="quiz-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">Show Answer</button>
+    <div class="quiz-answer">Answer: C) Hybrid cloud. This combines a private deployment (on-premises for sensitive data) with a public cloud deployment (AWS for the website).</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">3. What is the key difference between scalability and elasticity?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) They are synonyms for the same concept</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Scalability is manual; elasticity is automatic</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Scalability is adding resources to handle growth; elasticity is automatically adjusting resources up and down based on demand</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Elasticity only applies to IaaS, not SaaS</li>
+    </ul>
+    <button class="quiz-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">Show Answer</button>
+    <div class="quiz-answer">Answer: C. Scalability refers to the capacity to grow (either vertically or horizontally). Elasticity specifically means the automatic, dynamic adjustment of resources in response to changing demand.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">4. In the shared responsibility model, who is responsible for patching the guest operating system in an IaaS environment?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) The cloud provider</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) The customer (you)</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Both equally split the responsibility</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Neither -- the OS doesn't need patching</li>
+    </ul>
+    <button class="quiz-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">Show Answer</button>
+    <div class="quiz-answer">Answer: B) The customer. In IaaS, the provider manages the physical infrastructure and hypervisor, but the guest operating system running on your VM is your responsibility to patch and maintain.</div>
+  </div>
+
+  <div class="quiz-block">
+    <div class="quiz-q">5. Which migration strategy involves moving an application to the cloud with NO changes to the application code?</div>
+    <ul class="quiz-options" style="list-style:none;padding:0;margin-bottom:8px">
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">A) Refactor</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">B) Replatform</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">C) Rehost</li>
+      <li style="padding:4px 0;font-size:14px;color:#94a3b8">D) Repurchase</li>
+    </ul>
+    <button class="quiz-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">Show Answer</button>
+    <div class="quiz-answer">Answer: C) Rehost. Also known as "lift and shift," rehosting means moving the application exactly as-is to cloud infrastructure with minimal or no modifications.</div>
+  </div>
+
+  <!-- RESOURCES -->
+  <h2>Recommended Resources</h2>
+  <ul class="res-list">
+    <li>&#128203; <a href="https://aws.amazon.com/free/" target="_blank">AWS Free Tier</a> -- Start with $100 in credits for free exploration</li>
+    <li>&#128203; <a href="https://azure.microsoft.com/en-us/free/" target="_blank">Azure Free Account</a> -- $200 credits for 30 days plus 12 months of free services</li>
+    <li>&#128203; <a href="https://www.cloudskillsboost.google/" target="_blank">Google Cloud Skills Boost</a> -- Free hands-on labs for GCP fundamentals</li>
+    <li>&#128203; <a href="https://explore.skillbuilder.aws/learn/course/external/view/elearning/125/aws-cloud-practitioner-essentials" target="_blank">AWS Cloud Practitioner Essentials (Free Course)</a></li>
+    <li>&#128203; <a href="https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/" target="_blank">Microsoft Learn: AZ-900 Cloud Concepts Path</a></li>
+    <li>&#128203; <a href="https://www.proprofs.com/quiz-school/story.php?title=cloud-computing-basics" target="_blank">Cloud Computing Practice Exams</a></li>
+    <li>&#128203; <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html" target="_blank">AWS EC2 Getting Started Guide</a></li>
+    <li>&#128203; <a href="https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/" target="_blank">Microsoft Cloud Computing Dictionary</a></li>
+  </ul>
+
+  <!-- PROGRESS CHECKLIST -->
+  <h2>Progress Checklist</h2>
+  <ul class="checklist">
+    <li>I can explain IaaS, PaaS, and SaaS to a colleague</li>
+    <li>I understand the differences between public, private, hybrid, and multi-cloud deployments</li>
+    <li>I can compare AWS, Azure, and GCP core offerings</li>
+    <li>I understand cloud pricing models and how to estimate costs</li>
+    <li>I know all 6Rs of migration and when to apply each</li>
+    <li>I can articulate the shared responsibility model for IaaS, PaaS, and SaaS</li>
+    <li>I can clearly distinguish scalability from elasticity</li>
+    <li>I've launched a virtual machine in a cloud console</li>
+    <li>I've answered all quiz questions correctly</li>
+    <li>I've reviewed the recommended resources and bookmarked 2 for future reference</li>
+  </ul>
+
+  <!-- NEXT STEPS -->
+  <h2>Next Steps</h2>
+  <div class="info-box">
+    <div class="info-box-title">Where to Go From Here</div>
+    <p>Now that you understand cloud fundamentals, move on to hands-on exploration of Azure and AWS. The next module (<a href="phase-5-azure-aws-basics.html">Azure &amp; AWS Basics for IT Support</a>) will guide you through actual portal navigation, VM creation, and storage configuration in both platforms. After completing that, proceed to PowerShell scripting for Windows automation.</p>
+  </div>
+
+  <div class="next-prev">
+    <a href="../index.html" class="np-btn">&#8592; Back to Phase 5</a>
+    <a href="phase-5-azure-aws-basics.html" class="np-btn">Next: Azure &amp; AWS Basics &#8594;</a>
+  </div>
+</div>
+
+<footer>&copy; 2025 IT Support Roadmap -- Phase 5 Learning Paths</footer>
+
+<script>
+// Quiz answer toggle
+document.querySelectorAll('.quiz-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var ans = this.nextElementSibling;
+    ans.style.display = ans.style.display === 'block' ? 'none' : 'block';
+    this.textContent = ans.style.display === 'block' ? 'Hide Answer' : 'Show Answer';
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 2: Windows 10/11 Administration</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --blue: #3b82f6;
+  --cyan: #06b6d4;
+  --green: #10b981;
+  --purple: #8b5cf6;
+  --orange: #f59e0b;
+  --pink: #ec4899;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --border: #334155;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+header { background: linear-gradient(135deg, var(--card), #0f172a); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--blue); }
+header h1 { font-size: 1.5rem; color: var(--blue); }
+.hdr-links a { color: var(--muted); text-decoration: none; margin-left: 1rem; font-size: 0.9rem; }
+.hdr-links a:hover { color: var(--blue); }
+nav.prev-next { background: var(--card); padding: 1rem 2rem; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); }
+nav.prev-next a { color: var(--blue); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--blue); border-radius: 6px; font-size: 0.9rem; transition: background 0.2s; }
+nav.prev-next a:hover { background: var(--blue); color: white; }
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem; padding-bottom: 4rem; }
+.hero { text-align: center; padding: 2rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.hero h2 { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--cyan); }
+.hero p { color: var(--muted); }
+.objectives { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--purple); }
+.objectives h3 { color: var(--purple); margin-bottom: 1rem; font-size: 1.2rem; }
+.objectives ul { list-style: none; }
+.objectives li { padding: 0.4rem 0; display: flex; align-items: center; gap: 0.5rem; }
+.objectives input[type="checkbox"] { accent-color: var(--green); width: 18px; height: 18px; cursor: pointer; }
+.module { background: var(--card); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; border: 1px solid var(--border); }
+.module-header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.module-header:hover { background: rgba(59,130,246,0.05); }
+.module-header h3 { font-size: 1.1rem; }
+.module-time { background: var(--blue); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; }
+.module-body { padding: 0 1.5rem 1.5rem; }
+.module-body.collapsed { display: none; }
+.lesson { padding: 1rem; margin-bottom: 1rem; background: rgba(15,23,42,0.6); border-radius: 8px; border-left: 3px solid var(--cyan); }
+.lesson h4 { color: var(--cyan); margin-bottom: 0.5rem; }
+.lesson p { color: var(--muted); font-size: 0.95rem; }
+.lesson ul { margin-top: 0.5rem; padding-left: 1.2rem; }
+.lesson li { color: var(--muted); font-size: 0.9rem; padding: 0.2rem 0; }
+.lab { background: rgba(16,185,129,0.1); border: 1px solid var(--green); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.lab h4 { color: var(--green); margin-bottom: 0.5rem; }
+.lab ol { padding-left: 1.2rem; }
+.lab li { color: var(--muted); font-size: 0.9rem; padding: 0.2rem 0; }
+.scenario { background: rgba(245,158,11,0.1); border: 1px solid var(--orange); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.scenario h4 { color: var(--orange); margin-bottom: 0.5rem; }
+.scenario p { color: var(--muted); font-size: 0.9rem; }
+.resources { background: rgba(236,72,153,0.1); border: 1px solid var(--pink); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.resources h4 { color: var(--pink); margin-bottom: 0.5rem; }
+.resources a { color: var(--cyan); text-decoration: none; display: block; font-size: 0.9rem; padding: 0.2rem 0; }
+.resources a:hover { text-decoration: underline; }
+.progress-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); padding: 0.5rem 2rem; display: flex; align-items: center; gap: 1rem; z-index: 100; border-top: 1px solid var(--border); }
+.progress-label { color: var(--muted); font-size: 0.85rem; }
+#progressTrack { list-style: none; display: flex; gap: 0.5rem; justify-content: center; padding: 1rem 0; margin-bottom: 1rem; }
+#progressTrack li { width: 12px; height: 12px; border-radius: 50%; background: var(--border); }
+#progressTrack li.done { background: var(--green); }
+footer { clear: both; padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>&#x1F511; Windows Administration Learning Path</h1>
+  <div class="hdr-links">
+    <a href="../index.html">&#x21A9; Back to Index</a>
+    <a href="phase-2-linux-essentials.html">Next: Linux &#x2192;</a>
+  </div>
+</header>
+<nav class="prev-next">
+  <span></span>
+  <a href="phase-2-linux-essentials.html">Next Lesson: Linux Essentials &rarr;</a>
+</nav>
+<div class="container">
+  <div class="hero">
+    <h2>Windows 10/11 Administration</h2>
+    <p>Master enterprise Windows management from installation through troubleshooting and remote administration.</p>
+  </div>
+  <ul id="progressTrack"></ul>
+  <div class="objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li><input type="checkbox" data-mod="1" /> Install and deploy Windows 10/11 using modern tools</li>
+      <li><input type="checkbox" data-mod="2" /> Manage local users and Active Directory accounts</li>
+      <li><input type="checkbox" data-mod="3" /> Author and enforce Group Policy Objects (GPOs)</li>
+      <li><input type="checkbox" data-mod="4" /> Configure system settings and optimize performance</li>
+      <li><input type="checkbox" data-mod="5" /> Navigate and edit the Windows Registry safely</li>
+      <li><input type="checkbox" data-mod="6" /> Manage drivers and update systems</li>
+      <li><input type="checkbox" data-mod="7" /> Implement backup and restore strategies</li>
+      <li><input type="checkbox" data-mod="8" /> Use Event Viewer, DISM, SFC for diagnostics</li>
+      <li><input type="checkbox" data-mod="9" /> Administer remotely via PowerShell and RMM tools</li>
+    </ul>
+  </div>
+
+  <!-- Module 1 -->
+  <div class="module open">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 1: Windows Installation & Deployment</h3>
+      <span class="module-time">~3 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 1.1: Media Creation & ISO Management</h4>
+        <p>Creating bootable media, managing WIM files, and preparing deployment packages for mass rollout.</p>
+        <ul>
+          <li>Media Creation Tool workflow</li>
+          <li>ISO mounting and modification</li>
+          <li>Custom answer files (autounattend.xml)</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 1.2: Imaging with MDT/Litetouch</h4>
+        <p>Deploying standardized images across fleets using Microsoft Deployment Toolkit.</p>
+        <ul>
+          <li>Deployment share setup and configuration</li>
+          <li>Task sequences for different roles</li>
+          <li>Driver injection and application packaging</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Build Your First Task Sequence</h4>
+        <ol>
+          <li>Install MDT on a Windows Server VM</li>
+          <li>Create a Deployment Share with default structure</li>
+          <li>Import the latest Windows 11 ISO as source</li>
+          <li>Create a task sequence targeting Workstation role</li>
+          <li>Bootstrap a test client and verify imaging works</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>Your company is upgrading 500 PCs from Windows 10 to 11. The legacy image doesn't include the new TPM 2.0 driver signature. Design an automated upgrade path that handles driver gaps without user interaction.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows/deployment/" target="_blank">Microsoft Deployment Documentation</a>
+        <a href="https://techcommunity.microsoft.com/t5/microsoft-fast-track/bg-p/MicrosoftFastTrackBlog" target="_blank">Microsoft Fast Track Blog</a>
+        <a href="https://github.com/microsoft/Microsoft-IT-Deployment" target="_blank">Microsoft IT GitHub Repos</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 2: User Management (Local & AD)</h3>
+      <span class="module-time">~3 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 2.1: Local Account Management</h4>
+        <p>User profiles, groups, permissions, and account policies at the workstation level.</p>
+        <ul>
+          <li>Computer Management console deep-dive</li>
+          <li>net user / net localgroup commands</li>
+          <li>Profile paths and roaming profiles basics</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 2.2: Active Directory Users & Computers</h4>
+        <p>AD domain concepts, OUs, organizational hierarchy, and bulk operations with PowerShell.</p>
+        <ul>
+          <li>AD schema, domains, forests, trusts</li>
+          <li>SUBNETS and site topology</li>
+          <li>PowerShell Get-/New-/Set-ADUser workflows</li>
+          <li>Password policies and lockout thresholds</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: AD User Lifecycle</h4>
+        <ol>
+          <li>Set up a Windows Server 2022 VM and promote it to domain controller</li>
+          <li>Create organizational units for each department</li>
+          <li>Use PowerShell to create 50 sample users in bulk</li>
+          <li>Lock and unlock accounts using multiple methods</li>
+          <li>Audit failed login attempts across the domain</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>An employee leaves today. You need to disable their account, redirect their Outlook cache, move their file share to an administrator, and revoke all session tokens within 5 minutes. Document your runbook.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage" target="_blank">Active Directory Management Guide</a>
+        <a href="https://www.petri.com/active-directory-basics" target="_blank">Petri Active Directory Basics</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 3: Group Policy Administration</h3>
+      <span class="module-time">~4 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 3.1: GPO Anatomy & Processing Order</h4>
+        <p>Understanding policy precedence, inheritance blocking, and the order of operations.</p>
+        <ul>
+          <li>LSDOU: Local, Site, Domain, OU processing</li>
+          <li>Block Inheritance and Enforced options</li>
+          <li>gpresult and RSOP analysis tools</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 3.2: Authoring & Enforcing Policies</h4>
+        <p>Crafting real-world GPOs for security hardening, software restrictions, and drive mapping.</p>
+        <ul>
+          <li>Security templates and baseline hardening</li>
+          <li>AppLocker for application control</li>
+          <li>Drive mappings, printers, and logon scripts</li>
+          <li>Preference items vs. classic settings</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Security Baseline Rollout</h4>
+        <ol>
+          <li>Create a GPO enforcing password complexity matching NIST guidelines</li>
+          <li>Configure screen timeout and blanking policies</li>
+          <li>Deploy mapped drives based on AD group membership</li>
+          <li>Use gpupdate /force and troubleshoot a misconfigured policy</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>The CISO wants all USB storage blocked except encrypted devices for the finance team. How do you scope this policy using security filtering and WMI filters?</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows-server/group-policy/overview-of-group-policy" target="_blank">Group Policy Overview</a>
+        <a href="https://admx.help/" target="_blank">Group Policy ADMX Reference</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 4: System Configuration & Performance</h3>
+      <span class="module-time">~2.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 4.1: Services & Startup Management</h4>
+        <p>Controlling Windows services, startup programs, and understanding service dependencies.</p>
+        <ul>
+          <li>Services.msc and sc.exe command-line control</li>
+          <li>Startup folder and registry run keys</li>
+          <li>msconfig and Task Manager alternatives</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 4.2: System Monitoring & Optimization</h4>
+        <p>Performance Monitor, Resource Monitor, and common bottlenecks in enterprise environments.</p>
+        <ul>
+          <li>PerfMon counters: CPU, Memory, Disk, Network</li>
+          <li>Reliability Monitor for stability tracking</li>
+          <li>Memory leak detection and disk fragmentation analysis</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Root Cause Analysis</h4>
+        <ol>
+          <li>Introduce a memory-hogging process (simulate with loop script)</li>
+          <li>Use PerfMon to identify and document the bottleneck</li>
+          <li>Troubleshoot a deliberately misconfigured DNS client</li>
+          <li>Check event logs for the specific error pattern</li>
+        </ol>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management/performance-monitoring-and-management" target="_blank">Performance Monitoring Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 5: Registry Editing</h3>
+      <span class="module-time">~2 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 5.1: Registry Structure & Hives</h4>
+        <p>Navigating HKLM, HKCU, hive structure, and safe modification techniques.</p>
+        <ul>
+          <li>Key relationships and data types</li>
+          <li>Registry export/import best practices</li>
+          <li>Built-in backdoors and undocumented features</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 5.2: Common Enterprise Registry Tweaks</h4>
+        <p>Policies deployed via registry vs. GPO, known-good values for common issues.</p>
+        <ul>
+          <li>Disabling telemetry and data collection keys</li>
+          <li>Fixing common Explorer/Shell problems</li>
+          <li>Remote assistance and RDP tunneling registry entries</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Safe Registry Surgery</h4>
+        <ol>
+          <li>Export a critical registry key before modification</li>
+          <li>Disable Adobe Flash notifications via registry</li>
+          <li>Change the default printer via HKCU registry entry</li>
+          <li>Restore from backup using reg import command</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A user cannot connect to a network drive because the registry has been corrupted. Rebuild the relevant MRU list and network connection settings from scratch using HKCU\Network keys.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/about-the-registry" target="_blank">About the Registry</a>
+        <a href="https://www.sysinternals.com/resources/downloads" target="_blank">Sysinternals Suite</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 6: Driver Management & Updates</h3>
+      <span class="module-time">~2 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 6.1: Device Manager Deep Dive</h4>
+        <p>Installing, updating, rolling back, and troubleshooting hardware drivers.</p>
+        <ul>
+          <li>Driver stores and INF files (pnputil)</li>
+          <li>Hardware IDs and matching drivers</li>
+          <li>Plug and Play enumeration problems</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 6.2: Windows Update for Business</h4>
+        <p>Update rings, deferred updates, WSUS integration, and handling patch Tuesday.</p>
+        <ul>
+          <li>WSUS server configuration and approval workflows</li>
+          <li>Delivery Optimization caches and bandwidth management</li>
+          <li>Handling update failures and rollback procedures</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Driver Recovery</h4>
+        <ol>
+          <li>Force-install a generic display driver, then roll it back</li>
+          <li>Use pnputil to enumerate and add a driver package</li>
+          <li>Configure WSUS in a lab domain controller scenario</li>
+          <li>Simulate a bad driver update and perform SFC + DISM recovery</li>
+        </ol>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/install/drivers-in-windows" target="_blank">Drivers in Windows</a>
+        <a href="https://learn.microsoft.com/en-us/windows/deployment/update/waas-wufb-overview" target="_blank">Windows Update for Business</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 7: Backup & Restore Strategies</h3>
+      <span class="module-time">~2.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 7.1: Built-in Tools: File History & System Image</h4>
+        <p>Using Windows native backup features for personal and enterprise scenarios.</p>
+        <ul>
+          <li>File History retention policies and library selection</li>
+          <li>Backup and Restore (Windows 7) for system images</li>
+          <li>Windows Server Backup for server workloads</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 7.2: Shadow Copies & VSS</h4>
+        <p>Volume Shadow Copy Service for instant file recovery without third-party tools.</p>
+        <ul>
+          <li>Shadow Copy scheduling and storage allocation</li>
+          <li>Previous Versions tab recovery</li>
+          <li>VSS writer status checks and fixing stuck shadows</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Disaster Recovery Simulation</h4>
+        <ol>
+          <li>Configure File History on a test machine pointing to a network share</li>
+          <li>Enable shadow copies on C: with 10% allocation</li>
+          <li>Delete a critical file and recover it using Previous Versions</li>
+          <li>Perform a full system image backup and restoration in recovery mode</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A ransomware attack hits. Some machines have shadow copies disabled. Draft an incident response plan covering immediate containment, identification of immutable backups, and rebuilding from clean media within 2 hours.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/vssadmin" target="_blank">vssadmin Documentation</a>
+        <a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/use-shadow-copy" target="_blank">Shadow Copies Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 8: Troubleshooting Tools</h3>
+      <span class="module-time">~3 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 8.1: Event Viewer Mastery</h4>
+        <p>Reading Security, System, and Application logs, custom views, and log aggregation.</p>
+        <ul>
+          <li>Event ID patterns: logon failures (4625), access denied (4663)</li>
+          <li>Forwarded Events subscription architecture</li>
+          <li>Filtering and creating custom views for rapid triage</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 8.2: SFC & DISM Repair</h4>
+        <p>Fixing corrupt system files and component store corruption systematically.</p>
+        <ul>
+          <li>sfc /scannow and its limitations</li>
+          <li>DISM cleanup-image repair from Windows source</li>
+          <li>Online vs. offline component store repair</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Diagnostic Workflow</h4>
+        <ol>
+          <li>Search Event Viewer for all Critical and Error events in last 24 hours</li>
+          <li>Run sfc /scannow on a healthy system and interpret results</li>
+          <li>Run DISM /Cleanup-Image /RestoreHealth from a mounted ISO</li>
+          <li>Create a custom view showing only Security audit failures</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A workstation boots to a black screen. The monitor shows no output after the BIOS. Using only keyboard navigation, diagnose whether it's a display driver issue or deeper system corruption using WinRE and CMD-only tooling.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/windows/win32/eventlog/events" target="_blank">Windows Event Log Reference</a>
+        <a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/best-practices-for-disaster-recovery-solutions-deploying" target="_blank">DISM Best Practices</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 9: Remote Management</h3>
+      <span class="module-time">~3 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 9.1: Remote Desktop Protocol (RDP)</h4>
+        <p>RDP configuration, gateway setups, session management, and security hardening.</p>
+        <ul>
+          <li>rdp / remote desktop connections advanced settings</li>
+          <li>RD Gateway for internet-accessible management</li>
+          <li>Multi-session RDS deployments overview</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 9.2: PowerShell Remoting (WinRM)</h4>
+        <p>Secure remote execution, PSSession configurations, and automation patterns.</p>
+        <ul>
+          <li>WinRM service prerequisites and firewall rules</li>
+          <li>New-PSSession, Enter-PSSession, Invoke-Command</li>
+          <li>TrustedHosts and certificate-based authentication</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Remote Fleet Management</h4>
+        <ol>
+          <li>Enable WinRM on a target machine via GPO</li>
+          <li>Execute multi-machine commands using Invoke-Command -ComputerName</li>
+          <li>Configure RDS (Remote Desktop Services) connection broker</li>
+          <li>Build a PowerShell script that pings all computers in an OU and reports uptime</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>You need to push a script to 200 machines but half are behind a firewall with no WinRM access. Design a fallback strategy using PSExec, SSH bastion, or RMM agent deployment to achieve the same result.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote" target="_blank">About_Remote Help Topics</a>
+        <a href="https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/what-is-remote-desktop-services" target="_blank">Remote Desktop Services</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>Windows 10/11 Administration Phase 2 | Estimated Total: ~22 Hours</footer>
+</div>
+<div class="progress-bar">
+  <span class="progress-label">Progress:</span>
+  <span id="progressPercent">0%</span>
+  <div style="flex:1;height:8px;background:#334155;border-radius:4px;">
+    <div id="progressFill" style="height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 0.3s;"></div>
+  </div>
+</div>
+<script>
+function toggleModule(header) {
+  header.parentElement.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('collapsed');
+}
+const checkboxes = document.querySelectorAll('.module input[type="checkbox"]');
+function updateProgress() {
+  const total = checkboxes.length;
+  const done = document.querySelectorAll('.module input[type="checkbox"]:checked').length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPercent').textContent = pct + '%';
+  localStorage.setItem('win-admin-progress', JSON.stringify([...document.querySelectorAll('.module input[type="checkbox"]').map(c => c.checked)]));
+  const dots = document.querySelectorAll('#progressTrack li');
+  checkboxes.forEach((cb, i) => { if(dots[i]) dots[i].classList.toggle('done', cb.checked); });
+}
+checkboxes.forEach(cb => cb.addEventListener('change', updateProgress));
+(function() {
+  const saved = localStorage.getItem('win-admin-progress');
+  if(saved) {
+    try {
+      const arr = JSON.parse(saved);
+      arr.forEach((val, i) => { if(checkboxes[i]) checkboxes[i].checked = val; });
+      updateProgress();
+    } catch(e){}
+  }
+  const track = document.getElementById('progressTrack');
+  checkboxes.forEach(() => { const li = document.createElement('li'); track.appendChild(li); });
+})();
+</script>
+</body>
+</html>

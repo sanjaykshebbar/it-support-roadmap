@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encryption &amp; Access Control — Phase 4</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .nav-bar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .nav-bar a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 6px; transition: background 0.2s; }
+    .nav-bar a:hover { background: var(--surface); color: var(--text); }
+    .nav-bar .sep { color: var(--text-dim); }
+
+    header { text-align: center; padding: 2.5rem 1rem 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    header h1 {
+      font-size: 2.4rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    header p { color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto 1rem; }
+    .badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.78rem; color: var(--text-muted); }
+
+    h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; letter-spacing: -0.5px; }
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 1.5rem 0 0.6rem; }
+    .section-sub { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.2rem; }
+
+    .objectives {
+      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent-purple);
+      border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;
+    }
+    .objectives h3 { margin-top: 0; color: var(--accent-purple); }
+    .obj-list { list-style: none; }
+    .obj-list li { padding: 0.35rem 0; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.6rem; }
+    .obj-list li::before { content: '\2610'; color: var(--accent-purple); font-size: 1rem; flex-shrink: 0; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; }
+    th { background: rgba(139,92,246,0.1); color: var(--accent-purple); text-align: left; padding: 0.7rem 1rem; border-bottom: 2px solid var(--border); font-weight: 700; }
+    td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    ul, ol { padding-left: 1.2rem; margin: 0.5rem 0; }
+    li { padding: 0.25rem 0; font-size: 0.9rem; color: var(--text-muted); }
+    li::marker { color: var(--accent-cyan); }
+
+    .callout { border-radius: 10px; padding: 1rem 1.2rem; margin: 1rem 0; font-size: 0.9rem; }
+    .callout-danger { background: rgba(239,68,68,0.1); border-left: 4px solid #ef4444; }
+    .callout-warning { background: rgba(245,158,11,0.1); border-left: 4px solid var(--accent-orange); }
+    .callout-info { background: rgba(59,130,246,0.1); border-left: 4px solid var(--accent-blue); }
+    .callout-success { background: rgba(16,185,129,0.1); border-left: 4px solid var(--accent-green); }
+    .callout strong { display: block; margin-bottom: 0.3rem; }
+
+    .tag { display: inline-block; border-radius: 6px; padding: 0.15rem 0.55rem; font-size: 0.75rem; font-weight: 700; }
+    .tag-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .tag-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+    .tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .tag-pink { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+    .tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+
+    .progress-checklist { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+    .progress-checklist h3 { margin-top: 0; color: var(--accent-green); }
+    .check-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; font-size: 0.88rem; color: var(--text-muted); cursor: pointer; }
+    .check-item input[type="checkbox"] { accent-color: var(--accent-green); width: 16px; height: 16px; cursor: pointer; }
+
+    .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .resource-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .resource-card .rt { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-cyan); margin-bottom: 0.4rem; }
+    .resource-card h4 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+    .resource-card p { font-size: 0.83rem; color: var(--text-muted); margin: 0; }
+
+    .diagram-box {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.5rem; margin: 1rem 0; font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.82rem; white-space: pre; overflow-x: auto; color: var(--accent-cyan); line-height: 1.5;
+    }
+
+    footer { text-align: center; color: var(--text-dim); font-size: 0.78rem; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 2rem; }
+    @media (max-width: 600px) { header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-bar">
+      <a href="../index.html">&#8592; Roadmap Home</a>
+      <span class="sep">/</span>
+      <a href="#">Phase 4: Security</a>
+      <span class="sep">/</span>
+      <strong style="color:var(--accent-purple); font-size:0.85rem;">Encryption &amp; Access Control</strong>
+    </div>
+
+    <header>
+      <h1>Encryption &amp; Access Control Fundamentals</h1>
+      <p>Learn how cryptography protects data at rest and in transit, how identity systems verify who you are, and how authorization controls decide what you can do.</p>
+      <div class="badges">
+        <span class="badge">&#128640; Phase 4</span>
+        <span class="badge">&#9201; ~20 Hours</span>
+        <span class="badge">&#128161; Conceptual + Labs</span>
+        <span class="badge">&#128227; Security+ Aligned</span>
+      </div>
+    </header>
+
+    <div class="objectives">
+      <h3>Learning Objectives</h3>
+      <ul class="obj-list">
+        <li><input type="checkbox" /> Differentiate symmetric and asymmetric encryption with real use cases</li>
+        <li><input type="checkbox" /> Explain hash functions and their role in data integrity verification</li>
+        <li><input type="checkbox" /> Understand digital certificates and how PKI enables trust online</li>
+        <li><input type="checkbox" /> Describe how SSL/TLS protects web communication end-to-end</li>
+        <li><input type="checkbox" /> Compare authentication methods: MFA, biometrics, tokens, passwords</li>
+        <li><input type="checkbox" /> Implement authorization models: RBAC vs ABAC vs DAC vs MAC</li>
+        <li><input type="checkbox" /> Design password policies that balance security and usability</li>
+        <li><input type="checkbox" /> Distinguish encryption at rest vs. in transit and apply correctly</li>
+      </ul>
+    </div>
+
+    <!-- Module 1 -->
+    <h2>Module 1: Symmetric vs Asymmetric Encryption</h2>
+    <p class="section-sub">The two fundamental approaches to scrambling data so only intended recipients can read it.</p>
+
+    <div class="card-grid">
+      <div class="card" style="border-left: 4px solid var(--accent-blue);">
+        <span class="tag tag-blue">Fast &amp; Efficient</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-blue);">Symmetric Encryption</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Uses a <strong>single shared secret key</strong> for both encryption and decryption. Fast, efficient, ideal for bulk data encryption. The same key must be securely exchanged between parties before communication begins.</p>
+        <h4 style="margin-top:0.8rem; color:var(--text);">Common Algorithms</h4>
+        <ul>
+          <li><strong>AES (Advanced Encryption Standard)</strong> — 128/192/256-bit keys, current gold standard</li>
+          <li><strong>ChaCha20</strong> — fast software implementation, used in TLS 1.3</li>
+          <li><strong>3DES</strong> — legacy, deprecated, avoid for new systems</li>
+          <li><strong>AES-GCM</strong> — authenticated encryption (encrypt + verify integrity)</li>
+        </ul>
+        <div class="callout callout-warning" style="margin-top:0.8rem;">
+          <strong>The Key Distribution Problem:</strong> How do you safely share the secret key with the recipient? This is the fundamental challenge symmetric encryption solves imperfectly — leading to asymmetric encryption.
+        </div>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-purple);">
+        <span class="tag tag-purple">Secure Key Exchange</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-purple);">Asymmetric Encryption</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Uses a <strong>key pair</strong>: a public key (shared openly) and a private key (kept secret). Data encrypted with the public key can only be decrypted with the matching private key, and vice versa.</p>
+        <h4 style="margin-top:0.8rem; color:var(--text);">Common Algorithms</h4>
+        <ul>
+          <li><strong>RSA</strong> — widely used, 2048+ bit keys recommended</li>
+          <li><strong>ECDSA / ECDH</strong> — elliptic curve variants, smaller keys, same security</li>
+          <li><strong>Ed25519</strong> — modern, fast, increasingly popular</li>
+        </ul>
+        <div class="callout callout-info" style="margin-top:0.8rem;">
+          <strong>Performance Trade-off:</strong> Asymmetric encryption is 1000x slower than symmetric. That's why most protocols (like TLS) use asymmetric crypto just to exchange a symmetric session key, then switch to symmetric for the actual data transfer.
+        </div>
+      </div>
+    </div>
+
+    <h3>How They Work Together (Hybrid Approach)</h3>
+    <div class="diagram-box">
+Example: Sending an encrypted email
+=====================================
+
+Alice wants to send a secret message to Bob.
+
+Step 1 (Asymmetric): Alice encrypts a RANDOM session key
+with Bob's PUBLIC KEY.
+   [Session Key] --encrypted with--> [Bob's Public Key] --> [Encrypted Key Package]
+
+Step 2 (Symmetric): Alice encrypts the ACTUAL MESSAGE
+with the SESSION KEY (fast!).
+   [Message] --encrypted with--> [Session Key] --> [Encrypted Message]
+
+Step 3: Alice sends BOTH pieces to Bob.
+
+Bob receives:
+  - Encrypted Key Package -> decrypts with HIS PRIVATE KEY -> gets Session Key
+  - Encrypted Message -> decrypts with Session Key -> gets original Message
+
+Result: Secure, fast communication without pre-sharing secrets!
+    </div>
+
+    <!-- Module 2 -->
+    <h2>Module 2: Hash Functions</h2>
+    <p class="section-sub">One-way mathematical functions that verify data integrity — not encryption, but equally critical.</p>
+
+    <div class="card">
+      <h3>What Hash Functions Do</h3>
+      <p style="font-size:0.88rem; color:var(--text-muted);">A hash function takes any input data and produces a fixed-length string of characters (the "hash" or "digest") that uniquely represents that data. The process is <strong>one-way</strong> — you cannot reverse a hash to recover the original data.</p>
+      <h4 style="margin-top:1rem;">Key Properties</h4>
+      <ul>
+        <li><strong>Deterministic:</strong> Same input always produces the same hash</li>
+        <li><strong>Fast to compute:</strong> Given input, hash is quick to calculate</li>
+        <li><strong>Pre-image resistant:</strong> Given a hash, cannot find the original input</li>
+        <li><strong>Collision resistant:</strong> Extremely unlikely that two different inputs produce the same hash</li>
+        <li><strong>Avalanche effect:</strong> A tiny change in input produces a drastically different hash</li>
+      </ul>
+      <h4 style="margin-top:1rem;">Common Hash Algorithms</h4>
+      <table>
+        <tr><th>Algorithm</th><th>Hash Length</th><th>Status</th><th>Use Case</th></tr>
+        <tr><td>SHA-256</td><td>64 hex characters</td><td><span class="tag tag-green">Recommended</span></td><td>Digital signatures, blockchain, integrity checks</td></tr>
+        <tr><td>SHA-384 / SHA-512</td><td>96 / 128 hex chars</td><td><span class="tag tag-green">Recommended</span></td><td>Higher security requirements</td></tr>
+        <tr><td>SHA-1</td><td>40 hex characters</td><td><span class="tag tag-red">Deprecated</span></td><td>DO NOT USE — collision attacks demonstrated</td></tr>
+        <tr><td>MD5</td><td>32 hex characters</td><td><span class="tag tag-red">Broken</span></td><td>Historical only. Collisions trivially exploitable.</td></tr>
+      </table>
+    </div>
+
+    <h3>Hash Functions in Practice</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Password Storage</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Systems never store plain-text passwords. They hash each password with a salt (random data) using bcrypt, scrypt, or Argon2. On login, the entered password is hashed the same way and compared to the stored hash.</p>
+      </div>
+      <div class="card">
+        <h3>File Integrity Verification</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Download a file? Check its SHA-256 hash against the publisher's published hash. If they match, the file is authentic and untampered. Critical for OS installs, security tools, and firmware updates.</p>
+      </div>
+      <div class="card">
+        <h3>Digital Signatures</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">A sender hashes a document, then encrypts the hash with their PRIVATE key. Anyone can verify by decrypting with the sender's PUBLIC key and comparing hashes. Proves authenticity AND integrity.</p>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <h2>Module 3: Digital Certificates &amp; PKI</h2>
+    <p class="section-sub">The trust infrastructure that makes secure online communication possible — from HTTPS websites to code signing.</p>
+
+    <h3>What Is a Digital Certificate?</h3>
+    <div class="card">
+      <p style="font-size:0.88rem; color:var(--text-muted);">A digital certificate is an electronic "passport" that binds a public key to an identity (person, server, organization). It's issued by a trusted Certificate Authority (CA) and contains:</p>
+      <ul>
+        <li>Certificate holder's identity (Common Name, Organization, etc.)</li>
+        <li>Public key belonging to the certificate holder</li>
+        <li>Name and digital signature of the issuing Certificate Authority</li>
+        <li>Validity period (not before / not after dates)</li>
+        <li>Certificate serial number and revocation information (CRL/OCSP)</li>
+      </ul>
+      <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">Format: X.509 is the standard format (used for TLS/SSL certificates, S/MIME, code signing).</p>
+    </div>
+
+    <h3>PKI (Public Key Infrastructure) Explained</h3>
+    <div class="diagram-box">
+PKI Trust Hierarchy
+===================
+
+                         [Root CA]
+                     (Self-Signed, Trusted Store)
+                           |  \
+                ___________|   \___________
+               |                       |
+        [Intermediate CA]       [Intermediate CA]
+           (Subordinate)             (Subordinate)
+               |                       |
+      _______|______           _______|______
+     |              |         |              |
+ [Server Cert]  [Client Cert] [Code Sig]  [Email Cert]
+  example.com     user@corp    Notepad.exe  bob@mail.com
+
+Flow:
+1. Browser visits https://example.com
+2. Server presents its certificate (issued by Intermediate CA)
+3. Browser checks: Is this Intermediate CA signed by a Root CA
+   I trust? (Yes -> certificate is valid)
+4. Browser verifies certificate matches the domain name
+5. Browser verifies certificate hasn't expired or been revoked
+6. Secure TLS connection established
+    </div>
+
+    <div class="callout callout-warning">
+      <strong>Trust Chain Matters:</strong> A certificate is only as trustworthy as the chain of CAs that vouch for it. Browsers maintain a "trusted root store" — certificates from CAs not in this store trigger warnings. Never ignore SSL certificate warnings.
+    </div>
+
+    <!-- Module 4 -->
+    <h2>Module 4: SSL/TLS Explained</h2>
+    <p class="section-sub">The protocol that secures every HTTPS connection you make — behind the little padlock icon.</p>
+
+    <h3>How TLS Handshake Works</h3>
+    <div class="diagram-box">
+TLS 1.3 Handshake (Simplified)
+==============================
+
+Client                          Server
+  |                               |
+  |--- ClientHello (cipher suites) -->|
+  |                               |
+  |<- -- ServerHello + Certificate -|
+  |      + ServerKeyExchange       |
+  |                               |
+  |--- ClientKeyExchange ---------->|
+  |      + ChangeCipherSpec        |
+  |      + Finished                |
+  |                               |
+  |<- -- ChangeCipherSpec ---------|
+  |      + Finished                |
+  |                               |
+  == Secure channel established ==
+  == All data encrypted from here ==
+
+TLS 1.3 eliminates round trips vs TLS 1.2 (1-RTT vs 2-RTT)
+Uses ephemeral keys (ECDHE) for Perfect Forward Secrecy
+    </div>
+
+    <h3>Key Concepts</h3>
+    <table>
+      <tr><th>Concept</th><th>Explanation</th><th>Why It Matters</th></tr>
+      <tr><td><strong>Perfect Forward Secrecy (PFS)</strong></td><td>Each session uses a unique ephemeral key. Compromising the server's long-term private key does NOT compromise past session keys.</td><td>Protects historical communications even if the server is later compromised.</td></tr>
+      <tr><td><strong>Cipher Suites</strong></td><td>Named combinations of key exchange + encryption + MAC algorithms (e.g., TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256).</td><td>Weaker cipher suites enable downgrade attacks. Disable RC4, 3DES, EXPORT-grade ciphers.</td></tr>
+      <tr><td><strong>HSTS</strong></td><td>HTTP Strict Transport Security — forces browsers to only use HTTPS for a domain.</td><td>Prevents SSL stripping attacks where attackers downgrade HTTPS to HTTP.</td></tr>
+      <tr><td><strong>Certificate Pinning</strong></td><td>Hard-coding expected certificates in client applications.</td><td>Prevents man-in-the-middle with fraudulent CA-issued certificates (rarely used due to key rotation problems).</td></tr>
+    </table>
+
+    <!-- Module 5 -->
+    <h2>Module 5: Authentication Methods</h2>
+    <p class="section-sub">Proving who you are — the layers that stand between attackers and your accounts.</p>
+
+    <h3>The Three Factors of Authentication</h3>
+    <div class="card-grid">
+      <div class="card" style="border-left: 4px solid var(--accent-blue);">
+        <span class="tag tag-blue">Something You Know</span>
+        <h3 style="margin-top:0.5rem;">Knowledge Factor</h3>
+        <ul>
+          <li>Passwords and PINs</li>
+          <li>Security questions ("mother's maiden name")</li>
+          <li>Passphrases</li>
+        </ul>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:0.5rem;">Most common but also most easily compromised through guessing, phishing, or database breaches.</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-green);">
+        <span class="tag tag-green">Something You Have</span>
+        <h3 style="margin-top:0.5rem;">Possession Factor</h3>
+        <ul>
+          <li>Smart cards and proximity cards</li>
+          <li>Hardware tokens (YubiKey, RSA SecurID)</li>
+          <li>Mobile phone (SMS codes, TOTP apps)</li>
+          <li>Security keys (FIDO2/WebAuthn)</li>
+        </ul>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:0.5rem;">Much harder to compromise remotely. Physical possession is required.</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-purple);">
+        <span class="tag tag-purple">Something You Are</span>
+        <h3 style="margin-top:0.5rem;">Inherence Factor</h3>
+        <ul>
+          <li>Fingerprint / biometric scanners</li>
+          <li>Face recognition (Face ID)</li>
+          <li>Iris/retina scanning</li>
+          <li>Voice recognition</li>
+        </ul>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:0.5rem;">Unique to each individual but raises privacy concerns. Generally the strongest factor.</p>
+      </div>
+    </div>
+
+    <h3>Multi-Factor Authentication (MFA)</h3>
+    <div class="card">
+      <p style="font-size:0.88rem; color:var(--text-muted);">MFA requires two or more of the above factors to be satisfied simultaneously. This is the single most effective control against account compromise — blocking over 99% of automated attacks (Microsoft 2023).</p>
+      <h4 style="margin-top:1rem;">MFA Methods Ranked (Most to Least Secure)</h4>
+      <table>
+        <tr><th>Rank</th><th>Method</th><th>Security Level</th><th>Notes</th></tr>
+        <tr><td>1</td><td>FIDO2 / WebAuthn security keys</td><td><span class="tag tag-green">Highest</span></td><td>Phish-resistant, hardware-bound, recommended by NIST</td></tr>
+        <tr><td>2</td><td>OTP apps (TOTP)</td><td><span class="tag tag-green">High</span></td><td>Google Authenticator, Authy, 1Password — 6-digit codes</td></tr>
+        <tr><td>3</td><tdPush notifications</td><td><span class="tag tag-yellow">Medium</span></td><td>Okta Verify, Microsoft Authenticator push approvals</td></tr>
+        <tr><td>4</td><td>HMAC-based OTP (push + pin)</td><td><span class="tag tag-yellow">Medium+</span></td><td>Requires entering a PIN shown on screen into the app</td></tr>
+        <tr><td>5</td><td>SMS voice codes</td><td><span class="tag tag-orange">Weak</span></td><td>SIM swapping, SS7 attacks, interception possible</td></tr>
+        <tr><td>6</td><td>Email codes</td><td><span class="tag tag-red">Very Weak</span></td><td>Easily intercepted if email is compromised</td></tr>
+      </table>
+    </div>
+
+    <!-- Module 6 -->
+    <h2>Module 6: Authorization Models</h2>
+    <p class="section-sub">Once someone is authenticated, how do you control what they can actually do?</p>
+
+    <div class="card-grid">
+      <div class="card" style="border-left: 4px solid var(--accent-blue);">
+        <span class="tag tag-blue">Role-Based</span>
+        <h3 style="margin-top:0.5rem;">RBAC (Role-Based Access Control)</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Permissions are assigned to ROLES, and users are assigned to roles. When someone joins as "HR Manager," they automatically inherit all permissions associated with that role.</p>
+        <ul>
+          <li><strong>Pros:</strong> Simple to manage at scale, clear audit trail, easy to onboard/offboard</li>
+          <li><strong>Cons:</strong> Role explosion in complex organizations, doesn't handle dynamic contexts well</li>
+          <li><strong>Used by:</strong> Active Directory groups, AWS IAM roles, most enterprise software</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-purple);">
+        <span class="tag tag-purple">Attribute-Based</span>
+        <h3 style="margin-top:0.5rem;">ABAC (Attribute-Based Access Control)</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Fine-grained decisions based on attributes of the user, resource, action, and environment. "Allow access if: user.department == 'Finance' AND time is business hours AND device is company-managed."</p>
+        <ul>
+          <li><strong>Pros:</strong> Extremely granular, context-aware, handles complex policies</li>
+          <li><strong>Cons:</strong> Complex to design and maintain, policy evaluation overhead</li>
+          <li><strong>Standards:</strong> XACML, OAuth 2.0 scopes, Open Policy Agent</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-orange);">
+        <span class="tag tag-orange">Traditional</span>
+        <h3 style="margin-top:0.5rem;">DAC &amp; MAC</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>DAC (Discretionary):</strong> Resource owners decide who gets access (Windows file permissions, Linux chmod). Flexible but inconsistent.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.3rem;"><strong>MAC (Mandatory):</strong> Central authority assigns labels (Top Secret, Confidential). Used in military/government. Users cannot change access levels regardless of ownership.</p>
+      </div>
+    </div>
+
+    <h3>The Least Privilege Principle</h3>
+    <div class="callout callout-info">
+      <strong>Core Security Principle:</strong> Every user, program, and process should operate using the minimum set of permissions necessary to accomplish its task. Nothing more. This limits the blast radius of compromised accounts and Insider threats.
+    </div>
+    <ul>
+      <li><strong>Just-In-Time (JIT) Access:</strong> Grant elevated permissions only when needed, for a limited time window, with automatic expiration</li>
+      <li><strong>Just-Enough-Access (JEA):</strong> Restrict commands and parameters available during elevated sessions</li>
+      <li><strong>Regular Access Reviews:</strong> Quarterly audits of who has what access — remove stale permissions</li>
+      <li><strong>Separation of Duties:</strong> Critical actions require multiple authorized individuals (no single point of failure)</li>
+    </ul>
+
+    <!-- Module 7 -->
+    <h2>Module 7: Password Policies &amp; Management</h2>
+    <p class="section-sub">Passwords remain the dominant authentication method. Making them stronger and easier to manage is essential.</p>
+
+    <h3>NIST SP 800-63B Recommended Practices (2024)</h3>
+    <table>
+      <tr><th>Old Practice (Avoid)</th><th>New Best Practice</th><th>Reason</th></tr>
+      <tr><td>Require periodic password changes</td><td>Change ONLY when compromise is suspected</td><td>Forced rotations lead to predictable patterns (Password1, Password2...)</td></tr>
+      <tr><td>Complexity requirements (mixed chars)</td><td>Minimum 8+ characters, check against breach lists</td><td>Length > complexity. Complexity causes memorability issues.</td></tr>
+      <tr><td>Restrict common character sequences</td><td>Check passwords against known breached passwords (HaveIBeenPwned API)</td><td>A 12-character password like "correcthorsebattery" beats a 8-char "Tr0ub4dor&3"</td></tr>
+      <tr><td>Show password while typing</td><td>Show on demand (after typing) with masking by default</td><td>Reduces typos and frustration while preventing shoulder surfing</td></tr>
+      <tr><td>Restrict password reuse</td><td>Allow reuse of old passwords (within reason)</td><td>Users typically just make trivial changes to reused passwords</td></tr>
+    </table>
+
+    <h3>Password Manager Recommendations</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h3>1Password</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Excellent UX, Family/Business plans, Travel Mode, Watchtower breach monitoring. ~$3/month.</p>
+      </div>
+      <div class="card">
+        <h3>BetterMe / Bitwarden</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Open-source, free tier available, self-hostable option, cross-platform. Great for organizations on a budget.</p>
+      </div>
+      <div class="card">
+        <h3>KeePassXC</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Offline, local storage, completely free. Maximum privacy but requires manual syncing across devices.</p>
+      </div>
+    </div>
+
+    <!-- Module 8 -->
+    <h2>Module 8: Encryption at Rest vs In Transit</h2>
+    <p class="section-sub">Data is vulnerable in two states — both must be protected.</p>
+
+    <div class="card-grid">
+      <div class="card" style="border-left: 4px solid var(--accent-cyan);">
+        <span class="tag tag-cyan">Data at Rest</span>
+        <h3 style="margin-top:0.5rem;">Encryption While Stored</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">Protects data on disks, databases, backups, and portable media. If physical theft or unauthorized access occurs, the data remains unreadable without the decryption key.</p>
+        <h4 style="margin-top:0.8rem;">Implementation Options</h4>
+        <ul>
+          <li><strong>Full Disk Encryption (FDE):</strong> BitLocker (Windows), FileVault (macOS), LUKS (Linux)</li>
+          <li><strong>Database Encryption:</strong> TDE (Transparent Data Encryption), column-level encryption</li>
+          <li><strong>Object Storage:</strong> S3 server-side encryption (SSE-S3, SSE-KMS, SSE-C)</li>
+          <li><strong>Backup Encryption:</strong> Encrypt before backing up to cloud/offsite</li>
+          <li><strong>USB Drive Encryption:</strong> VeraCrypt, hardware-encrypted USB drives</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-pink);">
+        <span class="tag tag-pink">Data in Transit</span>
+        <h3 style="margin-top:0.5rem;">Encryption During Transfer</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">Protects data as it travels across networks — email, web requests, file transfers, VPN tunnels. Prevents eavesdropping and man-in-the-middle attacks.</p>
+        <h4 style="margin-top:0.8rem;">Implementation Options</h4>
+        <ul>
+          <li><strong>TLS/HTTPS:</strong> All web traffic, API calls, internal services</li>
+          <li><strong>SSH:</strong> Remote shell, SCP/SFTP file transfers</li>
+          <li><strong>IPsec VPN:</strong> Site-to-site and remote access VPNs</li>
+          <li><strong>S/MIME:</strong> Email encryption and digital signatures</li>
+          <li><strong>PGP/GPG:</strong> End-to-end email and file encryption</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-success">
+      <strong>Remember:</strong> Encryption is only as strong as your key management. A broken encryption scheme with poor key handling is worse than no encryption at all (false sense of security). Follow KMS best practices: rotate keys regularly, store keys separately from data, monitor key access logs.
+    </div>
+
+    <!-- Knowledge Check -->
+    <h2>Knowledge Check</h2>
+    <div class="card">
+      <h3>Q1: Why can't you reverse a SHA-256 hash to get the original data?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">Hash functions are one-way mathematical functions by design. They compress arbitrarily large input into a fixed-size output through irreversible operations (bitwise operations, modular arithmetic, compression functions). There are infinitely many possible inputs that map to the same hash output, making reversal mathematically impossible. This property is called <strong>pre-image resistance</strong>.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Q2: What is the main advantage of AES over RSA for encrypting large files?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Speed.</strong> AES (symmetric) is approximately 1000x faster than RSA (asymmetric) for equivalent security levels. That's why hybrid schemes are used: RSA exchanges a temporary AES session key, then AES encrypts the actual data. This combines RSA's secure key exchange with AES's fast bulk encryption.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Q3: What does "Perfect Forward Secrecy" mean in the context of TLS?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">PFS means that each TLS session uses a unique, ephemeral key agreement (typically ECDHE). If an attacker later obtains the server's long-term private key, they CANNOT retroactively decrypt previously captured encrypted sessions — because those sessions used different temporary keys that are now destroyed. Without PFS, compromising the server key would expose all historical traffic.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Q4: What's the difference between authentication and authorization?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Authentication (AuthN)</strong> answers "Who are you?" — verifying identity through passwords, MFA, biometrics. <strong>Authorization (AuthZ)</strong> answers "What are you allowed to do?" — determining permissions and access rights after identity is confirmed. MFA is authentication; RBAC/ABAC policies are authorization.</p>
+      </details>
+    </div>
+
+    <!-- Practice Checklist -->
+    <h2>Hands-On Practice Checklist</h2>
+    <div class="progress-checklist">
+      <h3>&#9744; Complete These Labs</h3>
+      <label class="check-item"><input type="checkbox" /> Generate SHA-256 hashes of files using PowerShell (Get-FileHash) and compare</label>
+      <label class="check-item"><input type="checkbox" /> View your browser's TLS certificate details (click the padlock on any HTTPS site)</label>
+      <label class="check-item"><input type="checkbox" /> Enable BitLocker on your Windows machine or test it in a VM</label>
+      <label class="check-item"><input type="checkbox" /> Set up TOTP MFA on Google, GitHub, and your email using an authenticator app</label>
+      <label class="check-item"><input type="checkbox" /> Run an nmap scan to see if any open ports on your machine accept TLS connections</label>
+      <label class="check-item"><input type="checkbox" /> Generate an RSA key pair using OpenSSL and observe the public/private key relationship</label>
+      <label class="check-item"><input type="checkbox" /> Create a self-signed certificate and serve it over HTTPS using Python's http.server</label>
+      <label class="check-item"><input type="checkbox" /> Install a password manager and migrate your existing passwords</label>
+      <label class="check-item"><input type="checkbox" /> Check if your email address appears in any known data breaches (HaveIBeenPwned.com)</label>
+      <label class="check-item"><input type="checkbox" /> Configure Windows Group Policy for password complexity and lockout settings</label>
+    </div>
+
+    <!-- Resources -->
+    <h2>Resources &amp; Further Reading</h2>
+    <div class="resource-grid">
+      <div class="resource-card">
+        <span class="resource-type">Standard</span>
+        <h4>NIST SP 800-63B</h4>
+        <p>The authoritative guide on digital identity guidelines — passwords, MFA, and authentication best practices.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Interactive</span>
+        <h4>Visual Crypto Simulator</h4>
+        <p>See encryption algorithms in action with interactive demos showing how data transforms at each step.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Tool</span>
+        <h4>SSL Lab's SSL Test</h4>
+        <p>Grade any website's TLS configuration (A+ to F). Essential for understanding real-world security posture.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Practice</span>
+        <h4>Cryptopals Challenges</h4>
+        <p>Hands-on programming challenges that teach crypto by breaking it. Deep dive into how encryption really works.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Course</span>
+        <h4>Coursera — Crypto I (Stanford)</h4>
+        <p>Dan Boneh's legendary cryptography course. Free to audit. Covers everything from classical ciphers to modern protocols.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Reference</span>
+        <h4>TLS 1.3 Specification (RFC 8446)</h4>
+        <p>The actual protocol spec. Technical but essential for understanding exactly how TLS works under the hood.</p>
+      </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="callout callout-success" style="margin-top:2rem;">
+      <strong>&#10132; Next Step:</strong> Now that you understand encryption and access control theory, apply it practically in <strong>Endpoint Security &amp; Management</strong> — where these concepts become real tools, configurations, and policies on actual machines.
+      <br/><a href="phase-4-endpoint-security.html" style="color:var(--accent-green);">Proceed to Endpoint Security &#8594;</a>
+    </div>
+
+    <footer>
+      <p>IT Support Roadmap — Phase 4, Module 2 &middot; November 2026</p>
+    </footer>
+  </div>
+</body>
+</html>

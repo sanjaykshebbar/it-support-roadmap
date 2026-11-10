@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Incident Response &amp; Best Practices — Phase 4</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .nav-bar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .nav-bar a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 6px; transition: background 0.2s; }
+    .nav-bar a:hover { background: var(--surface); color: var(--text); }
+    .nav-bar .sep { color: var(--text-dim); }
+
+    header { text-align: center; padding: 2.5rem 1rem 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    header h1 {
+      font-size: 2.4rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-orange), #ef4444);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    header p { color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto 1rem; }
+    .badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.78rem; color: var(--text-muted); }
+
+    h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; letter-spacing: -0.5px; }
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 1.5rem 0 0.6rem; }
+    .section-sub { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.2rem; }
+
+    .objectives {
+      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent-orange);
+      border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;
+    }
+    .objectives h3 { margin-top: 0; color: var(--accent-orange); }
+    .obj-list { list-style: none; }
+    .obj-list li { padding: 0.35rem 0; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.6rem; }
+    .obj-list li::before { content: '\2610'; color: var(--accent-orange); font-size: 1rem; flex-shrink: 0; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; }
+    th { background: rgba(245,158,11,0.1); color: var(--accent-orange); text-align: left; padding: 0.7rem 1rem; border-bottom: 2px solid var(--border); font-weight: 700; }
+    td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    ul, ol { padding-left: 1.2rem; margin: 0.5rem 0; }
+    li { padding: 0.25rem 0; font-size: 0.9rem; color: var(--text-muted); }
+    li::marker { color: var(--accent-cyan); }
+
+    .callout { border-radius: 10px; padding: 1rem 1.2rem; margin: 1rem 0; font-size: 0.9rem; }
+    .callout-danger { background: rgba(239,68,68,0.1); border-left: 4px solid #ef4444; }
+    .callout-warning { background: rgba(245,158,11,0.1); border-left: 4px solid var(--accent-orange); }
+    .callout-info { background: rgba(59,130,246,0.1); border-left: 4px solid var(--accent-blue); }
+    .callout-success { background: rgba(16,185,129,0.1); border-left: 4px solid var(--accent-green); }
+    .callout strong { display: block; margin-bottom: 0.3rem; }
+
+    .tag { display: inline-block; border-radius: 6px; padding: 0.15rem 0.55rem; font-size: 0.75rem; font-weight: 700; }
+    .tag-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .tag-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+    .tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .tag-pink { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+    .tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+
+    .progress-checklist { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+    .progress-checklist h3 { margin-top: 0; color: var(--accent-green); }
+    .check-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; font-size: 0.88rem; color: var(--text-muted); cursor: pointer; }
+    .check-item input[type="checkbox"] { accent-color: var(--accent-green); width: 16px; height: 16px; cursor: pointer; }
+
+    .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .resource-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .resource-card .rt { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-cyan); margin-bottom: 0.4rem; }
+    .resource-card h4 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+    .resource-card p { font-size: 0.83rem; color: var(--text-muted); margin: 0; }
+
+    .template-box {
+      background: var(--bg); border: 1px dashed var(--border); border-radius: 10px;
+      padding: 1.5rem; margin: 1rem 0; font-size: 0.88rem;
+    }
+    .template-box h4 { color: var(--accent-cyan); margin-top: 0; }
+    .template-box label { display: block; margin: 0.5rem 0 0.2rem; font-weight: 600; color: var(--text); font-size: 0.85rem; }
+    .template-box .field { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.8rem; color: var(--text-muted); font-size: 0.85rem; min-height: 2rem; margin-bottom: 0.5rem; }
+
+    .timeline { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+    .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent-orange), var(--accent-pink)); }
+    .timeline-item { position: relative; padding-bottom: 1.5rem; }
+    .timeline-item::before { content: ''; position: absolute; left: -1.65rem; top: 0.3rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent-orange); border: 3px solid var(--bg); }
+    .timeline-item:last-child::before { background: var(--accent-pink); }
+    .timeline-item h4 { margin: 0 0 0.3rem; font-size: 1rem; }
+    .timeline-item p { font-size: 0.88rem; color: var(--text-muted); margin: 0; }
+
+    footer { text-align: center; color: var(--text-dim); font-size: 0.78rem; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 2rem; }
+    @media (max-width: 600px) { header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-bar">
+      <a href="../index.html">&#8592; Roadmap Home</a>
+      <span class="sep">/</span>
+      <a href="#">Phase 4: Security</a>
+      <span class="sep">/</span>
+      <strong style="color:var(--accent-orange); font-size:0.85rem;">Incident Response &amp; Best Practices</strong>
+    </div>
+
+    <header>
+      <h1>Incident Response &amp; Best Practices</h1>
+      <p>When prevention fails, your incident response plan determines whether a breach becomes a manageable event or a catastrophic failure. Master the IR lifecycle and build playbooks you can rely on under pressure.</p>
+      <div class="badges">
+        <span class="badge">&#128640; Phase 4</span>
+        <span class="badge">&#9201; ~20 Hours</span>
+        <span class="badge">&#128203; Playbook Templates</span>
+        <span class="badge">&#128227; Security+ Aligned</span>
+      </div>
+    </header>
+
+    <div class="objectives">
+      <h3>Learning Objectives</h3>
+      <ul class="obj-list">
+        <li><input type="checkbox" /> Master the 6-phase IR lifecycle (NIST SP 800-61)</li>
+        <li><input type="checkbox" /> Create a practical Incident Response Plan document</li>
+        <li><input type="checkbox" /> Handle digital evidence correctly and legally</li>
+        <li><input type="checkbox" /> Establish communication protocols during active incidents</li>
+        <li><input type="checkbox" /> Build response playbooks for common attack scenarios</li>
+        <li><input type="checkbox" /> Write effective incident reports and post-mortems</li>
+        <li><input type="checkbox" /> Conduct tabletop exercises and lessons-learned sessions</li>
+      </ul>
+    </div>
+
+    <!-- Module 1 -->
+    <h2>Module 1: The IR Lifecycle</h2>
+    <p class="section-sub">Based on NIST SP 800-61 Rev. 2 — the gold standard for incident response methodology.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <h3>1. Preparation &#128203;</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Before an incident occurs — the most important phase. Build your team, tools, processes, and communication plans. Most organizations skip this and pay for it later. Preparation includes: IR policy approval, trained response team, logging infrastructure, backup systems, contact lists, and documented procedures. Without preparation, you'll react chaotically instead of responding systematically.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>2. Identification &#9888;</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Detect and confirm that an incident is occurring. Sources include: SIEM alerts, EDR warnings, user reports, vendor notifications, anomaly detection. Key question: "Is this a confirmed incident or a false positive?" Classification determines urgency and response level. Document everything from first detection — timestamps, indicators, affected systems.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>3. Containment &#128721;</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Stop the bleeding. Two strategies: <strong>Short-term</strong> (isolate the affected system immediately — disconnect from network, disable account) and <strong>Long-term</strong> (apply permanent fixes like updated firewall rules, rotated credentials, restored baseline images). Balance containment speed against business impact — don't shut down the entire email system for one suspicious mailbox.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>4. Eradication &#128465;</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Remove the root cause completely. This means: deleting malware, patching exploited vulnerabilities, disabling attacker-created accounts, resetting compromised credentials, rebuilding compromised systems from clean images. Don't assume removal is complete — verify with independent scans and monitoring.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>5. Recovery &#9889;</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Restore normal operations safely. Restore from verified-clean backups, monitor the recovered systems for re-infection迹象, gradually bring services back online (test environments first), validate that security controls are working. Recovery isn't complete until you've monitored the system for at least 48 hours with no recurrence.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>6. Lessons Learned &#128170;</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">The phase most organizations skip — and regret. Within 2 weeks of incident closure, conduct a formal review: What happened? What went well? What went poorly? What should we change? Update policies, procedures, and controls based on findings. Track improvement metrics over time. This transforms incidents into organizational learning.</p>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <h2>Module 2: Creating an Incident Response Plan</h2>
+    <p class="section-sub">Your IR Plan is the single most important security document your organization owns. Here's how to build it.</p>
+
+    <h3>IR Plan Structure</h3>
+    <div class="card">
+      <div class="template-box">
+        <h4>Document Template</h4>
+        <label>Version &amp; Last Updated</label>
+        <div class="field">Version 1.0 | Created: [Date] | Last Reviewed: [Date]</div>
+        <label>Purpose &amp; Scope</label>
+        <div class="field">This document defines the procedures for detecting, responding to, and recovering from security incidents affecting [Organization Name] information assets. Applies to all employees, contractors, and systems.</div>
+        <label>Definitions</label>
+        <div class="field">Security Incident: Any observable occurrence of a potential breach or violation of security policy.<br/>Severity Levels: P1 (Critical), P2 (High), P3 (Medium), P4 (Low)<br/>Incident Commander: The person responsible for overall incident management decisions.</div>
+        <label>Roles &amp; Responsibilities</label>
+        <div class="field">Incident Commander (IC): Oversees response, makes escalation decisions<br/>Security Analyst: Investigates alerts, performs analysis, documents findings<br/>System Owner: Authorized to make business decisions about affected systems<br/>Legal/HR: Manages regulatory notification and employee-related incidents<br/>Communications: Handles internal/external stakeholder messaging</div>
+        <label>Contact List</label>
+        <div class="field">Internal: IC [Name/Phone/Email], Security Team [Email/Slack channel]<br/>External: Managed SOC [Phone], Legal Counsel [Phone], Cyber Insurance [Policy #/Claim Line], Law Enforcement [Contact]</div>
+        <label>Severity Classification Matrix</label>
+        <div class="field">P1 (Critical): Data breach confirmed, active ransomware, financial system compromise<br/>P2 (High): Suspected malware on multiple systems, unauthorized access detected<br/>P3 (Medium): Single endpoint infection, phishing attempt reported<br/>P4 (Low): Suspicious email report, minor policy violation</div>
+        <label>Escalation Procedures</label>
+        <div class="field">P3/P4: Security Analyst handles independently, escalate to IC if unresolved in 4 hours<br/>P2: Notify IC immediately, engage System Owners, begin containment<br/>P1: Notify IC + Executive Leadership + Legal within 30 minutes, engage external responders</div>
+      </div>
+    </div>
+
+    <h3>Communication Protocol During Incidents</h3>
+    <div class="card-grid">
+      <div class="card">
+        <span class="tag tag-green">Internal Comms</span>
+        <h3 style="margin-top:0.5rem;">Who Needs to Know (Inside)</h3>
+        <ul>
+          <li><strong>Security Team:</strong> Immediate全员 notification via Slack/DingTalk/incident bridge</li>
+          <li><strong>IT Operations:</strong> System owners of affected infrastructure</li>
+          <li><strong>Executive Leadership:</strong> CISO, CTO, CEO for P1/P2 incidents</li>
+          <li><strong>HR:</strong> If insider threat or employee account involved</li>
+          <li><strong>Legal:</strong> Regulatory breach notification requirements assessment</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag tag-orange">External Comms</span>
+        <h3 style="margin-top:0.5rem;">Who Needs to Know (Outside)</h3>
+        <ul>
+          <li><strong>Customers:</strong> Only if their data was impacted (required by most regulations)</li>
+          <li><strong>Law Enforcement:</strong> FBI IC3, local cybercrime units for serious incidents</li>
+          <li><strong>Regulators:</strong> State AG, GDPR supervisory authority, industry-specific bodies</li>
+          <li><strong>Media:</strong> ONLY through designated spokesperson with pre-approved messaging</li>
+          <li><strong>Breeders/Partners:</strong> If supply chain impact is confirmed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-warning">
+      <strong>Golden Rule of Incident Communications:</strong> Communicate early, communicate often, and always direct questions to a single point of contact. Siloed or conflicting information during an incident erodes trust faster than the incident itself.
+    </div>
+
+    <!-- Module 3 -->
+    <h2>Module 3: Evidence Handling Basics</h2>
+    <p class="section-sub">Digital evidence must be collected, preserved, and documented properly to be useful in legal proceedings.</p>
+
+    <h3>Chain of Custody</h3>
+    <div class="card">
+      <p style="font-size:0.88rem; color:var(--text-muted);">Chain of custody is the chronological documentation of who handled evidence, when, and why. A broken chain renders evidence inadmissible in court and destroys investigative credibility.</p>
+      <h4 style="margin-top:1rem;">Evidence Handling Requirements</h4>
+      <ol>
+        <li><strong>Identify:</strong> Recognize potential evidence immediately upon detection (log files, memory dumps, malicious files, network captures)</li>
+        <li><strong>Preserve:</strong> Create forensic images (bit-for-bit copies) — never analyze the original</li>
+        <li><strong>Document:</strong> Record what was collected, when, by whom, and where it's stored</li>
+        <li><strong>Transfer:</strong> Every handoff must be logged with signatures and timestamps</li>
+        <li><strong>Store:</strong> Evidence in tamper-evident containers or secured digital vaults with access controls</li>
+      </ol>
+    </div>
+
+    <h3>Forensic Tools Reference</h3>
+    <table>
+      <tr><th>Tool</th><th>Type</th><th>Primary Use</th><th>Cost</th></tr>
+      <tr><td><strong>FTK Imager</strong></td><td>Imaging &amp; Analysis</td><td>Create disk images, examine artifacts, export evidence</td><td>Free</td></tr>
+      <tr><td><strong>Autopsy</strong></td><td>Forensic Platform</td><td>Digital forensics investigations, timeline analysis, keyword search</td><td>Free (open source)</td></tr>
+      <tr><td><strong>X-Ways Forensics</strong></td><td>Professional Suite</td><td>Full-spectrum forensic investigation, deep artifact analysis</td><td>$$$ (licensed)</td></tr>
+      <tr><td><strong>Volatility</strong></td><td>Memory Forensics</td><td>Analyze RAM dumps — process injection, network connections, hidden malware</td><td>Free (open source)</td></tr>
+      <tr><td><strong>EnCase Forensic</strong></td><td>Professional Suite</td><td>Industry-standard for law enforcement and enterprise forensics</td><td>$$$ (licensed)</td></tr>
+    </table>
+
+    <!-- Module 4 -->
+    <h2>Module 4: Common Incident Scenarios &amp; Playbooks</h2>
+    <p class="section-sub">Ready-to-use response procedures for the most common security incidents.</p>
+
+    <h3>Playbook 1: Ransomware Response</h3>
+    <div class="card">
+      <span class="tag tag-pink">P1 — Critical Priority</span>
+      <h3 style="margin-top:0.5rem; color:var(--accent-pink);">Immediate Actions (First 30 Minutes)</h3>
+      <ol>
+        <li><strong>Disconnect affected systems from the network IMMEDIATELY</strong> — unplug Ethernet, disable Wi-Fi. Ransomware spreads laterally within minutes.</li>
+        <li><strong>Do NOT pay the ransom</strong> — it funds criminal activity, guarantees no decryption guarantee, and may trigger additional sanctions.</li>
+        <li><strong>Identify the ransomware variant</strong> — use ID Ransomware (id-ransomware.malwarehunterteam.com) by uploading an encrypted file and note.</li>
+        <li><strong>Determine the initial access vector</strong> — phishing email, RDP brute force, unpatched vulnerability?</li>
+        <li><strong>Scope the impact</strong> — how many systems affected? Which file shares, databases, servers?</li>
+        <li><strong>Preserve volatile evidence</strong> — capture memory dump from one affected system BEFORE reimaging</li>
+      </ol>
+      <h4 style="margin-top:1rem;">Containment &amp; Eradication</h4>
+      <ol start="7">
+        <li>Isolate affected VLANs/subnets via network firewall rules</li>
+        <li>Disable compromised user accounts and reset all passwords in the affected domain</li>
+        <li>Revoke all active sessions, tokens, and API keys</li>
+        <li>Check for persistence mechanisms (scheduled tasks, registry run keys, cron jobs)</li>
+        <li>Scan all remaining systems with updated definitions and EDR tools</li>
+      </ol>
+      <h4 style="margin-top:1rem;">Recovery</h4>
+      <ol start="12">
+        <li>Restore from clean backups (verify backup integrity FIRST — never restore into a compromised environment)</li>
+        <li>Rebuild affected systems from known-good images</li>
+        <li>Monitor restored systems aggressively for 72 hours</li>
+        <li>Implement additional controls that prevented the original infection before restoring access</li>
+      </ol>
+    </div>
+
+    <h3>Playbook 2: Data Breach Response</h3>
+    <div class="card">
+      <span class="tag tag-red">P1 — Legal Implications</span>
+      <h3 style="margin-top:0.5rem; color:#ef4444;">Data Breach Response Steps</h3>
+      <ol>
+        <li><strong>Determine what data was accessed/exfiltrated</strong> — PII, PHI, financial data, intellectual property?</li>
+        <li><strong>Assess regulatory obligations</strong> — GDPR (72-hour notification), HIPAA, CCPA, state breach notification laws</li>
+        <li><strong>Notify legal counsel immediately</strong> — breach notifications have strict deadlines and specific content requirements</li>
+        <li><strong>Engage forensic investigators</strong> — understand scope, method, and data flow of the breach</li>
+        <li><strong>Contain the breach vector</strong> — close the vulnerability, rotate credentials, revoke access</li>
+        <li><strong>Prepare customer notification</strong> — clear, honest communication offering credit monitoring if applicable</li>
+        <li><strong>File regulatory notifications</strong> — within required timeframes</li>
+        <li><strong>Document everything</strong> — breach details, timelines, actions taken, communications sent</li>
+      </ol>
+      <div class="callout callout-danger" style="margin-top:1rem;">
+        <strong>GDPR Deadline:</strong> Under EU GDPR, you MUST notify the supervisory authority within 72 hours of becoming aware of a personal data breach. Individual notification to data subjects is required without undue delay if the breach poses high risk to rights and freedoms.
+      </div>
+    </div>
+
+    <h3>Playbook 3: DDoS Attack Response</h3>
+    <div class="card">
+      <span class="tag tag-orange">P2 — Service Impact</span>
+      <h3 style="margin-top:0.5rem; color:var(--accent-orange);">DDoS Mitigation Steps</h3>
+      <ol>
+        <li><strong>Confirm it's an attack</strong> — distinguish from legitimate traffic spikes (product launch, news coverage). Check traffic patterns: unusual source IPs, geographic分布, protocol distribution.</li>
+        <li><strong>Activate your DDoS mitigation provider</strong> — Cloudflare, AWS Shield, Akamai, or your ISP's scrubbing service</li>
+        <li><strong>Implement traffic shaping</strong> — rate limiting, geo-blocking if attack originates from specific regions, challenge pages for suspicious clients</li>
+        <li><strong>Scale infrastructure</strong> — if using cloud, auto-scale resources to absorb increased load</li>
+        <li><strong>Coordinate with upstream providers</strong> — ISP can blackhole or filter attack traffic before it reaches your network</li>
+        <li><strong>Document attack characteristics</strong> — duration, peak bandwidth, targeted services, attack types (Volumetric, Protocol, Application layer)</li>
+      </ol>
+    </div>
+
+    <h3>Playbook 4: Phishing Incident Response</h3>
+    <div class="card">
+      <span class="tag tag-blue">P3 — Typical Severity</span>
+      <h3 style="margin-top:0.5rem; color:var(--accent-blue);">Phishing Response Steps</h3>
+      <ol>
+        <li><strong>Isolate the reported email</strong> — quarantine in email gateway, don't delete (preserve for analysis)</li>
+        <li><strong>Analyze the malicious email</strong> — extract URLs, attachments, sender headers, SPF/DKIM/DMARC results</li>
+        <li><strong>Check for other recipients</strong> — did anyone else receive the same email? Search mail logs</li>
+        <li><strong>Check for credential compromise</strong> — if users entered credentials on the phishing page, force immediate password resets and session revocations</li>
+        <li><strong>Block indicators organization-wide</strong> — add malicious domains to URL blocklist, add sender to spam policy</li>
+        <li><strong>Notify affected users</strong> — educate them on what they saw and what to do differently</li>
+        <li><strong>Run endpoint scans</strong> — check all users who clicked links or opened attachments for malware</li>
+      </ol>
+    </div>
+
+    <!-- Module 5 -->
+    <h2>Module 5: Reporting Templates &amp; Post-Incident Review</h2>
+    <p class="section-sub">Good incident response produces clear documentation — both during and after the event.</p>
+
+    <h3>Incident Report Template</h3>
+    <div class="card">
+      <div class="template-box">
+        <h4>Security Incident Report</h4>
+        <label>Incident ID:</label>
+        <div class="field">[Auto-generated unique identifier, e.g., INC-2024-0042]</div>
+        <label>Date/Time Detected:</label>
+        <div class="field">[YYYY-MM-DD HH:MM UTC]</div>
+        <label>Date/Time Reported:</label>
+        <div class="field">[By whom, through what channel]</div>
+        <label>Severity Level:</label>
+        <div class="field">[P1 Critical / P2 High / P3 Medium / P4 Low]</div>
+        <label>Incident Type:</label>
+        <div class="field">[Ransomware / Phishing / Malware / Unauthorized Access / Data Breach / DDoS / Other]</div>
+        <label>Summary:</label>
+        <div class="field">[Concise 2-3 sentence description of what occurred]</div>
+        <label>Affected Systems/Services:</label>
+        <div class="field">[List all affected assets with classification: production, dev, test]</div>
+        <label>Impact Assessment:</label>
+        <div class="field">[Data affected? Financial impact estimate? Operational downtime? Regulatory implications?]</div>
+        <label>Root Cause:</label>
+        <div class="field">[Technical explanation of how the incident occurred]</div>
+        <label>Actions Taken:</label>
+        <div class="field">[Chronological list of response actions with timestamps]</div>
+        <label>Status:</label>
+        <div class="field">[Contained / Resolved / Monitoring / Escalated]</div>
+        <label>Lessons Learned:</label>
+        <div class="field">[Key takeaways and recommended improvements]</div>
+      </div>
+    </div>
+
+    <h3>Post-Incident Review Process</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Blameless Post-Mortem</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Focus on SYSTEM failures, not individual mistakes. Ask "what in our processes allowed this to happen?" rather than "who made this mistake?" Blame-free cultures encourage reporting and continuous improvement.</p>
+        <ul style="margin-top:0.5rem;">
+          <li>Schedule within 1 week of incident closure</li>
+          <li>Include diverse perspectives (engineering, operations, management)</li>
+          <li>Focus on facts, not opinions</li>
+          <li>Produce concrete action items with owners and due dates</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Review Agenda</h3>
+        <ul>
+          <li><strong>Timeline Reconstruction:</strong> Walk through every decision point chronologically</li>
+          <li><strong>What Worked:</strong> Acknowledge effective responses — celebrate successes</li>
+          <li><strong>What Didn't:</strong> Identify gaps in detection, response time, tool effectiveness</li>
+          <li><strong>Root Cause Analysis:</strong> 5 Whys technique to dig to the fundamental cause</li>
+          <li><strong>Action Items:</strong> Specific, measurable improvements with ownership and deadlines</li>
+          <li><strong>Follow-Up Schedule:</strong> Set dates to review action item completion</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Exercises -->
+    <h2>Scenario Exercises</h2>
+    <p class="section-sub">Practice your incident response skills with these realistic scenarios. Try them solo or with a team.</p>
+
+    <div class="card">
+      <h3>Exercise 1: The Ransomware Panic</h3>
+      <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Scenario:</strong> At 2:15 AM, your on-call analyst receives an alert: "Multiple systems showing .encrypted extension and ransom note in C:\Windows\System32." By 6:00 AM, 15 workstations and 3 file servers are affected. Finance department cannot access payroll data. The ransom note demands 2 BTC (~$120,000) within 48 hours.</p>
+      <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Your Tasks:</strong></p>
+      <ol>
+        <li>Classify the severity and assemble the incident response team</li>
+        <li>Determine the containment strategy (do you reboot servers? isolate VLANs?)</li>
+        <li>Identify the ransomware variant and check for available decryptors</li>
+        <li>Decide on ransom payment: yes or no? Justify your answer</li>
+        <li>Draft a communication to senior leadership explaining the situation</li>
+        <li>Create the remediation timeline — when will each department be back online?</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Exercise 2: The Insider Threat</h3>
+      <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Scenario:</strong> Your SIEM flags unusual after-hours access patterns from a senior engineer's account. They're accessing sensitive R&D repositories at 3 AM on weekdays, downloading large volumes of data, and using personal cloud storage (Dropbox, Google Drive) to exfiltrate files. HR confirms the engineer recently received a termination notice.</p>
+      <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Your Tasks:</strong></p>
+      <ol>
+        <li>How do you contain this without tipping off the insider?</li>
+        <li>What evidence do you need to preserve for legal/HR proceedings?</li>
+        <li>Should you notify the engineer immediately or gather evidence first?</li>
+        <li>What data loss assessment do you need to perform?</li>
+        <li>Design a cooperation strategy between Security, Legal, and HR teams</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Exercise 3: The Zero-Day Panic</h3>
+      <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Scenario:</strong> A critical zero-day vulnerability is disclosed affecting your web application framework. Exploitation is active in the wild. You have 200 exposed instances across multiple environments. The vendor has no fix yet —预计 48 hours away.</p>
+      <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Your Tasks:</strong></p>
+      <ol>
+        <li>Develop an emergency mitigation plan for the 48-hour gap</li>
+        <li>Create a prioritization framework: which systems get protected first?</li>
+        <li>Design temporary WAF rules or network controls to reduce exposure</li>
+        <li>Draft internal and external communication about the vulnerability</li>
+        <li>Plan the coordinated patch deployment once the fix is available</li>
+      </ol>
+    </div>
+
+    <!-- Knowledge Check -->
+    <h2>Knowledge Check</h2>
+    <div class="card">
+      <h3>Q1: Why is the Preparation phase considered the most important in the IR lifecycle?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">Because incidents happen outside business hours, under extreme stress, with incomplete information, and high stakes. In those conditions, people fall back to training and prepared procedures — they don't figure things out fresh. An unprepared organization will: panic, make contradictory decisions, lose evidence through improper handling, fail to communicate effectively, and extend the incident timeline. Preparation ensures the response team knows their roles, has the tools they need, and follows proven procedures rather than improvising under pressure.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Q2: When should you involve law enforcement in a security incident?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">Involve law enforcement when: (1) Criminal activity is confirmed (ransomware, fraud, intrusion), (2) Significant financial loss has occurred or is imminent, (3) Sensitive government or regulated data is involved, (4) National security implications exist, (5) You need their assistance (they have access to threat intelligence and subpoena power). Contact options include local FBI field office, IC3 (Internet Crime Complaint Center) at ic3.gov, or sector-specific ISACs. Consult legal counsel before engaging — law enforcement interaction can affect litigation and regulatory proceedings.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Q3: What makes a good post-incident review different from blaming individuals?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</ p>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">A blameless post-mortem focuses on <strong>systemic factors</strong> — process gaps, tool limitations, training deficiencies, communication breakdowns — rather than individual errors. People make mistakes; processes should catch mistakes. If someone missed a critical step, ask "why didn't our process prevent or catch this error?" rather than "why did they miss it?" This approach encourages honest reporting (people aren't afraid of punishment), surfaces real root causes, and builds a culture where incidents lead to systemic improvement rather than fear and cover-ups.</p>
+      </details>
+    </div>
+
+    <!-- Practice Checklist -->
+    <h2>Hands-On Practice Checklist</h2>
+    <div class="progress-checklist">
+      <h3>&#9744; Complete These Exercises</h3>
+      <label class="check-item"><input type="checkbox" /> Draft a complete Incident Response Plan document for a fictional company</label>
+      <label class="check-item"><input type="checkbox" /> Set up a simple SIEM or log aggregation tool (Wazuh open-source, ELK stack)</label>
+      <label class="check-item"><input type="checkbox" /> Simulate a phishing incident: create a fake email, send to colleagues, track responses</label>
+      <label class="check-item"><input type="checkbox" /> Create an incident timeline template (spreadsheet documenting events hour-by-hour)</label>
+      <label class="check-item"><input type="checkbox" /> Write a sample incident report following the template provided above</label>
+      <label class="check-item"><input type="checkbox" /> Practice FTK Imager on a VM — create a forensic image and examine it</label>
+      <label class="check-item"><input type="checkbox" /> Run Volatility on a sample memory dump (use REMEMBER project or Volatility samples)</label>
+      <label class="check-item"><input type="checkbox" /> Design a DDoS response playbook with escalation contacts and mitigation steps</label>
+      <label class="check-item"><input type="checkbox" /> Host a tabletop exercise with friends/colleagues using one of the scenario exercises</label>
+      <label class="check-item"><input type="checkbox" /> Build an incident communication template (email to staff, press release, social media)</label>
+    </div>
+
+    <!-- Resources -->
+    <h2>Resources &amp; Further Reading</h2>
+    <div class="resource-grid">
+      <div class="resource-card">
+        <span class="resource-type">Standard</span>
+        <h4>NIST SP 800-61 Rev. 2</h4>
+        <p>The definitive computer security incident handling guide. Free PDF from nist.gov. Required reading for any security professional.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Framework</span>
+        <h4>SANS Incident Response Process</h4>
+        <p>Practical incident response framework from the SANS Institute with detailed checklists for each phase.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Tool</span>
+        <h4>ID Ransomware</h4>
+        <p>Upload an encrypted file and ransom note to identify the ransomware family and find available decryptors.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Practice</span>
+        <h4>Blue Team Labs Online</h4>
+        <p>Browser-based incident response challenges simulating real-world investigations with increasing difficulty.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Course</span>
+        <h4>SANS FOR500 — Incident Handler</h4>
+        <p>Comprehensive incident response training (paid). Industry gold standard for professional certification.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Community</span>
+        <h4>r/incidentresponse &amp; DFIR Discourse</h4>
+        <p>Active communities for incident responders to share experiences, tools, and techniques.</p>
+      </div>
+    </div>
+
+    <!-- Conclusion -->
+    <div class="callout callout-success" style="margin-top:2rem;">
+      <strong>&#127891; Congratulations!</strong> You've completed all four modules of Phase 4: Security Fundamentals. You now have a solid foundation in threat identification, encryption/access control, endpoint security, and incident response. These skills align directly with CompTIA Security+ (SY0-701) exam objectives and real-world IT support security responsibilities.
+      <br/><a href="../index.html" style="color:var(--accent-green);">&#8592; Return to Main Roadmap</a>
+    </div>
+
+    <footer>
+      <p>IT Support Roadmap — Phase 4 Complete &middot; November 2026</p>
+    </footer>
+  </div>
+</body>
+</html>

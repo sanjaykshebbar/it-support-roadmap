@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Search Strategy & Career Growth | Learning Paths</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { font-size: 1.05rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-brand span { color: var(--accent-pink); }
+    .nav-breadcrumbs { display: flex; gap: 0.3rem; align-items: center; font-size: 0.82rem; color: var(--text-muted); }
+    .nav-breadcrumbs a { color: var(--text-muted); text-decoration: none; }
+    .nav-breadcrumbs a:hover { color: var(--accent-pink); }
+    .nav-breadcrumbs .sep { color: var(--text-dim); }
+    .nav-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; padding: 0.35rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); transition: all 0.2s; }
+    .nav-link:hover { color: var(--text); border-color: var(--accent-pink); background: rgba(236,72,153,0.08); }
+    .nav-link.active { color: var(--accent-pink); border-color: var(--accent-pink); background: rgba(236,72,153,0.12); }
+    .hero { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+    .hero-badge { display: inline-block; background: rgba(236,72,153,0.15); color: var(--accent-pink); border-radius: 6px; padding: 0.2rem 0.7rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.8rem; }
+    .hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.6rem; letter-spacing: -0.5px; }
+    .hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; }
+    .hero-meta { display: flex; gap: 1.5rem; margin-top: 1.2rem; flex-wrap: wrap; }
+    .hero-meta-item { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
+    .hero-meta-item strong { color: var(--text); }
+    .objectives { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent-pink); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+    .objectives h2 { font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .obj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.6rem; }
+    .obj-item { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.88rem; color: var(--text-muted); padding: 0.4rem 0; }
+    .obj-item input[type="checkbox"] { accent-color: var(--accent-pink); margin-top: 0.25rem; flex-shrink: 0; }
+    .modules { margin-bottom: 2rem; }
+    .module { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.75rem; overflow: hidden; }
+    .module-header { padding: 1rem 1.25rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; transition: background 0.15s; user-select: none; }
+    .module-header:hover { background: rgba(59,130,246,0.05); }
+    .module-header h3 { font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+    .module-header .duration { font-size: 0.78rem; color: var(--text-dim); font-weight: 400; }
+    .module-header .arrow { font-size: 0.8rem; color: var(--text-dim); transition: transform 0.2s; }
+    .module.open .module-header .arrow { transform: rotate(180deg); }
+    .module-body { padding: 0 1.25rem; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+    .module.open .module-body { padding: 0 1.25rem 1.25rem; max-height: 5000px; }
+    .module h3 { font-size: 0.95rem; margin: 1rem 0 0.6rem; color: var(--accent-pink); }
+    .module p, .module li { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+    .module ul { padding-left: 1.2rem; margin: 0.5rem 0; }
+    .module li { padding: 0.25rem 0; }
+    .code-block { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin: 0.75rem 0; overflow-x: auto; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; white-space: pre; }
+    .info-box { background: var(--surface); border-left: 4px solid var(--accent-blue); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .info-box.green { border-left-color: var(--accent-green); }
+    .info-box.orange { border-left-color: var(--accent-orange); }
+    .info-box.purple { border-left-color: var(--accent-purple); }
+    .info-box.pink { border-left-color: var(--accent-pink); }
+    .info-box.cyan { border-left-color: var(--accent-cyan); }
+    .info-box-title { font-weight: 700; color: var(--text); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+    .info-box p { font-size: 0.88rem; color: var(--text-muted); margin: 0; }
+    .table-wrap { overflow-x: auto; margin: 1rem 0; border-radius: 10px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { background: var(--surface); color: var(--accent-blue); font-weight: 700; text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+    td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+    .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+    .tag-pink { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+    .resources-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+    .resource-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-decoration: none; color: inherit; transition: all 0.2s; display: block; }
+    .resource-item:hover { border-color: var(--accent-pink); transform: translateY(-2px); }
+    .resource-type { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-pink); margin-bottom: 0.3rem; }
+    .resource-item h4 { font-size: 0.92rem; margin-bottom: 0.3rem; }
+    .resource-item p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .checklist-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+    .checklist-section h2 { font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .checklist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.5rem; }
+    .checklist-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.88rem; color: var(--text-muted); padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; transition: all 0.15s; cursor: pointer; }
+    .checklist-item:hover { color: var(--text); border-color: var(--accent-blue); }
+    .checklist-item input[type="checkbox"] { accent-color: var(--accent-pink); width: 16px; height: 16px; flex-shrink: 0; }
+    .checklist-item.done { opacity: 0.5; }
+    .checklist-item.done span { text-decoration: line-through; }
+    .next-steps { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+    .next-steps h2 { font-size: 1.2rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+    .next-steps ol { padding-left: 1.2rem; }
+    .next-steps li { padding: 0.4rem 0; font-size: 0.9rem; color: var(--text-muted); }
+    .next-steps a { color: var(--accent-blue); }
+    .page-nav { display: flex; gap: 1rem; margin-top: 2rem; }
+    .page-nav-link { flex: 1; display: flex; flex-direction: column; padding: 1rem 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: inherit; transition: all 0.2s; }
+    .page-nav-link:hover { border-color: var(--accent-pink); }
+    .page-nav-link .label { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+    .page-nav-link .title { font-size: 0.95rem; font-weight: 600; }
+    .page-nav-link.next { text-align: right; }
+    footer { margin-top: 3rem; padding: 1.5rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.82rem; }
+    footer a { color: var(--accent-pink); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+    <a href="../index.html" class="nav-brand">&#128218; <span>Learning Paths</span></a>
+    <div class="nav-breadcrumbs">
+      <a href="../index.html">Home</a><span class="sep">&rsaquo;</span><a href="index.html">Phase 6</a><span class="sep">&rsaquo;</span>Job Search Strategy
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="../index.html" class="nav-link">All Phases</a>
+    <a href="../../roadmap.html" class="nav-link">Main Roadmap</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <section class="hero">
+    <div class="hero-badge">PHASE 6 &middot; MODULE 2</div>
+    <h1>Job Search Strategy &amp; Career Growth</h1>
+    <p>Learn where to find IT support jobs, how to apply effectively, and plan your long-term career progression from entry-level help desk to senior infrastructure roles.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>&#9201; ~7.5 hours</strong> total learning time</div>
+      <div class="hero-meta-item"><strong>&#128203; 8 modules</strong> with templates</div>
+      <div class="hero-meta-item"><strong>&#128196; Hands-on exercises</strong> included</div>
+    </div>
+  </section>
+
+  <section class="objectives">
+    <h2>&#9744; Learning Objectives</h2>
+    <div class="obj-grid">
+      <div class="obj-item"><input type="checkbox"><span>Identify the best job boards and platforms for IT support roles</span></div>
+      <div class="obj-item"><input type="checkbox"><span>Optimize resumes and cover letters for Applicant Tracking Systems (ATS)</span></div>
+      <div class="obj-item"><input type="checkbox"><span>Build and leverage professional networks on LinkedIn and in-person events</span></div>
+      <div class="obj-item"><input type="checkbox"><span>Evaluate staffing agencies and contract-to-hire opportunities</span></div>
+      <div class="obj-item"><input type="checkbox"><span>Choose a career specialization path that matches your interests</span></div>
+      <div class="obj-item"><input type="checkbox"><span>Create a 1-year, 3-year, and 5-year career growth roadmap</span></div>
+      <div class="obj-item"><input type="checkbox"><span>Establish a continuous learning habit to stay current in tech</span></div>
+      <div class="obj-item"><input type="checkbox"><span>Track applications and follow up systematically</span></div>
+    </div>
+  </section>
+
+  <section class="modules">
+
+    <!-- Module 1 -->
+    <div class="module open">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>1. Where to Find IT Jobs <span class="duration">&#128337; ~30 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>Finding the right IT support job starts with knowing where to look. Most entry-level candidates only visit one or two job sites, but smart job seekers cast a wider net across multiple channels.</p>
+
+        <h3>Mainstream Job Boards</h3>
+        <ul>
+          <li><strong>LinkedIn Jobs</strong> — The largest professional network. Set up job alerts for "Help Desk Technician," "IT Support Specialist," and similar titles. Use the Easy Apply filter for quick submissions.</li>
+          <li><strong>Indeed</strong> — Aggregates listings from thousands of company sites. Strong search filters including salary range, remote options, and experience level.</li>
+          <li><strong>Dice</strong> — Tech-specific job board with higher concentration of IT roles. Useful for seeing market demand in your area.</li>
+          <li><strong>BuiltIn</strong> — Focuses on startup and tech company careers in specific cities. Great for finding modern engineering cultures.</li>
+        </ul>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Platform</th><th>Best For</th><th>Key Feature</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>LinkedIn Jobs</td><td>Networking + applying</td><td>Job alerts, 1-click easy apply, referrals</td></tr>
+              <tr><td>Indeed</td><td>Broad volume</td><td>Salary estimates, company reviews</td></tr>
+              <tr><td>Dice</td><td>Tech-only roles</td><td>Tech-salary transparency</td></tr>
+              <tr><td>BuiltIn</td><td>Startups & tech firms</td><td>Company culture insights</td></tr>
+              <tr><td>USAJOBS.gov</td><td>Government positions</td><td>Federally guaranteed interviews</td></tr>
+              <tr><td>Reddit r/forhire</td><td>Direct hiring</td><td>No ATS, direct employer contact</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Company Career Pages</h3>
+        <p>Many mid-size and large companies post openings only on their own careers site before they appear on aggregators. Make a list of 10-15 companies you'd like to work for and check their careers pages weekly. Set browser bookmarks for each.</p>
+
+        <h3>Reddit Communities</h3>
+        <p>Subreddits like r/ITCareerQuestions, r/sysadmin, and r/cybersecurity often have hiring threads. r/forhire and r/hiring have dedicated IT posting sections. These can bypass ATS entirely if you reach a hiring manager directly.</p>
+
+        <h3>Niche Boards</h3>
+        <ul>
+          <li><strong>Annie's List</strong> — MSP-focused job board (great for IT support career paths)</li>
+          <li><strong>Channel Partner News</strong> — Jobs within the managed services ecosystem</li>
+          <li><strong>Hands Off My Cloud Jobs</strong> — Cloud and infrastructure roles</li>
+          <li><strong>DevOpsJobs.com</strong> — DevOps and platform engineering roles</li>
+          <li><strong>InfoSec Jobs</strong> — Cybersecurity and compliance positions</li>
+        </ul>
+
+        <div class="info-box pink">
+          <div class="info-box-title">Pro Tip</div>
+          <p>Set up saved searches with email alerts on LinkedIn and Indeed. When a new role matching your criteria posts, you'll know within minutes — early applicants have a significant advantage.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>2. Crafting Applications <span class="duration">&#128337; ~40 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>Your resume and cover letter must be tailored for each application. Generic applications get filtered out by ATS software or ignored by overworked recruiters scanning dozens of resumes per hour.</p>
+
+        <h3>Tailoring Your Resume</h3>
+        <p>Read the job description carefully before writing anything. Identify the top 5-7 keywords (skills, tools, certifications mentioned) and weave them naturally into your resume. Place the most relevant skills near the top under a <strong>Technical Skills</strong> section.</p>
+        <ul>
+          <li>Use the exact job title variations from the posting (e.g., "IT Help Desk Analyst" vs. "Help Desk Technician")</li>
+          <li>Mirror language from the job description in your bullet points</li>
+          <li>Quantify achievements wherever possible (e.g., "Resolved 50+ tickets weekly with 95% satisfaction rate")</li>
+        </ul>
+
+        <h3>ATS Optimization</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Do</th><th>Don't</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Use standard section headers (Experience, Education, Skills)</td><td>Create creative layouts with columns or tables</td></tr>
+              <tr><td>Save as PDF only if the portal accepts it</td><td>Use images, graphics, or embedded charts</td></tr>
+              <tr><td>Incorporate keywords from the job description</td><td>List skills without context or evidence</td></tr>
+              <tr><td>Use common file names (FirstName_LastName_Resume.pdf)</td><td>Name files generically (resume_final_v3.docx)</td></tr>
+              <tr><td>Include both acronyms and full terms (OS = Operating System)</td><td>Assume the ATS understands synonyms</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Cover Letter Template for IT Support</h3>
+        <div class="code-block">Subject: Application for IT Support Specialist - [Your Name]
+
+Dear Hiring Manager,
+
+I am writing to express my interest in the IT Support Specialist position at
+[Company Name], as advertised on [where you found it]. With hands-on
+experience troubleshooting hardware, software, and network issues in fast-paced
+help desk environments, I am confident in my ability to deliver reliable technical
+support while maintaining a positive customer service experience.
+
+In my current role at [Current/Prior Company], I resolve an average of
+[XX]+ tickets per week across tier-1 and tier-2 support categories,
+maintaining a [XX]% customer satisfaction rating. I have strengthened my
+proficiency in Active Directory, Office 365 administration, ticketing systems
+like [ServiceNow/Jira/Zendesk], and remote desktop tools including TeamViewer
+and Remote Desktop Services.
+
+What draws me to [Company Name] is [specific reason - company mission,
+technology stack, growth opportunity]. I am eager to bring my problem-solving
+skills and commitment to continuous learning to your IT team.
+
+I would welcome the opportunity to discuss how my background aligns with your
+needs. Thank you for your time and consideration.
+
+Sincerely,
+[Your Name]
+[Phone] | [Email] | [LinkedIn URL]</div>
+
+        <div class="info-box cyan">
+          <div class="info-box-title">Remember</div>
+          <p>Keep your cover letter to one page. Recruiters spend about 6 seconds scanning each one. Lead with your strongest achievement and show genuine interest in the company.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>3. Networking Strategies <span class="duration">&#128337; ~40 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>Up to 80% of jobs are never publicly posted. Networking is not just helpful - it is essential. Building genuine professional relationships will surface opportunities that no job board can match.</p>
+
+        <h3>LinkedIn Outreach Templates</h3>
+        <p>Personalized connection requests increase acceptance rates dramatically. Never send the default "I'd like to join your network" message.</p>
+
+        <div class="code-block">// Template 1: Alumni outreach
+Hi [Name], I noticed we both graduated from [University]. I'm currently
+building my IT support career after completing my CompTIA A+ and I'd love to
+learn about your path from [their major/role] to [their current position].
+Would you be open to a brief 15-minute chat sometime this week? Thanks!
+- [Your Name]
+
+// Template 2: Informational interview request
+Hi [Name], I've been following your work at [Company] and admire your
+transition from help desk to [current role]. I'm early in my IT career and
+aspiring to grow into that same space. Would you be willing to share some
+advice over coffee or a quick call? I truly appreciate any guidance you can
+offer. Best, [Your Name]
+
+// Template 3: Following up after event/meeting
+Great meeting you at [event] yesterday! I enjoyed our conversation about
+[topic discussed]. As promised, here's my resume / portfolio link: [URL].
+Please don't hesitate to reach out if anything comes to mind regarding
+potential opportunities. Looking forward to staying in touch.</div>
+
+        <h3>IT Meetups and Conferences</h3>
+        <ul>
+          <li><strong>Meetup.com</strong> — Search for local IT, sysadmin, or cybersecurity groups in your city</li>
+          <li><strong>Power Hour</strong> — Virtual networking events organized by IT professionals</li>
+          <li><strong>BSides</strong> — Community-driven security conferences held worldwide</li>
+          <li><strong>Microsoft Ignite / AWS re:Invent</strong> — Large conferences with dedicated career centers</li>
+          <li><strong>CompTIA Events</strong> — Local study groups and annual conference meetups</li>
+        </ul>
+
+        <h3>Online Communities</h3>
+        <ul>
+          <li><strong>Discord servers</strong> — Server Fault, Reddit's r/ITCareerQuestions Discord, various Microsoft 365 admin communities</li>
+          <li><strong>Twitter/X #ITCommunity</strong> — Follow hashtags like #AskMEP, #ITCareer, #HelpDeskLife</li>
+          <li><strong>Slack/Discord workspaces</strong> — Many tech companies host public channels for learning</li>
+        </ul>
+
+        <div class="info-box purple">
+          <div class="info-box-title">Networking Rule</div>
+          <p>Always lead with value. Ask thoughtful questions, do research before reaching out, and offer to help in return when you can. Relationships built on mutual respect last far longer than transactional connections.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>4. Staffing Agencies <span class="duration">&#128337; ~25 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>Staffing agencies can be an excellent bridge into IT careers, especially when you lack extensive experience. They handle much of the screening and placement work for employers.</p>
+
+        <h3>Top Agencies for IT Roles</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Agency</th><th>Focus Area</th><th>Note</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Robert Half Technology</td><td>General IT, help desk, enterprise</td><td>Largest global agency, broad client base</td></tr>
+              <tr><td>Adecco</td><td>Contract and temp IT staff</td><td>Strong in healthcare and government contracts</td></tr>
+              <tr><td>Kforce</td><td>Technology and engineering</td><td>Premium IT placements, good benefits package</td></tr>
+              <tr><td>Insight Global</td><td>Full-spectrum IT staffing</td><td>Large volume of entry-level postings</td></tr>
+              <tr><td>Express Logistics</td><td>Temp-to-perm IT roles</td><td>Known for fast placement timelines</td></tr>
+              <tr><td>Spherion</td><td>Entry-level IT and administrative</td><td>Accessible for candidates with minimal experience</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Pros and Cons of Agency Placement</h3>
+        <ul>
+          <li><strong>Pros:</strong> No application fees (employers pay), access to unposted roles, career coaching, temporary income while searching, agency handles paperwork</li>
+          <li><strong>Cons:</strong> Less control over which companies you're placed with, some assignments are short-term, salary negotiation may be limited, not all agencies treat candidates equally</li>
+        </ul>
+
+        <div class="info-box green">
+          <div class="info-box-title">Agency Strategy</div>
+          <p>Register with 2-3 agencies rather than just one. Build rapport with your recruiter - send updates on your progress, ask for feedback, and respond quickly to opportunities they share with you.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 5 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>5. Contract-to-Hire <span class="duration">&#128337; ~25 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>Contract-to-hire (also called "temp-to-perm") arrangements let employers evaluate you before committing to a full-time hire. For job seekers, these roles reduce hiring risk and provide foot-in-the-door opportunities.</p>
+
+        <h3>How Contract-to-Hire Works</h3>
+        <ul>
+          <li>You are employed by the staffing agency, not the client company</li>
+          <li>Typical contract length: 3-6 months, sometimes up to 12 months</li>
+          <li>The client evaluates performance during the contract period</li>
+          <li>If both parties are satisfied, an offer for full-time employment is extended</li>
+          <li>Some contracts include conversion bonuses paid to you by the agency</li>
+        </ul>
+
+        <h3>Advantages</h3>
+        <ul>
+          <li>Lower barrier to entry - less competition than direct hire roles</li>
+          <li>Real-world experience on your resume even if conversion doesn't happen</li>
+          <li>Opportunity to prove yourself without a perfect resume</li>
+          <li>Often includes employee benefits through the agency</li>
+          <li>Many companies prefer converting contract workers because training costs are already sunk</li>
+        </ul>
+
+        <h3>Turning a Contract Into Full-Time</h3>
+        <ol>
+          <li><strong>Exceed expectations in the first 2 weeks</strong> - reliability and attitude matter more than expertise initially</li>
+          <li><strong>Document wins weekly</strong> - keep a running list of problems solved, processes improved, and compliments received</li>
+          <li><strong>Ask for feedback at 30 days</strong> - show you care about improvement and want to grow</li>
+          <li><strong>Network internally</strong> - build relationships with the full IT team, not just your direct supervisor</li>
+          <li><strong>Express interest explicitly</strong> - at the 60-day mark, have a casual conversation about the possibility of conversion</li>
+        </ol>
+
+        <div class="info-box orange">
+          <div class="info-box-title">Watch Out</div>
+          <p>Never assume a contract will automatically convert. Get the conversion criteria in writing when possible, and understand whether you're a W-2 agency employee or a 1099 contractor - the tax and benefit implications are very different.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 6 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>6. Career Specialization Paths <span class="duration">&#128337; ~40 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>IT support is rarely a permanent destination - it's a launchpad. After gaining foundational experience, most professionals specialize. Choose a path aligned with your interests and the market demand in your region.</p>
+
+        <h3>Four Common Specialization Tracks</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Path</th><th>Requirements</th><th>Timeline</th><th>Key Certifications</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>SysAdmin</strong></td>
+                <td>Active Directory, PowerShell/Linux, virtualization</td>
+                <td>2-4 years from start</td>
+                <td>MCSE, Linux+, VMware VCP</td>
+              </tr>
+              <tr>
+                <td><strong>Cloud Engineer</strong></td>
+                <td>Linux fundamentals, networking basics, scripting</td>
+                <td>2-3 years from start</td>
+                <td>AWS Cloud Practitioner, AZ-900, Cloud+</td>
+              </tr>
+              <tr>
+                <td><strong>Security Analyst</strong></td>
+                <td>Networking knowledge, OS internals, incident response interest</td>
+                <td>3-5 years from start</td>
+                <td>Security+, CySA+, CISSP (later)</td>
+              </tr>
+              <tr>
+                <td><strong>DevOps Engineer</strong></td>
+                <td>Scripting proficiency, CI/CD exposure, cloud familiarity</td>
+                <td>3-5 years from start</td>
+                <td>CKA, Terraform Associate, AWS DevOps Pro</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Alternative Paths Worth Considering</h3>
+        <ul>
+          <li><strong>IT Project Management</strong> - PMP or CAPM certification, leads cross-functional technology initiatives</li>
+          <li><strong>IT Training & Documentation</strong> - Create training materials, conduct workshops, great for patient communicators</li>
+          <li><strong>Vendor-Specific Engineering</strong> - Deep expertise in Microsoft 365, Cisco, or Palo Alto ecosystems</li>
+          <li><strong>Managed Service Provider (MSP) Career Ladder</strong> - Junior tech to senior engineer to practice manager</li>
+        </ul>
+
+        <div class="info-box cyan">
+          <div class="info-box-title">Decision Framework</div>
+          <p>Don't choose in isolation. Spend 2-3 months exploring each path through lab projects, online courses, and informational interviews with people currently working in that role before committing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 7 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>7. Long-term Planning <span class="duration">&#128337; ~30 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>Career planning without dates is just a wish. Setting specific milestones helps you measure progress, adjust course when needed, and maintain motivation during slow periods.</p>
+
+        <h3>Sample Milestone Roadmap for IT Support Entry</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Timeframe</th><th>Milestone</th><th>Key Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Month 1-3</strong></td>
+                <td>Land first IT role</td>
+                <td>Complete A+, finalize resume, submit 10+ applications weekly</td>
+              </tr>
+              <tr>
+                <td><strong>Month 4-12</strong></td>
+                <td>Excel in entry-level role</td>
+                <td>Master ticketing systems, learn PowerShell basics, document wins</td>
+              </tr>
+              <tr>
+                <td><strong>Year 1-2</strong></td>
+                <td>Earn next certification</td>
+                <td>CompTIA Network+ or Security+, begin daily Linux labs</td>
+              </tr>
+              <tr>
+                <td><strong>Year 2-3</strong></td>
+                <td>Transition to specialized role</td>
+                <td>Pursue cloud or security certs, build home lab project portfolio</td>
+              </tr>
+              <tr>
+                <td><strong>Year 3-5</strong></td>
+                <td>Senior or lead position</td>
+                <td>Lead small projects, mentor juniors, obtain advanced cert</td>
+              </tr>
+              <tr>
+                <td><strong>Year 5+</strong></td>
+                <td>Architect or management track</td>
+                <td>Consider MS in IT, PMP, or AWS/Azure Solutions Architect</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Annual Review Questions</h3>
+        <ul>
+          <li>Did I earn at least one new certification this year?</li>
+          <li>Have I taken on responsibilities beyond my job description?</li>
+          <li>Is my salary competitive for my region and experience level?</li>
+          <li>Am I building skills that align with my target specialization?</li>
+          <li>Have I maintained and grown my professional network?</li>
+        </ul>
+
+        <div class="info-box green">
+          <div class="info-box-title">Flexibility Matters</div>
+          <p>Your plan will change - markets shift, technologies evolve, personal circumstances alter priorities. Review and revise your roadmap every 6 months. A living plan beats a perfect outdated one.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 8 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <h3>8. Continuous Learning <span class="duration">&#128337; ~25 min</span></h3>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="module-body">
+        <p>The technology landscape changes constantly. What was cutting-edge three years ago may already be deprecated. Continuous learning is not optional in IT - it is survival.</p>
+
+        <h3>Weekly Action Plan Template</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Day</th><th>Activity</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Monday</td><td>Complete one online course module (Coursera, Udemy, freeCodeCamp)</td><td>30-45 min</td></tr>
+              <tr><td>Wednesday</td><td>Hands-on lab - build something or troubleshoot a VM</td><td>45-60 min</td></tr>
+              <tr><td>Friday</td><td>Read industry news (Ars Technica, The Register, Splunk Blog)</td><td>20 min</td></tr>
+              <tr><td>Sunday</td><td>Review notes, update learning journal, plan next week</td><td>20 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Recommended Blogs & Newsletters</h3>
+        <ul>
+          <li><strong>The Register</strong> — Daily tech news with humor and depth</li>
+          <li><strong>Ars Technica</strong> — In-depth analysis of tech policy and engineering</li>
+          <li><strong>Spiceworks</strong> — IT community discussions and breaking news</li>
+          <li><strong>Netflix Tech Blog</strong> — Engineering at scale (advanced reading)</li>
+          <li><strong>Microsoft 365 Developer Blog</strong> — Official product updates</li>
+          <li><strong>John Savill's Technical Training</strong> — Excellent YouTube and blog content for Azure/cloud</li>
+        </ul>
+
+        <h3>Building Side Projects</h3>
+        <p>Side projects are your proof of competence. They show initiative and give you concrete talking points in interviews. Ideas for IT support learners:</p>
+        <ul>
+          <li>Build a home lab with two old PCs - one running Windows Server, one Linux</li>
+          <li>Automate a routine task with PowerShell or Python scripts</li>
+          <li>Create a personal IT documentation site using GitHub Pages</li>
+          <li>Set up a homelab monitoring dashboard with Prometheus/Grafana</li>
+          <li>Contribute bug fixes to open-source IT tools on GitHub</li>
+        </ul>
+
+        <div class="info-box purple">
+          <div class="info-box-title">The 1% Rule</div>
+          <p>Aim to improve just 1% each week. That compound growth means you'll be roughly 140% better in one year. Small consistent efforts beat occasional intense bursts every time.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Appendix: Job Application Tracker -->
+  <section class="checklist-section">
+    <h2>&#128203; Job Application Tracker Template</h2>
+    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">Copy this table into a spreadsheet or Notion page to track every application systematically. Update status weekly.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th><th>Role Title</th><th>Date Applied</th><th>Status</th><th>Contact Person</th><th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>[Company]</td><td>[Title]</td><td>[Date]</td><td>Applied</td><td>[Name/None]</td><td>[References, keywords used]</td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Resources -->
+  <section class="checklist-section">
+    <h2>&#128218; Recommended Resources</h2>
+    <div class="resources-list">
+      <a href="https://www.linkedin.com/jobs" class="resource-item" target="_blank">
+        <div class="resource-type">Platform</div>
+        <h4>LinkedIn Jobs</h4>
+        <p>Professional networking + job search combined. Set alerts and follow target companies.</p>
+      </a>
+      <a href="https://www.indeed.com" class="resource-item" target="_blank">
+        <div class="resource-type">Platform</div>
+        <h4>Indeed</h4>
+        <p>Largest job aggregator with salary data, company reviews, and one-click apply.</p>
+      </a>
+      <a href="https://www.dice.com" class="resource-item" target="_blank">
+        <div class="resource-type">Platform</div>
+        <h4>Dice</h4>
+        <p>Tech-specialized job board with transparent salary ranges and tech-stack details.</p>
+      </a>
+      <a href="https://github.com" class="resource-item" target="_blank">
+        <div class="resource-type">Tool</div>
+        <h4>GitHub</h4>
+        <p>Host your scripts, projects, and IT documentation to showcase practical skills.</p>
+      </a>
+      <a href="https://www.reddit.com/r/ITCareerQuestions/" class="resource-item" target="_blank">
+        <div class="resource-type">Community</div>
+        <h4>r/ITCareerQuestions</h4>
+        <p>Active Reddit community for career advice, salary discussions, and job hunt tips.</p>
+      </a>
+      <a href="https://learn.microsoft.com/en-us/training/" class="resource-item" target="_blank">
+        <div class="resource-type">Learning</div>
+        <h4>Microsoft Learn</h4>
+        <p>Free structured learning paths for Microsoft technologies with hands-on sandboxes.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Next Steps -->
+  <section class="next-steps">
+    <h2>&#9654; Next Steps</h2>
+    <ol>
+      <li>Review all 8 modules and save this page for future reference</li>
+      <li>Create or update your IT support resume using the ATS guidelines above</li>
+      <li>Set up job alerts on LinkedIn and Indeed for your target roles</li>
+      <li>Send 3 personalized LinkedIn connection requests to IT professionals</li>
+      <li>Register with at least one staffing agency (Robert Half or Insight Global recommended)</li>
+      <li>Begin filling out your Job Application Tracker spreadsheet</li>
+      <li>Commit to one side project this month to demonstrate proactive learning</li>
+      <li>Return to <a href="../index.html">Phase 6 hub</a> to explore other modules</li>
+    </ol>
+  </section>
+
+  <!-- Page Navigation -->
+  <div class="page-nav">
+    <a href="../phase-6-career-prep/index.html" class="page-nav-link prev">
+      <span class="label">&#8592; Back</span>
+      <span class="title">Phase 6 Career Prep Hub</span>
+    </a>
+    <a href="../phase-6-career-prep/index.html" class="page-nav-link next">
+      <span class="label">Next &#8594;</span>
+      <span class="title">All Phase 6 Modules</span>
+    </a>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 IT Support Learning Paths &middot; Built for aspiring IT professionals &middot; <a href="../index.html">Back to all phases</a></p>
+  </footer>
+
+</div>
+
+<script>
+function toggleModule(header) {
+  const module = header.closest('.module');
+  module.classList.toggle('open');
+}
+document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+  cb.addEventListener('change', function() {
+    cb.closest('.checklist-item')?.classList.toggle('done', cb.checked);
+  });
+});
+document.querySelector('.module.open .module-header').click();
+document.querySelector('.module.open').classList.remove('open');
+</script>
+
+</body>
+</html>

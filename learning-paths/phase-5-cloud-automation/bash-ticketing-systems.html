@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash Scripting &amp; IT Service Management | Phase 5</title>
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;font-size:15px}
+        a{color:#3b82f6;text-decoration:none}a:hover{color:#06b6d4}
+        .nav{background:#1e293b;border-bottom:1px solid #334155;padding:14px 32px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+        .nav a{color:#94a3b8;font-size:14px;font-weight:500}
+        .nav a:hover{color:#3b82f6}
+        .nav-title{color:#e2e8f0;font-size:16px;font-weight:700;letter-spacing:.3px}
+        .container{max-width:1100px;margin:0 auto;padding:40px 32px}
+        h1{font-size:32px;font-weight:800;color:#f8fafc;margin-bottom:6px}
+        .subtitle{color:#94a3b8;font-size:16px;margin-bottom:36px}
+        .badge{display:inline-block;background:#1e293b;border:1px solid #3b82f6;color:#3b82f6;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:8px}
+        h2{font-size:22px;font-weight:700;color:#f8fafc;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #1e293b}
+        h3{font-size:17px;font-weight:700;color:#cbd5e1;margin:28px 0 10px}
+        .obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:20px 0 32px}
+        .obj-item{display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;font-size:14px;color:#cbd5e1}
+        .obj-item input[type=checkbox]{accent-color:#3b82f6;margin-top:3px;flex-shrink:0}
+        .info-box{background:#1e293b;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
+        .info-box.green{border-left-color:#10b981}
+        .info-box.orange{border-left-color:#f59e0b}
+        .info-box.purple{border-left-color:#8b5cf6}
+        .info-box.pink{border-left-color:#ec4899}
+        .info-box.cyan{border-left-color:#06b6d4}
+        .info-box-title{font-weight:700;color:#e2e8f0;font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+        .info-box p{font-size:14px;color:#94a3b8}
+        .table-wrap{overflow-x:auto;margin:20px 0;border-radius:10px;border:1px solid #334155}
+        table{width:100%;border-collapse:collapse;font-size:14px}
+        th{background:#1e293b;color:#3b82f6;font-weight:700;text-align:left;padding:12px 16px;border-bottom:1px solid #334155}
+        td{padding:10px 16px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:#1e293b}
+        .comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+        @media(max-width:700px){.comparison{grid-template-columns:1fr}}
+        .comp-col{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px}
+        .comp-col h4{font-size:15px;font-weight:700;margin-bottom:12px}
+        .quiz-block{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin:16px 0}
+        .quiz-q{font-weight:700;color:#e2e8f0;margin-bottom:10px}
+        .quiz-answer{display:none;margin-top:10px;padding:10px 14px;background:#0f172a;border-radius:6px;font-size:13px;color:#10b981;font-weight:600}
+        .quiz-btn{background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s}
+        .quiz-btn:hover{background:#2563eb}
+        .next-prev{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #1e293b}
+        .np-btn{display:inline-flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;transition:all .2s}
+        .np-btn:hover{border-color:#3b82f6;color:#3b82f6}
+        .res-list{list-style:none;padding:0}
+        .res-list li{padding:8px 0;border-bottom:1px solid #1e293b;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+        .res-list li:last-child{border-bottom:none}
+        .res-list a{color:#3b82f6}
+        .progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:32px;overflow:hidden}
+        .progress-bar .fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:100%;border-radius:2px}
+        .module-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px 24px;margin-bottom:16px}
+        .module-card h3{margin-top:0;color:#f8fafc}
+        .module-meta{display:flex;gap:16px;margin-bottom:12px;font-size:13px;color:#94a3b8}
+        .module-meta span{display:inline-flex;align-items:center;gap:4px}
+        .code-block{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;margin:12px 0;overflow-x:auto;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;color:#94a3b8;line-height:1.6}
+        .checklist{list-style:none;padding:0;margin:12px 0}
+        .checklist li{padding:6px 0;font-size:14px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
+        .checklist li::before{content:"\2610";font-size:16px}
+        footer{margin-top:60px;padding:24px 0;border-top:1px solid #1e293b;text-align:center;color:#475569;font-size:13px}
+        .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-right:4px}
+        .tag-blue{background:rgba(59,130,246,0.15);color:#3b82f6}
+        .tag-green{background:rgba(16,185,129,0.15);color:#10b981}
+        .tag-purple{background:rgba(139,92,246,0.15);color:#8b5cf6}
+        .tag-orange{background:rgba(245,158,11,0.15);color:#f59e0b}
+        .exercise-block{background:#0f172a;border:1px dashed #334155;border-radius:8px;padding:16px 20px;margin:16px 0}
+        .exercise-block h4{font-size:15px;color:#f8fafc;margin-bottom:8px}
+        .exercise-block p{font-size:14px;color:#94a3b8;margin-bottom:8px}
+        .solutions-toggle{font-size:13px;color:#10b981;cursor:pointer;font-weight:600}
+        .solution-text{display:none;margin-top:10px}
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="../index.html">&larr; Learning Paths</a>
+        <span class="nav-title">Phase 5 &mdash; Bash Scripting &amp; IT Service Management</span>
+        <a href="../phase-6-career-prep/index.html">Next: Career Prep &rarr;</a>
+    </div>
+
+    <div class="container">
+        <div class="progress-bar"><div class="fill"></div></div>
+
+        <div class="badge" style="border-color:#06b6d4;color:#06b6d4;">PHASE 5 &middot; MODULE 4</div>
+        <h1>Bash Scripting &amp; IT Service Management</h1>
+        <p class="subtitle">Master shell scripting fundamentals and understand how ticketing systems manage IT service delivery.</p>
+
+        <!-- 1. Learning Objectives -->
+        <h2>1. Learning Objectives</h2>
+        <div class="obj-grid">
+            <div class="obj-item">
+                <input type="checkbox" id="obj1">
+                <label for="obj1">Write, test, and debug automated Bash shell scripts for system administration.</label>
+            </div>
+            <div class="obj-item">
+                <input type="checkbox" id="obj2">
+                <label for="obj2">Utilize variables, conditional logic, loops, and powerful text processing utilities (grep, sed, awk).</label>
+            </div>
+            <div class="obj-item">
+                <input type="checkbox" id="obj3">
+                <label for="obj3">Schedule recurring system maintenance and log monitoring using cron jobs.</label>
+            </div>
+            <div class="obj-item">
+                <input type="checkbox" id="obj4">
+                <label for="obj4">Comprehend ITIL service management frameworks and incident life cycles.</label>
+            </div>
+            <div class="obj-item">
+                <input type="checkbox" id="obj5">
+                <label for="obj5">Navigate modern enterprise ticketing tools (Jira Service Management, Freshservice, Zendesk).</label>
+            </div>
+            <div class="obj-item">
+                <input type="checkbox" id="obj6">
+                <label for="obj6">Manage Service Level Agreements (SLAs), escalation matrices, and priority matrix triage.</label>
+            </div>
+        </div>
+
+        <!-- 2. Module Breakdown -->
+        <h2>2. Module Breakdown</h2>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~30 mins</span>
+                <span>🏷️ Level: Beginner</span>
+            </div>
+            <h3>Module 1: Bash Basics</h3>
+            <p>Introduction to shell interpreters, shebang lines (`#!/bin/bash`), script permissions (`chmod +x`), and basic execution models.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~30 mins</span>
+                <span>🏷️ Level: Beginner</span>
+            </div>
+            <h3>Module 2: Variables &amp; Arguments</h3>
+            <p>Working with user-defined variables, positional parameters (`$1`, `$2`, `$#`, `$@`), and environment variables in scripts.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~40 mins</span>
+                <span>🏷️ Level: Intermediate</span>
+            </div>
+            <h3>Module 3: Control Structures</h3>
+            <p>Implementing conditional branching using `if/elif/else` statements and `case` selectors for robust input validation.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~35 mins</span>
+                <span>🏷️ Level: Intermediate</span>
+            </div>
+            <h3>Module 4: Loops in Practice</h3>
+            <p>Automating batch operations across lists and servers using `for`, `while`, and `until` loops paired with system checks.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~40 mins</span>
+                <span>🏷️ Level: Intermediate</span>
+            </div>
+            <h3>Module 5: Text Processing</h3>
+            <p>Extracting, transforming, and summarizing log data with `grep`, stream editing with `sed`, and columnar parsing with `awk`.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~25 mins</span>
+                <span>🏷️ Level: Intermediate</span>
+            </div>
+            <h3>Module 6: Cron Jobs</h3>
+            <p>Automating recurring administrative tasks, backups, and health checks using crontab syntax and systemd timers.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~30 mins</span>
+                <span>🏷️ Level: Foundational</span>
+            </div>
+            <h3>Module 7: ITIL Fundamentals</h3>
+            <p>Understanding IT Service Management (ITSM), incident life cycles, service desks, and ITIL v4 guiding principles.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~25 mins</span>
+                <span>🏷️ Level: Foundational</span>
+            </div>
+            <h3>Module 8: Ticketing Tools Overview</h3>
+            <p>Comparing leading ITSM platforms (Jira Service Management, Freshservice, Zendesk) and exploring core ticketing workflows.</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-meta">
+                <span>⏱️ Duration: ~25 mins</span>
+                <span>🏷️ Level: Advanced</span>
+            </div>
+            <h3>Module 9: SLA Management</h3>
+            <p>Defining Service Level Agreements, differentiating response vs. resolution targets, and designing escalation matrices.</p>
+        </div>
+
+        <!-- 3. Module 1: Bash Basics -->
+        <h2>3. Module 1: Bash Basics</h2>
+        <p>Bash (Bourne Again SHell) is the standard command interpreter on most Linux distributions and macOS environments. As an IT support professional or systems engineer, writing shell scripts allows you to automate repetitive tasks, standardize environment configurations, and troubleshoot issues rapidly.</p>
+
+        <div class="info-box cyan">
+            <div class="info-box-title">The Shebang Line</div>
+            <p>Every executable shell script begins with a shebang line: <code>#!/bin/bash</code>. This tells the operating system which interpreter binary should be invoked to execute the commands contained within the file.</p>
+        </div>
+
+        <h3>Creating and Executing Your First Script</h3>
+        <p>To create and run a basic script, follow these standard terminal steps:</p>
+        <div class="code-block">
+# 1. Create the script file using a text editor like nano
+nano health_check.sh
+
+# 2. Add the following content:
+#!/bin/bash
+# Description: Simple system health check script
+echo "=============================="
+echo "System Health Report: $(date)"
+echo "=============================="
+echo "Hostname: $(hostname)"
+echo "Uptime:   $(uptime -p)"
+echo "------------------------------"
+
+# 3. Save and exit, then make the script executable
+chmod +x health_check.sh
+
+# 4. Execute the script
+./health_check.sh
+        </div>
+
+        <!-- 4. Module 2: Variables & Arguments -->
+        <h2>4. Module 2: Variables &amp; Arguments</h2>
+        <p>Variables store data values that can be referenced throughout your script. Bash is dynamically typed and treats variables as strings by default.</p>
+
+        <div class="code-block">
+#!/bin/bash
+# Declaring and using variables
+SERVICE_NAME="nginx"
+LOG_DIR="/var/log/nginx"
+
+echo "Checking status of service: ${SERVICE_NAME}"
+echo "Log directory located at: ${LOG_DIR}"
+        </div>
+
+        <h3>Positional Parameters</h3>
+        <p>When running scripts from the terminal, you can pass arguments that become available inside the script as positional parameters:</p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>$0</code></td>
+                        <td>The filename of the current script.</td>
+                    </tr>
+                    <tr>
+                        <td><code>$1 - $9</code></td>
+                        <td>The first through ninth positional arguments passed to the script.</td>
+                    </tr>
+                    <tr>
+                        <td><code>$#</code></td>
+                        <td>The total number of positional arguments passed.</td>
+                    </tr>
+                    <tr>
+                        <td><code>$@</code></td>
+                        <td>All positional arguments as separate strings.</td>
+                    </tr>
+                    <tr>
+                        <td><code>$?</code></td>
+                        <td>The exit status of the last executed command (0 for success, non-zero for failure).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="code-block">
+#!/bin/bash
+# script_args.sh
+echo "Script name: $0"
+echo "Total arguments passed: $#"
+echo "First argument (User): $1"
+echo "Second argument (Department): $2"
+        </div>
+
+        <!-- 5. Module 3: Control Structures -->
+        <h2>5. Module 3: Control Structures</h2>
+        <p>Control structures allow your scripts to make decisions based on test conditions, file statuses, or numerical comparisons.</p>
+
+        <div class="code-block">
+#!/bin/bash
+# Checking disk space threshold
+THRESHOLD=85
+CURRENT_USAGE=$(df / | grep / | awk '{print $5}' | sed 's/%//')
+
+if [ "$CURRENT_USAGE" -gt "$THRESHOLD" ]; then
+    echo "WARNING: Disk usage is critically high at ${CURRENT_USAGE}%!"
+    # Trigger alert or notification here
+else
+    echo "OK: Disk usage is normal at ${CURRENT_USAGE}%."
+fi
+        </div>
+
+        <h3>Case Statements</h3>
+        <p>When handling multiple discrete options (such as service management menus), `case` statements provide cleaner syntax than chained `if/elif` blocks.</p>
+
+        <div class="code-block">
+#!/bin/bash
+case "$1" in
+    start)
+        echo "Starting IT support daemon..."
+        systemctl start itsupport
+        ;;
+    stop)
+        echo "Stopping IT support daemon..."
+        systemctl stop itsupport
+        ;;
+    status)
+        systemctl status itsupport
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status}"
+        exit 1
+        ;;
+esac
+        </div>
+
+        <!-- 6. Module 4: Loops in Practice -->
+        <h2>6. Module 4: Loops in Practice</h2>
+        <p>Loops automate repetitive execution blocks. In IT administration, loops are frequently used to iterate through lists of IP addresses, server names, or log files.</p>
+
+        <div class="code-block">
+#!/bin/bash
+# For loop iterating over server list
+SERVERS=("web-01" "db-01" "cache-01")
+
+for server in "${SERVERS[@]}"; do
+    echo "Pinging ${server}..."
+    ping -c 1 "${server}" &amp;&gt; /dev/null
+    if [ $? -eq 0 ]; then
+        echo " [SUCCESS] ${server} is online."
+    else
+        echo " [ALERT] ${server} is unreachable!"
+    fi
+done
+        </div>
+
+        <h3>While Loops for Service Polling</h3>
+        <div class="code-block">
+#!/bin/bash
+# Polling a service until it responds
+PORT=8080
+echo "Waiting for service on port ${PORT} to come online..."
+
+while ! nc -z localhost "${PORT}"; do
+    sleep 2
+done
+
+echo "Service is now online and accepting connections!"
+        </div>
+
+        <!-- 7. Module 5: Text Processing -->
+        <h2>7. Module 5: Text Processing</h2>
+        <p>Text processing utilities form the backbone of log parsing and data extraction in Linux environments.</p>
+
+        <div class="comparison">
+            <div class="comp-col">
+                <h4>Grep &amp; Sed</h4>
+                <p><strong>grep:</strong> Searches input files for lines matching a regular expression pattern.<br><code>grep -i "error" /var/log/syslog</code></p>
+                <p style="margin-top:10px;"><strong>sed:</strong> Stream editor used for filtering and transforming text in pipelines.<br><code>sed 's/old_ip/new_ip/g' config.conf</code></p>
+            </div>
+            <div class="comp-col">
+                <h4>Awk &amp; Sort/Uniq</h4>
+                <p><strong>awk:</strong> Pattern scanning and processing language designed for columnar data.<br><code>awk '{print $1, $9}' access.log</code></p>
+                <p style="margin-top:10px;"><strong>sort &amp; uniq:</strong> Ordering data and filtering or counting duplicate occurrences.<br><code>sort error.log | uniq -c | sort -nr</code></p>
+            </div>
+        </div>
+
+        <!-- 8. Module 6: Cron Jobs -->
+        <h2>8. Module 6: Cron Jobs</h2>
+        <p>Cron is a time-based job scheduler in Unix-like operating systems. Automated administrative scripts are routinely triggered via crontab entries.</p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Allowed Values</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Minute</td>
+                        <td>0 - 59</td>
+                        <td>Minute of the hour when the job runs</td>
+                    </tr>
+                    <tr>
+                        <td>Hour</td>
+                        <td>0 - 23</td>
+                        <td>Hour of the day in 24-hour format</td>
+                    </tr>
+                    <tr>
+                        <td>Day of Month</td>
+                        <td>1 - 31</td>
+                        <td>Calendar day of the month</td>
+                    </tr>
+                    <tr>
+                        <td>Month</td>
+                        <td>1 - 12 or JAN-DEC</td>
+                        <td>Calendar month</td>
+                    </tr>
+                    <tr>
+                        <td>Day of Week</td>
+                        <td>0 - 6 or SUN-SAT</td>
+                        <td>Day of the week (0 = Sunday)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="code-block">
+# Example Crontab Entries
+# Edit crontab using: crontab -e
+
+# Run disk cleanup script every day at 2:30 AM
+30 2 * * * /usr/local/bin/cleanup_temp.sh &gt;&gt; /var/log/cleanup.log 2&gt;&amp;1
+
+# Run weekly system update check every Monday at 4:00 AM
+0 4 * * 1 /usr/local/bin/weekly_audit.sh
+        </div>
+
+        <!-- 9. Module 7: ITIL Fundamentals -->
+        <h2>9. Module 7: ITIL Fundamentals</h2>
+        <p>Information Technology Infrastructure Library (ITIL) is the most widely accepted framework for IT Service Management (ITSM). It provides structured guidance on aligning IT services with business needs.</p>
+
+        <div class="info-box green">
+            <div class="info-box-title">The IT Incident Life Cycle</div>
+            <p><strong>New &rarr; Assigned &rarr; In Progress &rarr; Pending (Optional) &rarr; Resolved &rarr; Closed</strong><br>Every support ticket moves through a defined lifecycle. Accurate status tracking ensures accountability, metrics reporting, and timely closure.</p>
+        </div>
+
+        <h3>Incident Priority Matrix</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Priority</th>
+                        <th>Impact</th>
+                        <th>Urgency</th>
+                        <th>Target Response</th>
+                        <th>Target Resolution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="tag tag-orange">P1 - Critical</span></td>
+                        <td>Organization-wide</td>
+                        <td>Immediate</td>
+                        <td>15 Minutes</td>
+                        <td>4 Hours</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-purple">P2 - High</span></td>
+                        <td>Department / Multiple Users</td>
+                        <td>High</td>
+                        <td>1 Hour</td>
+                        <td>8 Hours</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-blue">P3 - Medium</span></td>
+                        <td>Single User</td>
+                        <td>Medium</td>
+                        <td>4 Hours</td>
+                        <td>24 Hours</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-green">P4 - Low</span></td>
+                        <td>Inconvenience / Request</td>
+                        <td>Low</td>
+                        <td>8 Hours</td>
+                        <td>72 Hours</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 10. Module 8: Ticketing Tools Overview -->
+        <h2>10. Module 8: Ticketing Tools Overview</h2>
+        <p>Enterprise ITSM platforms centralize user requests, incident management, asset tracking, and knowledge bases.</p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Key Strengths</th>
+                        <th>Best Suited For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Jira Service Management</strong></td>
+                        <td>Deep developer integration, agile workflows, automation rules, asset management.</td>
+                        <td>Tech-heavy organizations &amp; software engineering teams.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Freshservice</strong></td>
+                        <td>Intuitive UI, robust IT asset discovery, strong SLA management, gamification.</td>
+                        <td>Mid-market enterprises seeking fast deployment.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zendesk</strong></td>
+                        <td>Omnichannel support (chat, email, voice), extensive marketplace apps, customer portal.</td>
+                        <td>Customer-facing support and large helpdesks.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 11. Module 9: SLA Management -->
+        <h2>11. Module 9: SLA Management</h2>
+        <p>Service Level Agreements (SLAs) are formal commitments between an IT service provider and the business defining expected service standards.</p>
+
+        <div class="comparison">
+            <div class="comp-col">
+                <h4>Response Time SLA</h4>
+                <p>The time window within which a support technician must acknowledge receipt of the ticket, assign an owner, and make initial contact with the user.</p>
+            </div>
+            <div class="comp-col">
+                <h4>Resolution Time SLA</h4>
+                <p>The total elapsed time from ticket creation until the underlying issue is fully mitigated or resolved to the user's satisfaction.</p>
+            </div>
+        </div>
+
+        <!-- 12. Hands-on Labs -->
+        <h2>12. Hands-on Labs</h2>
+
+        <div class="exercise-block">
+            <h4>Lab 1: Automated Disk Usage Monitoring Script</h4>
+            <p>Write a Bash script that checks root partition usage, logs a timestamped warning to <code>/var/log/disk_monitor.log</code> if usage exceeds 80%, and outputs status.</p>
+            <span class="solutions-toggle" onclick="document.getElementById('sol1').style.display=document.getElementById('sol1').style.display==='block'?'none':'block'">Show Solution</span>
+            <div id="sol1" class="solution-text">
+                <div class="code-block">
+#!/bin/bash
+LOG_FILE="/var/log/disk_monitor.log"
+USAGE=$(df / | grep / | awk '{print $5}' | tr -d '%')
+
+if [ "$USAGE" -ge 80 ]; then
+    echo "$(date): CRITICAL - Disk usage at ${USAGE}%" &gt;&gt; "$LOG_FILE"
+else
+    echo "$(date): INFO - Disk usage normal at ${USAGE}%" &gt;&gt; "$LOG_FILE"
+fi
+                </div>
+            </div>
+        </div>
+
+        <div class="exercise-block">
+            <h4>Lab 2: Cron Job Configuration</h4>
+            <p>Configure a crontab entry that executes your disk monitoring script every hour on the minute zero.</p>
+            <span class="solutions-toggle" onclick="document.getElementById('sol2').style.display=document.getElementById('sol2').style.display==='block'?'none':'block'">Show Solution</span>
+            <div id="sol2" class="solution-text">
+                <div class="code-block">
+# Run every hour
+0 * * * * /usr/local/bin/disk_monitor.sh
+                </div>
+            </div>
+        </div>
+
+        <div class="exercise-block">
+            <h4>Lab 3: Incident Report Parser</h4>
+            <p>Use <code>awk</code> and <code>grep</code> to parse a system log file and output a count of all unique error messages.</p>
+            <span class="solutions-toggle" onclick="document.getElementById('sol3').style.display=document.getElementById('sol3').style.display==='block'?'none':'block'">Show Solution</span>
+            <div id="sol3" class="solution-text">
+                <div class="code-block">
+#!/bin/bash
+grep "ERROR" /var/log/syslog | awk '{print $5, $6, $7}' | sort | uniq -c
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. Code Reference Tables -->
+        <h2>13. Code Reference Tables</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command / Operator</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>[ -f file ]</code></td>
+                        <td>Conditional Test</td>
+                        <td>Returns true if file exists and is a regular file.</td>
+                    </tr>
+                    <tr>
+                        <td><code>[ -d dir ]</code></td>
+                        <td>Conditional Test</td>
+                        <td>Returns true if directory exists.</td>
+                    </tr>
+                    <tr>
+                        <td><code>-eq, -ne, -gt, -lt</code></td>
+                        <td>Numerical Comparison</td>
+                        <td>Equal, not equal, greater than, less than.</td>
+                    </tr>
+                    <tr>
+                        <td><code>=, !=</code></td>
+                        <td>String Comparison</td>
+                        <td>String equality and inequality tests.</td>
+                    </tr>
+                    <tr>
+                        <td><code>&gt;&gt;</code></td>
+                        <td>Redirection</td>
+                        <td>Append stdout to a file without overwriting.</td>
+                    </tr>
+                    <tr>
+                        <td><code>2&gt;&amp;1</code></td>
+                        <td>Redirection</td>
+                        <td>Redirect standard error to standard output.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 14. Knowledge Check -->
+        <h2>14. Knowledge Check</h2>
+
+        <div class="quiz-block">
+            <div class="quiz-q">1. What is the standard purpose of the shebang line (#!/bin/bash) at the top of a script?</div>
+            <button class="quiz-btn" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">Reveal Answer</button>
+            <div class="quiz-answer">It specifies the absolute path of the interpreter binary that the operating system should use to execute the script.</div>
+        </div>
+
+        <div class="quiz-block">
+            <div class="quiz-q">2. Which positional parameter represents the total number of arguments passed to a Bash script?</div>
+            <button class="quiz-btn" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">Reveal Answer</button>
+            <div class="quiz-answer">$# represents the total count of positional parameters.</div>
+        </div>
+
+        <div class="quiz-block">
+            <div class="quiz-q">3. In cron syntax, what does an asterisk (*) in the first field represent?</div>
+            <button class="quiz-btn" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">Reveal Answer</button>
+            <div class="quiz-answer">Every minute (minute 0 through 59).</div>
+        </div>
+
+        <div class="quiz-block">
+            <div class="quiz-q">4. What is the primary difference between a Response SLA and a Resolution SLA?</div>
+            <button class="quiz-btn" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">Reveal Answer</button>
+            <div class="quiz-answer">Response SLA measures the time until initial technician acknowledgement/contact, whereas Resolution SLA measures the total time until the issue is fully fixed.</div>
+        </div>
+
+        <div class="quiz-block">
+            <div class="quiz-q">5. Which text processing utility is best suited for columnar data extraction (e.g., printing specific fields)?</div>
+            <button class="quiz-btn" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">Reveal Answer</button>
+            <div class="quiz-answer">awk is designed specifically for pattern scanning and columnar data extraction.</div>
+        </div>
+
+        <!-- 15. Resources -->
+        <h2>15. Resources</h2>
+        <ul class="res-list">
+            <li>📚 <a href="https://www.gnu.org/software/bash/manual/" target="_blank">GNU Bash Reference Manual</a></li>
+            <li>🔗 <a href="https://www.axians.com/en/itil-v4-framework-guide/" target="_blank">ITIL v4 Framework Overview</a></li>
+            <li>🛠️ <a href="https://www.atlassian.com/software/jira/service-management" target="_blank">Jira Service Management Documentation</a></li>
+            <li>💻 <a href="https://www.shellcheck.net/" target="_blank">ShellCheck &mdash; Static Analysis Tool for Bash Scripts</a></li>
+        </ul>
+
+        <!-- 16. Progress Checklist -->
+        <h2>16. Progress Checklist</h2>
+        <ul class="checklist">
+            <li>Understand Bash shebangs, variables, and permissions</li>
+            <li>Master conditional statements and case branches</li>
+            <li>Construct for, while, and until loops</li>
+            <li>Utilize grep, sed, and awk for text and log processing</li>
+            <li>Schedule administrative tasks with crontab</li>
+            <li>Comprehend ITIL incident management and ticket lifecycles</li>
+            <li>Differentiate enterprise ticketing platforms and SLA targets</li>
+        </ul>
+
+        <!-- 17. Next Steps -->
+        <h2>17. Next Steps</h2>
+        <p>Proceed to <a href="../phase-6-career-prep/index.html">Phase 6 &mdash; Career Prep</a> to finalize your IT support portfolio, resume preparation, and interview readiness.</p>
+
+        <div class="next-prev">
+            <a href="phase-5-powershell-scripting.html" class="np-btn">&larr; Previous: PowerShell Scripting</a>
+            <a href="../phase-6-career-prep/index.html" class="np-btn">Next: Career Prep &rarr;</a>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 IT Support Learning Paths. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

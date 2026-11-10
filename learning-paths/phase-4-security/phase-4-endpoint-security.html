@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Endpoint Security &amp; Management — Phase 4</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .nav-bar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .nav-bar a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 6px; transition: background 0.2s; }
+    .nav-bar a:hover { background: var(--surface); color: var(--text); }
+    .nav-bar .sep { color: var(--text-dim); }
+
+    header { text-align: center; padding: 2.5rem 1rem 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    header h1 {
+      font-size: 2.4rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    header p { color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto 1rem; }
+    .badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.78rem; color: var(--text-muted); }
+
+    h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; letter-spacing: -0.5px; }
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 1.5rem 0 0.6rem; }
+    .section-sub { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.2rem; }
+
+    .objectives {
+      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent-green);
+      border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;
+    }
+    .objectives h3 { margin-top: 0; color: var(--accent-green); }
+    .obj-list { list-style: none; }
+    .obj-list li { padding: 0.35rem 0; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.6rem; }
+    .obj-list li::before { content: '\2610'; color: var(--accent-green); font-size: 1rem; flex-shrink: 0; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; }
+    th { background: rgba(16,185,129,0.1); color: var(--accent-green); text-align: left; padding: 0.7rem 1rem; border-bottom: 2px solid var(--border); font-weight: 700; }
+    td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    ul, ol { padding-left: 1.2rem; margin: 0.5rem 0; }
+    li { padding: 0.25rem 0; font-size: 0.9rem; color: var(--text-muted); }
+    li::marker { color: var(--accent-cyan); }
+
+    .callout { border-radius: 10px; padding: 1rem 1.2rem; margin: 1rem 0; font-size: 0.9rem; }
+    .callout-danger { background: rgba(239,68,68,0.1); border-left: 4px solid #ef4444; }
+    .callout-warning { background: rgba(245,158,11,0.1); border-left: 4px solid var(--accent-orange); }
+    .callout-info { background: rgba(59,130,246,0.1); border-left: 4px solid var(--accent-blue); }
+    .callout-success { background: rgba(16,185,129,0.1); border-left: 4px solid var(--accent-green); }
+    .callout strong { display: block; margin-bottom: 0.3rem; }
+
+    .tag { display: inline-block; border-radius: 6px; padding: 0.15rem 0.55rem; font-size: 0.75rem; font-weight: 700; }
+    .tag-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .tag-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+    .tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .tag-pink { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+    .tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+
+    .progress-checklist { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+    .progress-checklist h3 { margin-top: 0; color: var(--accent-green); }
+    .check-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; font-size: 0.88rem; color: var(--text-muted); cursor: pointer; }
+    .check-item input[type="checkbox"] { accent-color: var(--accent-green); width: 16px; height: 16px; cursor: pointer; }
+
+    .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .resource-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .resource-card .rt { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-cyan); margin-bottom: 0.4rem; }
+    .resource-card h4 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+    .resource-card p { font-size: 0.83rem; color: var(--text-muted); margin: 0; }
+
+    .config-block {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem 1.2rem; margin: 0.8rem 0; font-family: 'Consolas', monospace;
+      font-size: 0.82rem; color: var(--accent-cyan); overflow-x: auto;
+    }
+    .config-block .comment { color: var(--text-dim); }
+    .config-block .cmd { color: var(--accent-green); }
+    .config-block .path { color: var(--accent-orange); }
+
+    footer { text-align: center; color: var(--text-dim); font-size: 0.78rem; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 2rem; }
+    @media (max-width: 600px) { header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-bar">
+      <a href="../index.html">&#8592; Roadmap Home</a>
+      <span class="sep">/</span>
+      <a href="#">Phase 4: Security</a>
+      <span class="sep">/</span>
+      <strong style="color:var(--accent-green); font-size:0.85rem;">Endpoint Security &amp; Management</strong>
+    </div>
+
+    <header>
+      <h1>Endpoint Security &amp; Management</h1>
+      <p>Secure every device that connects to your network. From antivirus and EDR to firewall configuration and compliance frameworks.</p>
+      <div class="badges">
+        <span class="badge">&#128640; Phase 4</span>
+        <span class="badge">&#9201; ~20 Hours</span>
+        <span class="badge">&#128161; Tool Comparisons</span>
+        <span class="badge">&#128227; Security+ Aligned</span>
+      </div>
+    </header>
+
+    <div class="objectives">
+      <h3>Learning Objectives</h3>
+      <ul class="obj-list">
+        <li><input type="checkbox" /> Evaluate and compare major EDR/antivirus solutions for organizational use</li>
+        <li><input type="checkbox" /> Configure Windows Firewall rules and Linux iptables basics</li>
+        <li><input type="checkbox" /> Design and implement patch management strategies</li>
+        <li><input type="checkbox" /> Enforce device control and USB restrictions at scale</li>
+        <li><input type="checkbox" /> Apply endpoint hardening checklists aligned with industry standards</li>
+        <li><input type="checkbox" /> Understand CIS Controls and their implementation priorities</li>
+        <li><input type="checkbox" /> Secure mobile devices including MDM and remote wipe capabilities</li>
+        <li><input type="checkbox" /> Build an endpoint security policy document</li>
+      </ul>
+    </div>
+
+    <!-- Module 1 -->
+    <h2>Module 1: Antivirus &amp; EDR Solutions</h2>
+    <p class="section-sub">From signature-based scanning to behavioral AI — understanding the evolution of endpoint defense.</p>
+
+    <h3>EDR vs Traditional AV</h3>
+    <table>
+      <tr><th>Feature</th><th>Traditional AV</th><th>EDR (Endpoint Detection &amp; Response)</th></tr>
+      <tr><td>Detection method</td><td>Signature-based (known malware only)</td><td>Behavioral analysis + ML + telemetry</td></tr>
+      <tr><td>Real-time monitoring</td><td>Limited (file scans on access)</td><td>Continuous process/network monitoring</td></tr>
+      <tr><td>Threat hunting</td><td>No</td><td>Built-in query language and dashboards</td></tr>
+      <tr><td>Automated response</td><td>Quarantine only</td><td>Isolate host, kill process, block IOCs</td></tr>
+      <tr><td>Historical data</td><td>Limited logs</td><td>Time-machine replay of all endpoint activity</td></tr>
+      <tr><td>Cost</td><td>Free – $5/endpoint</td><td>$5–15+/endpoint/month</td></tr>
+      <tr><td>Best for</td><td>Home users, basic protection</td><td>Businesses needing breach detection &amp; response</td></tr>
+    </table>
+
+    <h3>Platform Comparison</h3>
+    <div class="card-grid">
+      <div class="card" style="border-left: 4px solid var(--accent-blue);">
+        <span class="tag tag-blue">Built-In / Free Tier</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-blue);">Windows Defender / Microsoft Defender</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>AV Engine:</strong> Built into Windows 10/11. Uses cloud-connected intelligence with real-time protection, controlled folder access, and exploit prevention.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>EDR Mode:</strong> Defender for Endpoint adds attack surface reduction rules, automated investigation, cloud-based dashboard, and threat analytics. Integrates natively with Microsoft 365 security ecosystem.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Pricing:</strong> Free (Defender) / $8–20/user/month (Defender for Endpoint plans 1-4)</p>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Ideal for:</strong> Organizations already in the Microsoft ecosystem, SMBs, cost-sensitive deployments.</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-pink);">
+        <span class="tag tag-pink">Enterprise EDR Leader</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-pink);">CrowdStrike Falcon</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Core Capability:</strong> Cloud-native EDR platform using lightweight agent (&lt;100MB memory). Proprietary Falcon Intelligence feed processes billions of signals daily. Offers endpoint protection, threat hunting, cloud security (CSPM/CWPP), and identity protection.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Managed Hunting:</strong> CrowdStrike's managed SOC offers 24/7 expert threat hunting as a service — analysts investigate alerts so your team doesn't have to.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Pricing:</strong> ~$6–10+/endpoint/month depending on module bundle</p>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Ideal for:</strong> Mid-large enterprises, organizations with advanced threat concerns, companies wanting managed detection services.</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-purple);">
+        <span class="tag tag-purple">Autonomous Response</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-purple);">SentinelOne Singularity</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Key Differentiator:</strong> "Set it and forget it" autonomous response. The platform can detect, contain, and remediate threats without human intervention using its Storyline technology (creates visual attack timeline).</p>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Offline Protection:</strong> Works fully offline — critical for air-gapped environments or devices with intermittent connectivity.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Pricing:</strong> ~$5–8/endpoint/month</p>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Ideal for:</strong> Organizations wanting minimal SOC overhead, edge/computing environments, hybrid workforces.</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--accent-cyan);">
+        <span class="tag tag-cyan">Lightweight AV</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-cyan);">ESET Endpoint Security</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Strength:</strong> Extremely low resource footprint — runs well on older hardware without slowing systems. Effective detection rates matching industry leaders while using minimal CPU/RAM.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted);"><strong>Modules:</strong> Modular design lets you pick exactly what you need: EOP (Office 365 protection), EDRi, PHP (PowerShell protection), Ransomware Shield.</p>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;"><strong>Pricing:</strong> ~$5–7/endpoint/year (very competitive)</p>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <h2>Module 2: Firewall Configuration</h2>
+    <p class="section-sub">Firewalls are the first line of network defense. Knowing how to configure them properly separates amateurs from professionals.</p>
+
+    <h3>Windows Firewall Deep Dive</h3>
+    <div class="card">
+      <p style="font-size:0.88rem; color:var(--text-muted);">Windows Defender Firewall with Advanced Security is a stateful packet inspection firewall built into Windows. It supports both inbound and outbound rules, profiles per network type (Domain, Private, Public), and integrates with Group Policy for enterprise management.</p>
+      <h4 style="margin-top:1rem;">Profile Types</h4>
+      <table>
+        <tr><th>Profile</th><th>When Applied</th><th>Recommended Rules</th></tr>
+        <tr><td><strong>Domain</strong></td><td>Computer is joined to Active Directory and can authenticate to a domain controller</td><td>Allow AD traffic, file/print sharing, Kerberos; Block unsolicited inbound</td></tr>
+        <tr><td><strong>Private</strong></td><td>Home or work network not connected to domain</td><td>Allow file sharing, discovery; restrictive inbound; allow trusted applications</td></tr>
+        <tr><td><strong>Public</strong></td><td>Coffee shop, airport, any untrusted network</td><td>Most restrictive — block most inbound connections, limit file sharing</td></tr>
+      </table>
+      <h4 style="margin-top:1rem;">Useful PowerShell Commands</h4>
+      <div class="config-block">
+<span class="comment"># View current firewall status</span>
+<span class="cmd">Get-NetFirewallProfile</span>
+
+<span class="comment"># Create an inbound rule allowing port 443 (HTTPS)</span>
+<span class="cmd">New-NetFirewallRule -DisplayName "Allow HTTPS Inbound" `
+  -Direction Inbound -Protocol TCP -LocalPort 443 `
+  -Action Allow -Profile Domain,Private</span>
+
+<span class="comment"># Block a specific IP address</span>
+<span class="cmd">New-NetFirewallRule -DisplayName "Block Suspicious IP" `
+  -Direction Inbound -RemoteAddress 192.168.1.100 -Action Block</span>
+
+<span class="comment"># List all enabled rules</span>
+<span class="cmd">Get-NetFirewallRule -Enabled True | Format-Table DisplayName, Direction, Action</span>
+      </div>
+    </div>
+
+    <h3>Linux iptables Basics</h3>
+    <div class="card">
+      <p style="font-size:0.88rem; color:var(--text-muted);">iptables is the classic Linux firewall utility using Netfilter hooks. Rules are organized into chains (INPUT, FORWARD, OUTPUT) within tables (filter, nat, mangle). Note: newer systems may use nftables or firewalld, but iptables remains widely understood and configured.</p>
+      <h4 style="margin-top:1rem;">Essential iptables Commands</h4>
+      <div class="config-block">
+<span class="comment"># View current rules</span>
+<span class="cmd">sudo iptables -L -n -v</span>
+
+<span class="comment"># Allow established connections (stateful filtering)</span>
+<span class="cmd">sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</span>
+
+<span class="comment"># Allow SSH (port 22) from any source</span>
+<span class="cmd">sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT</span>
+
+<span class="comment"># Allow HTTP/HTTPS locally</span>
+<span class="cmd">sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT</span>
+<span class="cmd">sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT</span>
+
+<span class="comment"># Drop all other inbound traffic by default</span>
+<span class="cmd">sudo iptables -P INPUT DROP</span>
+
+<span class="comment"># Save rules (Debian/Ubuntu)</span>
+<span class="cmd">sudo iptables-save > /etc/iptables/rules.v4</span>
+      </div>
+    </div>
+
+    <div class="callout callout-danger">
+      <strong>Critical:</strong> When configuring firewalls on remote servers, ALWAYS test rules before applying a default-deny policy. A mistaken rule can lock you out permanently. Use a console/serial connection as backup when hardening production servers.
+    </div>
+
+    <!-- Module 3 -->
+    <h2>Module 3: Patch Management Strategies</h2>
+    <p class="section-sub">Unpatched vulnerabilities cause ~60% of breaches. Automated patch management is non-negotiable for modern IT.</p>
+
+    <h3>The Patch Management Lifecycle</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h3>1. Identify</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Maintain an complete asset inventory. Know what software runs where. Use tools like WSUS, SCCM/MECM, or third-party inventories to track every endpoint and application version.</p>
+      </div>
+      <div class="card">
+        <h3>2. Assess</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Evaluate new patches for severity (CVSS score), relevance to your environment, and potential impact. Prioritize based on exploitability — is there known active exploitation in the wild?</p>
+      </div>
+      <div class="card">
+        <h3>3. Test</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Never deploy patches directly to production. Test in a staging environment first. Check for compatibility issues, performance impacts, and known bugs. Maintain rollback capability.</p>
+      </div>
+      <div class="card">
+        <h3>4. Deploy</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Schedule deployment during maintenance windows. Use phased rollouts (pilot group -> department -> organization). Automate where possible with WSUS, Intune, or SCCM.</p>
+      </div>
+      <div class="card">
+        <h3>5. Verify</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Confirm successful installation across all endpoints. Generate compliance reports. Document exceptions for systems that couldn't be patched and why.</p>
+      </div>
+      <div class="card">
+        <h3>6. Report</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Generate metrics: patch compliance rate, time-to-patch, vulnerability exposure window. Share with leadership to demonstrate security posture improvements.</p>
+      </div>
+    </div>
+
+    <h3>Microsoft Update Categories &amp; Timelines</h3>
+    <table>
+      <tr><th>Patch Type</th><th>Release Day</th><th>SLA (Days to Deploy)</th><th>Examples</th></tr>
+      <tr><td><strong>Critical Security Updates</strong></td><td>Tuesday (Patch Tuesday)</td><td>7 days</td><td>OS vulnerabilities, privilege escalation, RCE fixes</td></tr>
+      <tr><td><strong>Important Security Updates</strong></td><td>Tuesday</td><td>14 days</td><td>Information disclosure, DoS vector mitigations</td></tr>
+      <tr><td><strong>Security Advisories (Out-of-band)</strong></td><td>Any time</td><td>48 hours</td><td>Active exploitation in the wild — urgent response</td></tr>
+      <tr><td><strong>Non-Security Updates</strong></td><td>Tuesday</td><td>30 days</td><td>Bug fixes, feature updates, cumulative updates</td></tr>
+    </table>
+
+    <h3>Patch Management Tools</h3>
+    <div class="card-grid">
+      <div class="card">
+        <span class="tag tag-blue">Built-In</span>
+        <h3 style="margin-top:0.5rem;">WSUS / Microsoft Update</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Free Microsoft tool for managing Windows update distribution within your network. Approve/reject specific updates, target computers by OU, schedule deployments via Group Policy.</p>
+      </div>
+      <div class="card">
+        <span class="tag tag-purple">Enterprise</span>
+        <h3 style="margin-top:0.5rem;">Microsoft Intune (Endpoint Manager)</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Cloud-based MD M + patch management. Automatically deploys quality and feature updates to Windows, iOS, and Android devices. Reports show patch compliance per device.</p>
+      </div>
+      <div class="card">
+        <span class="tag tag-cyan">Third-Party</span>
+        <h3 style="margin-top:0.5rem;">PDQ Deploy / ManageEngine Patch Manager</h3>
+        <p style="font-size:0.88rem; color:var(--text-muted);">Third-party tools covering Windows, macOS, Linux, and third-party applications (Chrome, Java, Adobe). PDQ is great for SMBs; ManageEngine scales to enterprise.</p>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <h2>Module 4: Device Control &amp; USB Restrictions</h2>
+    <p class="section-sub">Physical ports are attack vectors too. An infected USB drive can bypass every network control you have.</p>
+
+    <div class="card">
+      <h3>Device Control Strategies</h3>
+      <ul>
+        <li><strong>Block all removable media by default:</strong> Start with a deny-all policy, then explicitly allow approved devices</li>
+        <li><strong>Whitelist by hardware ID:</strong> Allow only specific USB devices (by VID/PID) registered to employees</li>
+        <li><strong>Encrypted USB enforcement:</strong> If removable media is allowed, require hardware-encrypted drives (Kingston IronKey, SanDisk Crypto)</li>
+        <li><strong>Audit logging:</strong> Log every connection event — who plugged in what, when, and to which computer</li>
+        <li><strong>Data Loss Prevention (DLP):</strong> Monitor and block unauthorized data exfiltration via removable media</li>
+      </ul>
+    </div>
+
+    <h3>Configuring USB Restrictions (Group Policy)</h3>
+    <div class="config-block">
+<span class="comment"># Path: Computer Configuration -> Policies -> Admin Templates -> System</span>
+<span class="comment"># Removable Storage Access</span>
+
+<span class="comment"># Block all removable storage classes</span>
+<span class="path">Enable:</span> All Removable Storage classes: Deny all access
+
+<span class="comment"># Block removable disks except fixed drives</span>
+<span class="path">Enable:</span> Removable Disks: Deny read access
+
+<span class="comment"># Allow specific removable classes while blocking others</span>
+<span class="path">Enable:</span> Allow access to copy operations only
+<span class="comment"># (Prevents data theft while still allowing authorized copying)</span>
+    </div>
+
+    <!-- Module 5 -->
+    <h2>Module 5: Endpoint Hardening Checklist</h2>
+    <p class="section-sub">Apply these settings to every device before it connects to your network.</p>
+
+    <h3>Windows Hardening Checklist</h3>
+    <div class="card">
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Disable SMBv1 entirely (remove the protocol, don't just disable it)</div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"/><label>Enable BitLocker TPM-only mode (requires PIN on startup without TPM)</label></div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Enable Controlled Folder Access (ransomware protection)</div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Disable Macros in Office documents from internet sources</div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Disable automatic runner of executables from USB (Autorun)</div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Enforce screen lock after 5 minutes of inactivity</div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Enable Windows Hello for Business (biometric login)</div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Restrict administrator accounts to dedicated admin devices</div>
+      <div class="check-item" style="padding:0.5rem 0; border-bottom:1px solid var(--border);"><input type="checkbox" style="accent-color:var(--accent-green);"/> Disable unnecessary services (Print Spooler if no printers, Remote Registry)</div>
+      <div class="check-item" style="padding:0.5rem 0;"><input type="checkbox" style="accent-color:var(--accent-green);"/> Enable Credential Guard (isolates credentials from the OS)</div>
+    </div>
+
+    <h3>macOS Hardening Checklist</h3>
+    <div class="card">
+      <div class="check-item"><input type="checkbox" style="accent-color:var(--accent-green);"/> FileVault full-disk encryption enabled on all Macs</div>
+      <div class="check-item"><input type="checkbox" style="accent-color:var(--accent-green);"/> Gatekeeper set to App Store + identified developers</div>
+      <div class="check-item"><input type="checkbox" style="accent-color:var(--accent-green);"/> Firewall enabled (System Settings -> Network -> Firewall)</div>
+      <div class="check-item"><input type="checkbox" style="accent-color:var(--accent-green);"/> Disable guest USB access and external boot options</div>
+      <div class="check-item"><input type="checkbox" style="accent-color:var(--accent-green);"/> Enable OTP for iCloud and MDM-enrolled account authentication</div>
+    </div>
+
+    <!-- Module 6 -->
+    <h2>Module 6: CIS Controls Overview</h2>
+    <p class="section-sub">The Center for Internet Security (CIS) Controls provide a prioritized, actionable framework for endpoint and infrastructure hardening.</p>
+
+    <h3>CIS Controls v2 — Top 18 Prioritized Security Controls</h3>
+    <table>
+      <tr><th>#</th><th>Control Name</th><th>Category</th><th>Why It Matters</th></tr>
+      <tr><td>1</td><td><strong>Inventorize and Control Enterprise Assets</strong></td><td>Inventory</td><td>You can't protect what you can't find. Shadow IT and forgotten devices are blind spots.</td></tr>
+      <tr><td>2</td><td><strong>Inventorize and Control Software Assets</strong></td><td>Inventory</td><td>Track all installed software, licenses, versions. Eliminate unmaintained and unsupported apps.</td></tr>
+      <tr><td>3</td><td><strong>Protected Administration</strong></td><td>Access Control</td><td>Privileged accounts are the most valuable targets. Use separate admin devices and jump hosts.</td></tr>
+      <tr><td>4</td><td><strong>Data Recovery</strong></td><td>Resilience</td><td>Backups are your last line of defense against ransomware. Test restoration regularly.</td></tr>
+      <tr><td>5</td><td><strong>Configuration Management</strong></td><td>Hardening</td><td>Establish and maintain secure configurations using benchmarks (CIS Benchmarks, DISA STIGs).</td></tr>
+      <tr><td>6</td><td><strong>Access Control</strong></td><td>Access Control</td><td>Least privilege, RBAC, regular access reviews. Principle of minimum necessary.</td></tr>
+      <tr><td>7</td><td><strong>Continuous Vulnerability Management</strong></td><td>Vulnerability</td><td>Regular scanning, triage, and remediation. Not a one-time activity.</td></tr>
+      <tr><td>8</td><td><strong>Audit Log Management</strong></td><td>Auditing</td><td>Centralize logs, protect log integrity, retain for required periods.</td></tr>
+      <tr><td>9</td><td><strong>Email and Web Browser Protections</strong></td><td>Malware</td><td>Gateway filtering, browser hardening, disable macros, restrict plugins.</td></tr>
+      <tr><td>10</td><td><strong>Malware Defenses</strong></td><td>Malware</td><td>Anti-malware on all endpoints and servers. EDR recommended over simple AV.</td></tr>
+      <tr><td>11</td><td><strong>Data Recovery</strong></td><td>Resilience</td><td>Maintain encrypted backups, test restore procedures quarterly.</td></tr>
+      <tr><td>12</td><td><strong>Password Management</strong></td><td>Identity</td><td>Enforce strong passwords, MFA, and password manager adoption.</td></tr>
+    </table>
+
+    <div class="callout callout-info">
+      <strong>CIS Controls Implementation Groups:</strong> IG1 covers small orgs with basic hygiene (controls 1-8). IG2 adds more comprehensive controls (1-16). IG3 is for highly regulated or high-risk environments (all 18). Start at IG1 and progress upward.
+    </div>
+
+    <!-- Module 7 -->
+    <h2>Module 7: Mobile Device Security</h2>
+    <p class="section-sub">BYOD policies, MDM platforms, and the challenges of securing portable devices.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="tag tag-blue">iOS / iPadOS</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-blue);">Apple Device Security</h3>
+        <ul>
+          <li>Mandatory passcode (minimum 6 digits for business use)</li>
+          <li>Data protection API enables per-app encryption</li>
+          <li>Remote wipe available via MDM (erase device or erase only data)</li>
+          <li>Jailbreak detection — reject non-compliant devices</li>
+          <li>App store restrictions and content &amp; privacy restrictions</li>
+          <li>Find My iPhone for location tracking and remote lock</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag tag-green">Android</span>
+        <h3 style="margin-top:0.5rem; color:var(--accent-green);">Android Device Security</h3>
+        <ul>
+          <li>Google Play Protect for malware scanning</li>
+          <li>Work profile isolation (separates personal from corporate data)</li>
+          <li>Device owner mode for full MDM control</li>
+          <li>Remote wipe via Google Workspace or MDM</li>
+          <li>Encrypt-by-default on modern Android devices</li>
+          <li>SELinux enforced mandatory access control</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Mobile Device Management (MDM) Options</h3>
+    <table>
+      <tr><th>Platform</th><th>Key Features</th><th>Best For</th><th>Price</th></tr>
+      <tr><td><strong>Microsoft Intune</strong></td><td>Fully integrated with Azure AD, conditional access, Windows/iOS/Android/Mac support</td><td>Microsoft 365 shops</td><td>$8/user/mo (add-on) or $20/user/mo (E3/E5)</td></tr>
+      <tr><td><strong>VMware Workspace ONE</strong></td><td>Deep Android customization, kiosk mode, IoT device management, cross-platform</td><td>Large enterprises with mixed fleets</td><td>$5–12/device/mo</td></tr>
+      <tr><td><strong>MobileIron / Ivanti</strong></td><td>Advanced app containment, content transfer between work/personal apps</td><td>Regulated industries, banking</td><td>$5–10/device/mo</td></tr>
+      <tr><td><strong>Apple DEP + Apple School Manager</strong></td><td>Zero-touch enrollment, supervised mode, MDM push, classroom features</td><td>iOS-only schools and businesses</td><td>Free (iOS devices)</td></tr>
+    </table>
+
+    <h3>Remote Wipe Capabilities</h3>
+    <div class="card">
+      <p style="font-size:0.88rem; color:var(--text-muted);">When a device is lost or stolen, immediate action protects organizational data. Available wipe actions vary by platform and MDM:</p>
+      <table>
+        <tr><th>Wipe Type</th><th>iOS</th><th>Android</th><th>What It Does</th></tr>
+        <tr><td><strong>Smart Wipe</strong></td><td>&#x2713;</td><td>&#x2713;</td><td>Erases only managed/work data, preserving personal data</td></tr>
+        <tr><td><strong>Full Wipe</strong></td><td>&#x2713;</td><td>&#x2713;</td><td>Erases entire device including personal data</td></tr>
+        <tr><td><strong>Lock Device</strong></td><td>&#x2713;</td><td>&#x2713;</td><td>Remotely set a passcode and display a message</td></tr>
+        <tr><td><strong>Locate Device</strong></td><td>&#x2713;</td><td>&#x2713;</td><td>Show GPS location on a map</td></tr>
+        <tr><td><strong>Play Sound</strong></td><td>&#x2713;</td><td>&#x2713;</td><td>Ring device at maximum volume for 5 minutes</td></tr>
+      </table>
+    </div>
+
+    <div class="callout callout-warning">
+      <strong>BYOD Consideration:</strong> Always offer employees the choice between a company-provided device (full MDM control OK) or BYOD with work profile isolation (limited MDM scope). Mandatory full-device wiping on personal phones creates legal and ethical complications.
+    </div>
+
+    <!-- Knowledge Check -->
+    <h2>Knowledge Check</h2>
+    <div class="card">
+      <h3>Q1: Why is EDR superior to traditional signature-based antivirus?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">Traditional AV relies on signature databases of known malware patterns. It cannot detect zero-day attacks, modified/polymorphic malware, or novel attack techniques. EDR continuously monitors endpoint behavior (process creation, network connections, registry changes) using behavioral analysis and machine learning. It detects anomalies regardless of whether the malicious code has been seen before, provides historical context for investigation, and can automatically respond to contain threats.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Q2: What is the most important consideration when creating a firewall rule on a public network profile?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">The default posture should be <strong>deny all inbound</strong> unless explicitly required. On public networks (cafes, airports), assume every other device on the same subnet could be hostile. Only allow outbound connections to needed services (web browsing, email). Never expose file sharing, RDP, or administrative interfaces on public network profiles.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Q3: How does Conditional Access complement MDM?</h3>
+      <details style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; color:var(--accent-cyan); font-size:0.9rem;">Show Answer</summary>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.5rem;">MDM manages the device configuration. Conditional Access (Azure AD) decides whether an authenticated user should be granted access based on device compliance status. Example: A user tries to access Outlook Web. Conditional Access checks: Is their device managed by Intune? Is it compliant (BitLocker enabled, OS up to date)? Is MFA satisfied? If ALL conditions are met, access is granted. If the device is non-compliant, access is denied or restricted — even though the credentials are correct.</p>
+      </details>
+    </div>
+
+    <!-- Practice Checklist -->
+    <h2>Hands-On Practice Checklist</h2>
+    <div class="progress-checklist">
+      <h3>&#9744; Complete These Labs</h3>
+      <label class="check-item"><input type="checkbox" /> Review your Windows Defender settings and enable Attack Surface Reduction rules</label>
+      <label class="check-item"><input type="checkbox" /> Create 3 custom Windows Firewall rules (allow, block, alert) and verify they're active</label>
+      <label class="check-item"><input type="checkbox" /> Set up a home VM and configure basic iptables rules on Ubuntu Server</label>
+      <label class="check-item"><input type="checkbox" /> Run a local vulnerability scan using Microsoft Baseline Security Analyzer or a free alternative</label>
+      <label class="check-item"><input type="checkbox" /> Disable Autorun on your machine and verify with regedit</label>
+      <label class="check-item"><input type="checkbox" /> Enable BitLocker on a test VM and practice recovery key backup</label>
+      <label class="check-item"><input type="checkbox" /> Install the free version of Malwarebytes and run a full system scan</label>
+      <label class="check-item"><input type="checkbox" /> Audit running services on your machine and identify 3 that can be safely disabled</label>
+      <label class="check-item"><input type="checkbox" /> Research and document CIS Controls that apply to your home lab</label>
+      <label class="check-item"><input type="checkbox" /> Set up a simulated USB device restriction using Windows Group Policy in a VM</label>
+    </div>
+
+    <!-- Resources -->
+    <h2>Resources &amp; Further Reading</h2>
+    <div class="resource-grid">
+      <div class="resource-card">
+        <span class="resource-type">Framework</span>
+        <h4>CIS Critical Security Controls v2</h4>
+        <p>The authoritative prioritized list of 18 controls every organization should implement. Free download at cisecurity.org.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Benchmark</span>
+        <h4>CIS Benchmarks for Windows</h4>
+        <p>Detailed hardening configurations for every Windows version. Download the benchmark and use the automation scripts.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Guide</span>
+        <h4>NIST SP 800-123 (Server Security)</h4>
+        <p>Comprehensive guide to securing server and desktop operating systems. Covers hardware, software, firmware, and physical security.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Tool</span>
+        <h4>Sysinternals Suite</h4>
+        <p>Microsoft's essential toolkit: Process Explorer, Autoruns, TCPView, Ruin.exe. Every Windows admin should know these cold.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Community</span>
+        <h4>r/sysadmin &amp; r/netsec</h4>
+        <p>Active sysadmin communities discussing real-world firewall configs, EDR comparisons, and patch management debates.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Practice Lab</span>
+        <h4>TryHackMe — Network Penetration Testing</h4>
+        <p>Learn firewall evasion, enumeration, and exploitation concepts in browser-based labs.</p>
+      </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="callout callout-success" style="margin-top:2rem;">
+      <strong>&#10132; Next Step:</strong> With endpoint security fundamentals mastered, move to <strong>Incident Response &amp; Best Practices</strong> to learn how to handle breaches when prevention fails — because it eventually will.
+      <br/><a href="phase-4-incident-response.html" style="color:var(--accent-green);">Proceed to Incident Response &#8594;</a>
+    </div>
+
+    <footer>
+      <p>IT Support Roadmap — Phase 4, Module 3 &middot; November 2026</p>
+    </footer>
+  </div>
+</body>
+</html>

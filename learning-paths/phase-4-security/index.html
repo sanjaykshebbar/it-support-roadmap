@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phase 4 Security — Learning Paths Overview</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .nav-bar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .nav-bar a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 6px; transition: background 0.2s; }
+    .nav-bar a:hover { background: var(--surface); color: var(--text); }
+    .nav-bar .sep { color: var(--text-dim); }
+
+    header { text-align: center; padding: 2.5rem 1rem 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    header h1 {
+      font-size: 2.4rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan), var(--accent-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    header p { color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto 1rem; }
+    .badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.78rem; color: var(--text-muted); }
+
+    .path-grid { display: grid; gap: 1.2rem; margin-bottom: 2rem; }
+    .path-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.5rem; display: flex; gap: 1.2rem; align-items: flex-start;
+      transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit;
+    }
+    .path-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+    .path-icon {
+      width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+    }
+    .path-content { flex: 1; }
+    .path-content h2 { font-size: 1.2rem; margin: 0 0 0.3rem; }
+    .path-content p { font-size: 0.88rem; color: var(--text-muted); margin: 0 0 0.5rem; }
+    .path-meta { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .path-tag { font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 6px; }
+
+    /* Color themes */
+    .theme-orange .path-icon { background: rgba(245,158,11,0.15); }
+    .theme-orange h2 { color: var(--accent-orange); }
+    .theme-orange .path-tag { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+
+    .theme-purple .path-icon { background: rgba(139,92,246,0.15); }
+    .theme-purple h2 { color: var(--accent-purple); }
+    .theme-purple .path-tag { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+
+    .theme-green .path-icon { background: rgba(16,185,129,0.15); }
+    .theme-green h2 { color: var(--accent-green); }
+    .theme-green .path-tag { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+
+    .theme-pink .path-icon { background: rgba(236,72,153,0.15); }
+    .theme-pink h2 { color: var(--accent-pink); }
+    .theme-pink .path-tag { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+
+    .arrow-col { display: flex; align-items: center; color: var(--text-dim); font-size: 1.2rem; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2rem 0;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.2rem; text-align: center;
+    }
+    .stat-num { font-size: 1.8rem; font-weight: 800; }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    footer { text-align: center; color: var(--text-dim); font-size: 0.78rem; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 2rem; }
+    @media (max-width: 600px) { header h1 { font-size: 1.8rem; } .stats-row { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-bar">
+      <a href="../index.html">&#8592; Roadmap Home</a>
+      <span class="sep">/</span>
+      <strong style="color:var(--accent-purple); font-size:0.85rem;">Phase 4: Security Fundamentals</strong>
+    </div>
+
+    <header>
+      <h1>Phase 4: Security Fundamentals</h1>
+      <p>Master the core security concepts every IT professional needs — from threat identification and malware defense to encryption, endpoint hardening, and incident response.</p>
+      <div class="badges">
+        <span class="badge">&#128640; Phase 4 of 6</span>
+        <span class="badge">&#9201; ~80 Total Hours</span>
+        <span class="badge">&#128227; Security+ SY0-701 Prep</span>
+        <span class="badge">&#128218; 4 Learning Paths</span>
+      </div>
+    </header>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--accent-orange);">4</div>
+        <div class="stat-label">Learning Paths</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--accent-purple);">~80</div>
+        <div class="stat-label">Total Hours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--accent-green);">16+</div>
+        <div class="stat-label">Hands-On Labs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--accent-cyan);">6</div>
+        <div class="stat-label">Response Playbooks</div>
+      </div>
+    </div>
+
+    <div class="path-grid">
+      <!-- Path 1 -->
+      <a href="phase-4-threats-malware.html" class="path-card theme-orange">
+        <div class="path-icon">&#128163;</div>
+        <div class="path-content">
+          <h2>Security Threats &amp; Malware Protection</h2>
+          <p>Types of malware, phishing tactics, attack vectors, IOC detection, prevention frameworks, anti-malware tools, and security awareness training.</p>
+          <div class="path-meta">
+            <span class="path-tag">~20 Hours</span>
+            <span class="path-tag">Case Studies</span>
+            <span class="path-tag">Detection Checklists</span>
+            <span class="path-tag">Tool Comparison</span>
+          </div>
+        </div>
+        <div class="arrow-col">&#8594;</div>
+      </a>
+
+      <!-- Path 2 -->
+      <a href="phase-4-encryption-access-control.html" class="path-card theme-purple">
+        <div class="path-icon">&#128274;</div>
+        <div class="path-content">
+          <h2>Encryption &amp; Access Control Fundamentals</h2>
+          <p>Symmetric/asymmetric crypto, hash functions, digital certificates, SSL/TLS, PKI, MFA, RBAC/ABAC authorization, password policies, and data protection strategies.</p>
+          <div class="path-meta">
+            <span class="path-tag">~20 Hours</span>
+            <span class="path-tag">Conceptual Depth</span>
+            <span class="path-tag">Diagram Explanations</span>
+            <span class="path-tag">Crypto Labs</span>
+          </div>
+        </div>
+        <div class="arrow-col">&#8594;</div>
+      </a>
+
+      <!-- Path 3 -->
+      <a href="phase-4-endpoint-security.html" class="path-card theme-green">
+        <div class="path-icon">&#128187;</div>
+        <div class="path-content">
+          <h2>Endpoint Security &amp; Management</h2>
+          <p>EDR/AV solutions, firewall configuration, patch management, USB/device control, hardening checklists, CIS Controls, mobile device security, and MDM.</p>
+          <div class="path-meta">
+            <span class="path-tag">~20 Hours</span>
+            <span class="path-tag">Configuration Guides</span>
+            <span class="path-tag">Hardening Checklists</span>
+            <span class="path-tag">CIS Controls</span>
+          </div>
+        </div>
+        <div class="arrow-col">&#8592;</div>
+      </a>
+
+      <!-- Path 4 -->
+      <a href="phase-4-incident-response.html" class="path-card theme-pink">
+        <div class="path-icon">&#128293;</div>
+        <div class="path-content">
+          <h2>Incident Response &amp; Best Practices</h2>
+          <p>IR lifecycle (NIST), IR plan creation, evidence handling, communication protocols, response playbooks (ransomware, breach, DDoS), reporting templates, and post-incident review.</p>
+          <div class="path-meta">
+            <span class="path-tag">~20 Hours</span>
+            <span class="path-tag">Scenario Exercises</span>
+            <span class="path-tag">Template Library</span>
+            <span class="path-tag">Tabletop Drills</span>
+          </div>
+        </div>
+        <div class="arrow-col">&#8592;</div>
+      </a>
+    </div>
+
+    <div class="callout callout-info" style="border-left:4px solid var(--accent-purple);">
+      <strong>About This Phase</strong>
+      <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.3rem;">Phase 4 builds directly on the networking and operating system knowledge from Phases 2 and 3. Each learning path can be studied independently, but completing them in order (threats -> encryption -> endpoint -> incident response) provides the strongest conceptual progression. All paths align with the Security+ SY0-701 exam objectives, particularly Domains 2 (Architecture and Integration), 3 (Implementation), and 4 (Operations and Incident Response).</p>
+    </div>
+
+    <footer>
+      <p>IT Support Roadmap — Phase 4 Overview &middot; November 2026</p>
+    </footer>
+  </div>
+</body>
+</html>

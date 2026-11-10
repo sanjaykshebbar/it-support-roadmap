@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 6 — Career Preparation</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --card: #1e293b;
+  --border: #334155;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f59e0b;
+  --accent-pink: #ec4899;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 100; }
+.nav-brand { font-size: 1.05rem; font-weight: 700; color: var(--text); text-decoration: none; }
+.nav-brand span { color: var(--accent-pink); }
+.nav-breadcrumbs { display: flex; gap: 0.3rem; align-items: center; font-size: 0.82rem; color: var(--text-muted); }
+.nav-breadcrumbs a { color: var(--text-muted); text-decoration: none; }
+.nav-breadcrumbs a:hover { color: var(--accent-pink); }
+.nav-breadcrumbs .sep { color: var(--text-dim); }
+.nav-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; padding: 0.35rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); transition: all 0.2s; }
+.nav-link:hover { color: var(--text); border-color: var(--accent-pink); background: rgba(236,72,153,0.08); }
+.hero { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+.hero-badge { display: inline-block; background: rgba(236,72,153,0.15); color: var(--accent-pink); border-radius: 6px; padding: 0.2rem 0.7rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.8rem; }
+.hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.6rem; letter-spacing: -0.5px; }
+.hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; }
+.hero-meta { display: flex; gap: 1.5rem; margin-top: 1.2rem; flex-wrap: wrap; }
+.hero-meta-item { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
+.hero-meta-item strong { color: var(--text); }
+.summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; }
+.summary-icon { font-size: 2.5rem; }
+.summary-text h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.summary-text p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+.section-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+.card-link { text-decoration: none; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: all 0.2s; position: relative; overflow: hidden; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.card[data-color="blue"]::before { background: var(--accent-blue); }
+.card[data-color="cyan"]::before { background: var(--accent-cyan); }
+.card[data-color="green"]::before { background: var(--accent-green); }
+.card[data-color="purple"]::before { background: var(--accent-purple); }
+.card[data-color="orange"]::before { background: var(--accent-orange); }
+.card[data-color="pink"]::before { background: var(--accent-pink); }
+.card:hover { border-color: var(--accent-pink); transform: translateY(-2px); }
+.card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+.card .card-subtitle { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.8rem; }
+.card .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+.tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+.tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+.tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+.tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+.tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+.tag-pink { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+.card .card-duration { font-size: 0.8rem; color: var(--text-dim); }
+.card .card-arrow { position: absolute; bottom: 1.5rem; right: 1.5rem; font-size: 1.2rem; color: var(--text-dim); transition: all 0.2s; }
+.card:hover .card-arrow { color: var(--accent-pink); transform: translate(2px, -2px); }
+.outcomes { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+.outcomes ul { list-style: none; padding: 0; }
+.outcomes li { padding: 0.5rem 0; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.6rem; border-bottom: 1px solid var(--border); }
+.outcomes li:last-child { border-bottom: none; }
+.outcomes li::before { content: "✓"; color: var(--accent-green); font-weight: 700; flex-shrink: 0; }
+.next-steps { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+.next-steps ol { padding-left: 1.2rem; }
+.next-steps li { padding: 0.4rem 0; font-size: 0.9rem; color: var(--text-muted); }
+.next-steps a { color: var(--accent-blue); }
+.page-nav { display: flex; gap: 1rem; margin-top: 2rem; }
+.page-nav-link { flex: 1; display: flex; flex-direction: column; padding: 1rem 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: inherit; transition: all 0.2s; }
+.page-nav-link:hover { border-color: var(--accent-pink); }
+.page-nav-link .label { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+.page-nav-link .title { font-size: 0.95rem; font-weight: 600; }
+.page-nav-link.next { text-align: right; }
+footer { margin-top: 3rem; padding: 1.5rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.82rem; }
+footer a { color: var(--accent-pink); }
+.complete-journey { background: linear-gradient(135deg, rgba(236,72,153,0.1), rgba(139,92,246,0.1)); border: 1px solid var(--accent-pink); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; text-align: center; }
+.complete-journey h2 { font-size: 1.3rem; margin-bottom: 0.8rem; color: var(--accent-pink); }
+.complete-journey p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.2rem; }
+.complete-journey a { display: inline-block; background: var(--accent-pink); color: #fff; padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: all 0.2s; }
+.complete-journey a:hover { background: #db2777; transform: translateY(-1px); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-brand">IT Support <span>Path</span></a>
+  <div class="nav-breadcrumbs">
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span>Phase 6</span>
+  </div>
+  <div class="nav-links">
+    <a href="../index.html" class="nav-link">All Phases</a>
+    <a href="../../it-support-roadmap.html" class="nav-link">Main Roadmap</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-badge">Phase 6</div>
+    <h1>Career Preparation</h1>
+    <p>Everything you need to land your first IT support role and kickstart your tech career.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>3</strong> Modules</div>
+      <div class="hero-meta-item">Total <strong>~10 hours</strong></div>
+      <div class="hero-meta-item"><span class="tag tag-pink">Final Phase</span></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <div class="summary-icon">🚀</div>
+    <div class="summary-text">
+      <h3>The Final Stretch</h3>
+      <p>This is the final phase of your IT journey. Now that you've built a solid technical foundation, we focus entirely on the professional skills, documentation, and strategies needed to break into the industry and land your first job.</p>
+    </div>
+  </div>
+
+  <h3 class="section-title">Learning Modules</h3>
+  <div class="cards-grid">
+    <a href="phase-6-portfolio-building.html" class="card-link">
+      <div class="card" data-color="green">
+        <h3>Portfolio Building</h3>
+        <p class="card-subtitle">Showcase your projects, GitHub repos, and documentation skills that prove you can do the job</p>
+        <div class="card-tags">
+          <span class="tag tag-green">Hands-on</span>
+          <span class="tag tag-purple">Showcase</span>
+          <span class="tag tag-cyan">Online Presence</span>
+        </div>
+        <div class="card-duration">Duration: ~6 hours</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+    <a href="resume-interview.html" class="card-link">
+      <div class="card" data-color="blue">
+        <h3>Resume & Interview Preparation</h3>
+        <p class="card-subtitle">Craft a compelling resume, optimize your LinkedIn, and master technical and behavioral interviews</p>
+        <div class="card-tags">
+          <span class="tag tag-pink">Career</span>
+          <span class="tag tag-blue">Interviews</span>
+          <span class="tag tag-orange">Strategy</span>
+        </div>
+        <div class="card-duration">Duration: ~8.5 hours</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+    <a href="job-search-strategy.html" class="card-link">
+      <div class="card" data-color="orange">
+        <h3>Job Search Strategy & Career Growth</h3>
+        <p class="card-subtitle">Learn where to find IT jobs, craft targeted applications, and plan your long-term career progression</p>
+        <div class="card-tags">
+          <span class="tag tag-orange">Strategy</span>
+          <span class="tag tag-purple">Planning</span>
+          <span class="tag tag-green">Growth</span>
+        </div>
+        <div class="card-duration">Duration: ~7.5 hours</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="outcomes">
+    <h3 class="section-title">Phase 6 Outcomes</h3>
+    <ul>
+      <li>Build a professional technical portfolio showcasing labs and projects.</li>
+      <li>Create a high-impact, ATS-optimized IT resume.</li>
+      <li>Optimize your LinkedIn profile for tech recruiters and hiring managers.</li>
+      <li>Master the STAR method for behavioral interview questions.</li>
+      <li>Gain confidence in technical interviews and troubleshooting simulations.</li>
+      <li>Learn effective job searching strategies beyond just clicking "Apply".</li>
+      <li>Understand the IT career ladder and how to move from Support to Admin/Security/Cloud.</li>
+      <li>Land your first professional role in IT support!</li>
+    </ul>
+  </div>
+
+  <div class="complete-journey">
+    <h2>You've reached the final phase!</h2>
+    <p>Now it's time to put everything together and start applying. You have the skills, now show the world what you can do.</p>
+    <a href="../../it-support-roadmap.html">Complete Your Journey</a>
+  </div>
+
+  <div class="next-steps">
+    <h3 class="section-title">Next Steps</h3>
+    <ol>
+      <li>Start building your <strong>technical portfolio</strong> with your best lab work.</li>
+      <li>Update your <strong>resume</strong> using the provided templates.</li>
+      <li>Begin <strong>networking</strong> and reaching out to peers in the industry.</li>
+      <li>Submit your first batch of <strong>targeted applications</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="page-nav">
+    <a href="../phase-5-cloud-automation/index.html" class="page-nav-link">
+      <div class="label">Previous Phase</div>
+      <div class="title">Phase 5: Cloud & Automation</div>
+    </a>
+    <a href="../../it-support-roadmap.html" class="page-nav-link next">
+      <div class="label">Main Roadmap</div>
+      <div class="title">Roadmap Overview</div>
+    </a>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 IT Support Learning Paths &middot; <a href="../index.html">Learning Paths Hub</a> &middot; <a href="../../it-support-roadmap.html">Main Roadmap</a></p>
+  </footer>
+</div>
+
+</body>
+</html>

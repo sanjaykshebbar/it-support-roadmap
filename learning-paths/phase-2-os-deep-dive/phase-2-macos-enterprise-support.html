@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 2: macOS Enterprise Support</title>
+<style>
+:root { --bg:#0f172a; --card:#1e293b; --blue:#3b82f6; --cyan:#06b6d4; --green:#10b981; --purple:#8b5cf6; --orange:#f59e0b; --pink:#ec4899; --text:#e2e8f0; --muted:#94a3b8; --border:#334155; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+header{background:linear-gradient(135deg,var(--card),var(--bg));padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--cyan);}
+header h1{font-size:1.5rem;color:var(--cyan);}
+.hdr-links a{color:var(--muted);text-decoration:none;margin-left:1rem;font-size:0.9rem;}
+.hdr-links a:hover{color:var(--cyan);}
+nav{background:var(--card);padding:1rem 2rem;display:flex;justify-content:space-between;border-bottom:1px solid var(--border);}
+nav a{color:var(--cyan);text-decoration:none;padding:0.5rem 1rem;border:1px solid var(--cyan);border-radius:6px;font-size:0.9rem;}
+nav a:hover{background:var(--cyan);color:white;}
+.container{max-width:1100px;margin:0 auto;padding:2rem;}
+.hero{text-align:center;padding:2rem 0;margin-bottom:2rem;border-bottom:1px solid var(--border);}
+.hero h2{font-size:2.2rem;margin-bottom:0.5rem;color:var(--accent-cyan);}
+.hero p{color:var(--muted);}
+.objs{background:var(--card);border-radius:12px;padding:1.5rem;margin-bottom:2rem;border-left:4px solid var(--orange);}
+.objs h3{color:var(--orange);margin-bottom:1rem;font-size:1.2rem;}
+.objs ul{list-style:none;}
+.objs li{padding:0.4rem 0;display:flex;align-items:center;gap:0.5rem;}
+.objs input[type=checkbox]{accent-color:var(--cyan);width:18px;height:18px;cursor:pointer;}
+.module{background:var(--card);border-radius:12px;margin-bottom:1.5rem;overflow:hidden;border:1px solid var(--border);}
+.mod-head{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.mod-head:hover{background:rgba(6,182,212,0.05);}
+.mod-head h3{font-size:1.1rem;}
+.mod-time{background:var(--cyan);color:white;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.8rem;}
+.mod-body{padding:0 1.5rem 1.5rem;}
+.mod-body.coll{display:none;}
+.lesson{padding:1rem;margin-bottom:1rem;background:rgba(15,23,42,0.6);border-radius:8px;border-left:3px solid var(--cyan);}
+.lesson h4{color:var(--cyan);margin-bottom:0.5rem;}
+.lesson p{color:var(--muted);font-size:0.95rem;}
+.lesson ul{margin-top:0.5rem;padding-left:1.2rem;}
+.lesson li{color:var(--muted);font-size:0.9rem;padding:0.2rem 0;}
+.lab{background:rgba(16,185,129,0.1);border:1px solid var(--green);border-radius:8px;padding:1rem;margin-top:1rem;}
+.lab h4{color:var(--green);margin-bottom:0.5rem;}
+.lab ol,.lab ul{padding-left:1.4rem;}
+.lab li{color:var(--muted);font-size:0.9rem;padding:0.2rem 0;}
+.terminal{background:#0d1117;border-radius:6px;padding:1rem;font-family:'Courier New',monospace;font-size:0.85rem;color:#58a6ff;margin:0.5rem 0;overflow-x:auto;white-space:pre-wrap;}
+.terminal .prompt{color:var(--green);}
+.scenario{background:rgba(245,158,11,0.1);border:1px solid var(--orange);border-radius:8px;padding:1rem;margin-top:1rem;}
+.scenario h4{color:var(--orange);margin-bottom:0.5rem;}
+.scenario p{color:var(--muted);font-size:0.9rem;}
+.res{background:rgba(236,72,153,0.1);border:1px solid var(--pink);border-radius:8px;padding:1rem;margin-top:1rem;}
+.res h4{color:var(--pink);margin-bottom:0.5rem;}
+.res a{color:var(--cyan);text-decoration:none;display:block;font-size:0.9rem;padding:0.2rem 0;}
+.res a:hover{text-decoration:underline;}
+.prog-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);padding:0.5rem 2rem;display:flex;align-items:center;gap:1rem;z-index:100;border-top:1px solid var(--border);}
+.prog-label{color:var(--muted);font-size:0.85rem;}
+#progPct{}
+#progFill{height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 0.3s;}
+footer{clear:both;padding:2rem;text-align:center;color:var(--muted);font-size:0.85rem;}
+.dot-track{list-style:none;display:flex;gap:0.5rem;justify-content:center;padding:1rem 0;margin-bottom:1rem;}
+.dot-track li{width:12px;height:12px;border-radius:50%;background:var(--border);}
+.dot-track li.done{background:var(--green);}
+.troubleshoot{background:rgba(236,72,153,0.05);border:1px solid rgba(236,72,153,0.3);border-radius:8px;padding:1rem;margin-top:1rem;}
+.troubleshoot h4{color:var(--pink);margin-bottom:0.5rem;}
+.troubleshoot table{width:100%;border-collapse:collapse;margin-top:0.5rem;}
+.troubleshoot th,.troubleshoot td{padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);font-size:0.88rem;}
+.troubleshoot th{color:var(--cyan);}
+.troubleshoot td{color:var(--muted);}
+</style>
+</head>
+<body>
+<header>
+  <h1>&#x1F451; macOS Enterprise Support</h1>
+  <div class="hdr-links"><a href="../index.html">&#x21A9; Index</a><a href="phase-2-linux-essentials.html">&#x2190; Linux</a></div>
+</header>
+<nav>
+  <a href="phase-2-linux-essentials.html">&larr; Linux Essentials</a>
+  <a href="phase-2-virtualization-lab.html">Virtualization &rarr;</a>
+</nav>
+<div class="container">
+  <div class="hero">
+    <h2>macOS Enterprise Support</h2>
+    <p>Master macOS administration from installation through enterprise deployment, encryption, and troubleshooting.</p>
+  </div>
+  <ul id="dotTrack" class="dot-track"></ul>
+  <div class="objs">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li><input type="checkbox" data-m="1"/> Install and recover macOS systems confidently</li>
+      <li><input type="checkbox" data-m="2"/> Navigate System Settings and configure user preferences</li>
+      <li><input type="checkbox" data-m="3"/> Implement FileVault full-disk encryption</li>
+      <li><input type="checkbox" data-m="4"/> Manage Time Machine backups and restore workflows</li>
+      <li><input type="checkbox" data-m="5"/> Deploy and manage MDM profiles at scale</li>
+      <li><input type="checkbox" data-m="6"/> Administer applications (App Store + third-party)</li>
+      <li><input type="checkbox" data-m="7"/> Use Terminal for macOS-specific diagnostics</li>
+      <li><input type="checkbox" data-m="8"/> Troubleshoot common macOS issues systematically</li>
+      <li><input type="checkbox" data-m="9"/> Script automation with Bash and Python on macOS</li>
+    </ul>
+  </div>
+
+  <!-- Module 1 -->
+  <div class="module open">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 1: macOS Installation & Recovery</h3><span class="mod-time">~3 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 1.1: Installing macOS</h4>
+        <p>Creating bootable installers, clean installs, and migration strategies.</p>
+        <ul>
+          <li>macOS recovery partitions vs internet recovery</li>
+          <li>creating bootable USB installer with createinstallmedia</li>
+          <li>Clean install workflow vs. Migration Assistant</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 1.2: Recovery Mode & Diagnostics</h4>
+        <p>Accessing and using macOS Recovery, Disk Utility, and terminal in RE mode.</p>
+        <ul>
+          <li>Cmd+R, Cmd+Option+R, holding power button — which key combo?</li>
+          <li>diskutil and fsck_hfs in recovery terminal</li>
+          <li>Reinstalling macOS without data loss</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> sudo /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/createinstallmedia \
+  --volume /Volumes/MyUSB --nointeraction
+<span class="prompt">$</span> diskutil list                    <span style="color:#94a3b8"># list volumes in recovery</span>
+<span class="prompt">$</span> diskutil repairVolume /dev/disk0s2</div>
+      <div class="lab">
+        <h4>Hands-On Lab: Recovery Boot & Repair</h4>
+        <ol>
+          <li>Create a bootable macOS Monterey installer on a USB drive</li>
+          <li>Boot a VM into Recovery Mode (Cmd+R) and explore the menu</li>
+          <li>Use Disk Utility to verify and repair a volume</li>
+          <li>Open recovery terminal and run diskutil info on your main volume</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A MacBook can't boot past the spinning globe. Internet recovery loads but the internal drive doesn't appear in Disk Utility. Diagnose whether the drive is dead or just corrupted and outline your next steps.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://support.apple.com/en-us/HT201303" target="_blank">Apple: Create a bootstrapable installer</a>
+        <a href="https://support.apple.com/en-us/HT201314" target="_blank">macOS Recovery Overview</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 2: User Preferences & System Settings</h3><span class="mod-time">~2.5 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 2.1: System Settings Deep Dive</h4>
+        <p>Navigating the modern macOS System Settings (formerly Preferences) interface.</p>
+        <ul>
+          <li>General, Desktop & Dock, Screen Saver configurations</li>
+          <li>Network settings: Wi-Fi profiles, DNS, proxy configuration</li>
+          <li>Energy Saver and Sleep settings for fleet management</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 2.2: User Account Management</h4>
+        <p>Local accounts, admin vs standard users, parent controls, and mobile accounts.</p>
+        <ul>
+          <li>Creating accounts via sysadminctl and GUI</li>
+          <li>Password policies and screen lock settings</li>
+          <li>Migrating accounts between Macs</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> sysadminctl -addUser jdoe -password 'TempPass!' -fullName "John Doe"
+<span class="prompt">$</span> sysadminctl -deleteUser jdoe -deleteHomeDirectory
+<span class="prompt">$</span> dscl . -list /users                 <span style="color:#94a3b8"># list all local users</span>
+<span class="prompt">$</span> ditto /SourceUser/Home /TargetUser/Home   <span style="color:#94a3b8"># migrate home folder</span></div>
+      <div class="lab">
+        <h4>Hands-On Lab: Fleet Configuration</h4>
+        <ol>
+          <li>Create 3 test users with varying privilege levels</li>
+          <li>Configure a custom wallpaper and login screen message via profile</li>
+          <li>Set energy settings to prevent sleep during work hours</li>
+          <li>Use System Information (about this Mac > More Info) to audit hardware</li>
+        </ol>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://support.apple.com/guide/mac-help/manage-user-accounts-mh40537/mac" target="_blank">Apple User Account Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 3: FileVault Encryption</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 3.1: Enabling & Managing FileVault</h4>
+        <p>XTS-AES-128 full-disk encryption management across macOS fleets.</p>
+        <ul>
+          <li>Turning on FileVault and recovery key storage options</li>
+          <li>Recovery Key Distributor in MDM environments</li>
+          <li>FileVault and external/preboot drives</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 3.2: Recovery & Emergency Access</h4>
+        <p>What happens when the password is lost? Recovery key workflows.</p>
+        <ul>
+          <li>Locating the 56-character recovery key</li>
+          <li>Resetting FileVault password via single-user mode</li>
+          <li>Impact on data privacy and legal compliance</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> fdesetup status                   <span style="color:#94a3b8"># check encryption status</span>
+<span class="prompt">$</span> fdesetup enable -uservalue -admemberships "IT Staff"
+<span class="prompt">$</span> fdesetup changerecovery -personal -newrecoverykeypair  <span style="color:#94a3b8"># rotate keys</span>
+<span class="prompt">$</span> fdesetup disable                  <span style="color:#94a3b8"># decrypt (slow process)</span></div>
+      <div class="lab">
+        <h4>Hands-On Lab: Encrypt & Recover</h4>
+        <ol>
+          <li>Enable FileVault on a test Mac and record the recovery key</li>
+          <li>Simulate a lost password scenario using the recovery key</li>
+          <li>Disable FileVault and measure how long decryption takes</li>
+          <li>Practice exporting recovery keys via command line</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>An employee's MacBook was stolen. You suspect they had FileVault disabled but suspect the IT department pushed a recovery key you didn't capture. Outline the incident response steps including law enforcement documentation requirements.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://support.apple.com/en-us/HT204837" target="_blank">FileVault Technical White Paper</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 4: Time Machine Backups</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 4.1: Backup Strategy Fundamentals</h4>
+        <p>SMB shares, APFS snapshots, and local automatic backups as layered protection.</p>
+        <ul>
+          <li>Time Machine over AFP/SMB/NAS</li>
+          <li>Automatic local snapshots when network backup unavailable</li>
+          <li>Exclusion lists to protect sensitive and large data</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 4.2: Restoring Data & Systems</h4>
+        <p>Migration Assistant, individual file recovery, and complete disk restores.</p>
+        <ul>
+          <li>Timemachine.app interface deep-dive</li>
+          <li>tmutil commands for scripted operations</li>
+          <li>Cloning a drive directly from Time Machine sparse bundle</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> tmutil listbackups               <span style="color:#94a3b8"># show available backups</span>
+<span class="prompt">$</span> tmutil latestBackup              <span style="color:#94a3b8"># find newest snapshot</span>
+<span class="prompt">$</span> tmutil compare /Backups.backupdb/2024-01-01 ~/Documents  <span style="color:#94a3b8"># diff</span>
+<span class="prompt">$</span> tmutil delete 2024-01-01         <span style="color:#94a3b8"># remove old backup</span></div>
+      <div class="lab">
+        <h4>Hands-On Lab: Backup & Restore Workflow</h4>
+        <ol>
+          <li>Connect an external drive and enable Time Machine backups</li>
+          <li>Configure exclusions for ~/Library/Caches and ~/Downloads</li>
+          <li>Simulate a deleted file and restore it from the Timeline</li>
+          <li>Use tmutil to compare two backup points and report differences</li>
+        </ol>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://support.apple.com/en-us/102447" target="_blank">Use Time Machine to Back Up Your Mac</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 5: MDM Basics</h3><span class="mod-time">~3 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 5.1: Mobile Device Management Concepts</h4>
+        <p>MDM protocol, push certificates, enrolled device lifecycle, and compliance reporting.</p>
+        <ul>
+          <li>VPP (Volume Purchase Program) and DEP/ABM enrollment</li>
+          <li>Supervised vs unsupervised modes</li>
+          <li>Configuration profiles: payload types and restrictions</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 5.2: Popular MDM Solutions</h4>
+        <p>Jamf Pro, Mosyle, Kandji, and Microsoft Intune for macOS deployment.</p>
+        <ul>
+          <li>Jamf Pro: policy creation, smart groups, scripts</li>
+          <li>Microsoft Intune: iOS/macOS app config and compliance policies</li>
+          <li>Open-source alternative: SimpleMDM/Munki</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> profiles -C                      <span style="color:#94a3b8"># see installed profiles</span>
+<span class="prompt">$</span> profiles show                     <span style="color:#94a3b8"># detailed profile info</span>
+<span class="prompt">$</span> profiles remove -identifier com.company.policy
+<span class="prompt">$</span> /usr/libexec/PlistBuddy -c "Add : AllowedApps dict" /Library/Preferences/com.apple.MCCS.json  <span style="color:#94a3b8"># whitelist apps</span></div>
+      <div class="lab">
+        <h4>Hands-On Lab: Profile Deployment</h4>
+        <ol>
+          <li>Generate a configuration profile that enforces a FileVault recovery key</li>
+          <li>Create a restriction profile blocking App Store purchases</li>
+          <li>Install the profile manually (double-click .mobileconfig) and verify</li>
+          <li>Remove the profile and confirm the changes are reverted</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>Your company uses Jamf Pro to deploy 200 MacBooks. A new hire complains their laptop has no access to Zoom even though it's approved. Debug the application whitelist configuration and push a corrected profile.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://help.jamf.com/" target="_blank">Jamf Pro Documentation</a>
+        <a href="https://learn.microsoft.com/en-us/mem/intune/" target="_blank">Microsoft Intune for macOS</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 6: App Management</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 6.1: App Distribution Methods</h4>
+        <p>Mac App Store, .pkg installers, .dmg mounting, and JAMF/binary deployment patterns.</p>
+        <ul>
+          <li>Installing from .dmg: mount, copy, eject workflow</li>
+          <li>.pkg installers and package receipts</li>
+          <li>Notarization and Gatekeeper exceptions (spctl)</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 6.2: Quarantine & Security</h4>
+        <p>xattr quarantine attribute, Gatekeeper, and bypassing for trusted software.</p>
+        <ul>
+          <li>xattr -l to inspect quarantine flags</li>
+          <li>xattr -d com.apple.quarantine app to clear quarantine</li>
+          <li>spctl --assess --type execute for manual assessments</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> xattr -l /Applications/MyApp.app     <span style="color:#94a3b8"># check quarantine attrs</span>
+<span class="prompt">$</span> xattr -rd com.apple.quarantine /Applications/MyApp.app
+<span class="prompt">$</span> spctl --assess --type execute /Applications/MyApp.app
+<span class="prompt">$</span> pkgutil --files com.company.installer  <span style="color:#94a3b8"># list installed files</span></div>
+      <div class="lab">
+        <h4>Hands-On Lab: App Lifecycle</h4>
+        <ol>
+          <li>Download a .dmg app and perform manual install/cleanup</li>
+          <li>Check if the app has quarantine attributes; remove them</li>
+          <li>Use pkgutil to inspect a .pkg installation receipt</li>
+          <li>Bulk-remove unused apps older than 6 months from /Applications</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 7: macOS Terminal Basics</h3><span class="mod-time">~2.5 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 7.1: System Profiling Commands</h4>
+        <p>system_profiler, systeminfo, top, ps — understanding what's running on macOS.</p>
+        <ul>
+          <li>system_profiler SPHardwareDataType, SPSoftwareDataType</li>
+          <li>top and htop equivalents; lsof for open files</li>
+          <li>netstat and lsof -i for network diagnostics</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 7.2: macOS-Specific Diagnostics</h4>
+        <p>Console.app log analysis, ASL (Apple System Logger), unified logging system.</p>
+        <ul>
+          <li>log stream and log show for real-time and historical logs</li>
+          <li>/var/log/ legacy log locations still relevant</li>
+          <li>Console.app filters for crash reports and assertions</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> system_profiler SPDisplaysDataType SPMemoryDataType
+<span class="prompt">$</span> log stream --predicate 'eventMessage contains "error"' --last 1h
+<span class="prompt">$</span> ps aux | grep chrome | wc -l        <span style="color:#94a3b8"># count Chrome processes</span>
+<span class="prompt">$</span> lsof -i :443                       <span style="color:#94a3b8"># processes on port 443</span></div>
+      <div class="lab">
+        <h4>Hands-On Lab: macOS Diagnostic Workflow</h4>
+        <ol>
+          <li>Extract complete hardware spec with system_profiler and export to text</li>
+          <li>Stream console logs filtered for kernel panic messages</li>
+          <li>Identify what process is using the most CPU with top -o cpu</li>
+          <li>Find all listening ports and which apps own them with lsof</li>
+        </ol>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://developer.apple.com/documentation/kernel" target="_blank">macOS Kernel Logs Documentation</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 8: Common Issues & Fixes</h3><span class="mod-time">~3 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 8.1: Permission Problems</h4>
+        <p>sudo failures, SIP-restricted operations, and safe permission resets.</p>
+        <ul>
+          <li>sip status and when to temporarily disable it</li>
+          <li>resetting Launch Services database (lsregister)</li>
+          <li>Fixing broken Finder icon caches</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 8.2: Networking Troubleshooting</h4>
+        <p>Wi-Fi drops, VPN config failures, DNS resolution problems on macOS.</p>
+        <ul>
+          <li>flushdns and dns_sd cleanup</li>
+          <li>interface setup and reset via networksetup</li>
+          <li>Testing VPN tunnel endpoints and MTU issues</li>
+        </ul>
+      </div>
+      <div class="troubleshoot">
+        <h4>Quick Reference: Common Fixes</h4>
+        <table>
+          <thead><tr><th>Symptom</th><th>Command / Fix</th></tr></thead>
+          <tbody>
+            <tr><td>App won't launch (damaged)</td><td>xattr -rd com.apple.quarantine /Applications/App.app</td></tr>
+            <tr><td>DNS not resolving</td><td>sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder</td></tr>
+            <tr><td>WiFi won't connect</td><td>networksetup -setairportpower en0 off && on</td></tr>
+            <tr><td>Finder frozen</td><td>killall Finder</td></tr>
+            <tr><td>Login window freeze</td><td>sudo pkill -KILL -u 0 (use caution!)</td></tr>
+            <tr><td>Slow startup apps</td><td>System Settings > General > Login Items</td></tr>
+            <tr><td>Corrupt launchpad</td><td>rm ~/Library/Application\ Support/Dock/*.db && killall Dock</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Problem Simulation</h4>
+        <ol>
+          <li>Corrupt the Dock database by deleting the .db file and observe reset behavior</li>
+          <li>Flush the DNS cache and verify with dig commands</li>
+          <li>Simulate a stuck application and use Activity Monitor + Terminal to terminate it</li>
+          <li>Reset NVRAM/PRAM on a VM and document what settings change</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A designer reports their After Effects project crashes every time they save. Their disk is 97% full, and Log Insight shows repeated OOM kills. Prioritize your actions and execute the most effective fix first.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://support.apple.com/en-us/102447" target="_blank">Apple Support Community — Troubleshooting Guides</a>
+        <a href="https://developer.apple.com/library/archive/technotes/tn2459/_index.html" target="_blank">Apple T2 Security Chip Troubleshooting</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 9: Automation Scripts</h3><span class="mod-time">~2.5 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 9.1: Bash for macOS Sysadmins</h4>
+        <p>Differences between bash and Linux bash, path conventions, Apple extensions.</p>
+        <ul>
+          <li>/usr/bin vs /bin vs /usr/local/bin paths on macOS</li>
+          <li>defaults write/read for preference management</li>
+          <li>osascript for AppleScript integration from bash</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 9.2: Python on macOS</h4>
+        <p>Python 3 availability, pipenv, Homebrew Python, and script deployment.</p>
+        <ul>
+          <li>Using brew install python3 instead of system Python</li>
+          <li>Deploying Python scripts via MDM profiles or jamf helper</li>
+          <li>Automating software updates with osascript</li>
+        </ul>
+      </div>
+      <div class="terminal">
+#!/bin/bash
+# auto-update-check.sh
+updateCount=$(softwareupdate --list 2>/dev/null | grep -c "^ *")
+if [ "$updateCount" -gt 0 ]; then
+  echo "Updates available: $updateCount" | osascript -e 'display dialog "'$updateCount' updates available" with title "Mac Update Check"'
+fi</div>
+      <div class="lab">
+        <h4>Hands-On Lab: Build Automation Tools</h4>
+        <ol>
+          <li>Write a script that checks macOS version and prompts for reboot if major update available</li>
+          <li>Script that disables Spotlight indexing for a specific volume</li>
+          <li>Python script inventorying all installed apps and exporting to CSV</li>
+          <li>Schedule scripts with launchd plist (the macOS equivalent of cron)</li>
+        </ol>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://www.macscripter.net/" target="_blank">MacScripter — Community Tutorials</a>
+        <a href="https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man5/launchd.plist.5.html" target="_blank">launchd.plist Documentation</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>macOS Enterprise Support | Estimated Total: ~18 Hours</footer>
+</div>
+<div class="prog-bar">
+  <span class="prog-label">Progress:</span>
+  <span id="progPct">0%</span>
+  <div style="flex:1;height:8px;background:#334155;border-radius:4px;"><div id="progFill" style="height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 0.3s;"></div></div>
+</div>
+<script>
+function toggleMod(h){const b=h.nextElementSibling;b.classList.toggle('coll');h.parentElement.classList.toggle('open');}
+const cbs=document.querySelectorAll('.objs input[type=checkbox]');
+function upd(){const t=cbs.length,d=[...document.querySelectorAll('.objs input:checked')].length,p=Math.round(d/t*100);document.getElementById('progFill').style.width=p+'%';document.getElementById('progPct').textContent=p+'%';localStorage.setItem('macos-progress',JSON.stringify([...cbs.map(c=>c.checked)]));}
+cbs.forEach(cb=>cb.addEventListener('change',upd));
+(function(){const s=localStorage.getItem('macos-progress');if(s){try{const a=JSON.parse(s);a.forEach((v,i)=>{if(cbs[i])cbs[i].checked=v;});upd();}catch(e){}}const tr=document.getElementById('dotTrack');cbs.forEach(()=>{const li=document.createElement('li');tr.appendChild(li);});})();
+</script>
+</body>
+</html>

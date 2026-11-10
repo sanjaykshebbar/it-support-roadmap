@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT Support Beginner Roadmap</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: -1px;
+    }
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .badge-row { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+    .badge {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Timeline */
+    .roadmap { position: relative; padding: 1rem 0; }
+    .roadmap::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--accent-blue), var(--accent-cyan), var(--accent-green), var(--accent-purple));
+      border-radius: 3px;
+    }
+
+    .phase {
+      position: relative;
+      width: 50%;
+      padding: 0 2.5rem 3rem;
+    }
+    .phase:nth-child(odd) { left: 0; text-align: right; padding-right: 3rem; padding-left: 1rem; }
+    .phase:nth-child(even) { left: 50%; text-align: left; padding-left: 3rem; padding-right: 1rem; }
+
+    .phase-dot {
+      position: absolute;
+      top: 0.5rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+      z-index: 2;
+    }
+    .phase:nth-child(odd) .phase-dot { right: -9px; }
+    .phase:nth-child(even) .phase-dot { left: -9px; }
+
+    .phase-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .phase-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .phase-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+    }
+    .phase-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .phase-card .duration {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .phase-card ul { list-style: none; }
+    .phase-card li {
+      padding: 0.4rem 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .phase:nth-child(odd) .phase-card li { flex-direction: row-reverse; }
+    .phase-card li::before {
+      content: '✓';
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .cert-tag {
+      display: inline-block;
+      background: rgba(59,130,246,0.15);
+      color: var(--accent-blue);
+      border-radius: 6px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    /* Color theming per phase */
+    .phase[data-color="blue"] .phase-dot { background: var(--accent-blue); box-shadow: 0 0 12px var(--accent-blue); }
+    .phase[data-color="blue"] .phase-label { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .phase[data-color="blue"] li::before { color: var(--accent-blue); }
+
+    .phase[data-color="cyan"] .phase-dot { background: var(--accent-cyan); box-shadow: 0 0 12px var(--accent-cyan); }
+    .phase[data-color="cyan"] .phase-label { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+    .phase[data-color="cyan"] li::before { color: var(--accent-cyan); }
+
+    .phase[data-color="green"] .phase-dot { background: var(--accent-green); box-shadow: 0 0 12px var(--accent-green); }
+    .phase[data-color="green"] .phase-label { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .phase[data-color="green"] li::before { color: var(--accent-green); }
+
+    .phase[data-color="purple"] .phase-dot { background: var(--accent-purple); box-shadow: 0 0 12px var(--accent-purple); }
+    .phase[data-color="purple"] .phase-label { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .phase[data-color="purple"] li::before { color: var(--accent-purple); }
+
+    .phase[data-color="orange"] .phase-dot { background: var(--accent-orange); box-shadow: 0 0 12px var(--accent-orange); }
+    .phase[data-color="orange"] .phase-label { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .phase[data-color="orange"] li::before { color: var(--accent-orange); }
+
+    .phase[data-color="pink"] .phase-dot { background: var(--accent-pink); box-shadow: 0 0 12px var(--accent-pink); }
+    .phase[data-color="pink"] .phase-label { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+    .phase[data-color="pink"] li::before { color: var(--accent-pink); }
+
+    /* Skills Grid Section */
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 3rem 0 1.5rem;
+      letter-spacing: -0.5px;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 3rem;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.3rem;
+      transition: transform 0.2s;
+    }
+    .skill-card:hover { transform: translateY(-2px); }
+    .skill-card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .skill-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .skill-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.8rem; }
+    .skill-tag {
+      background: rgba(59,130,246,0.1);
+      color: var(--accent-blue);
+      border-radius: 6px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* Resources Section */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    .resource-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+    }
+    .resource-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .resource-card p { font-size: 0.85rem; color: var(--text-muted); }
+    .resource-type {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      margin-bottom: 0.4rem;
+    }
+
+    /* Career Path */
+    .career-path {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 3rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    .career-step {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.7rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .career-arrow { color: var(--text-dim); font-size: 1.2rem; }
+
+    /* Tips */
+    .tips-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+    .tips-section h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .tip-item {
+      padding: 1rem;
+      background: var(--bg);
+      border-radius: 10px;
+      border-left: 3px solid var(--accent-blue);
+    }
+    .tip-item h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .tip-item p { font-size: 0.83rem; color: var(--text-muted); }
+
+    footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .roadmap::before { left: 20px; }
+      .phase { width: 100%; left: 0 !important; text-align: left !important; padding-left: 3.5rem !important; padding-right: 1rem !important; }
+      .phase-dot { left: 11px !important; right: auto !important; }
+      .phase:nth-child(odd) .phase-card li { flex-direction: row; }
+      header h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>IT Support Roadmap</h1>
+      <p>A structured, step-by-step guide to go from complete beginner to a confident IT support professional.</p>
+      <div class="badge-row">
+        <span class="badge">&#9201; 6 Phases</span>
+        <span class="badge">&#9201; 6–12 Months</span>
+        <span class="badge">&#9201; Beginner Friendly</span>
+        <span class="badge">&#9201; Certification Focused</span>
+      </div>
+    </header>
+
+    <div class="roadmap">
+      <!-- Phase 1 -->
+      <div class="phase" data-color="blue">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <span class="phase-label">Phase 1</span>
+          <h2>Build Your Foundation</h2>
+          <div class="duration">Weeks 1–4 &middot; ~40 hours</div>
+          <ul>
+            <li>Understand how computers work: CPU, RAM, SSD/HDD, motherboard</li>
+            <li>Learn basic networking concepts: IP addresses, DNS, routers, switches</li>
+            <li>Get comfortable with the command line (Windows CMD / PowerShell)</li>
+            <li>Learn to navigate the operating system like a pro</li>
+            <li>Understand hardware components and how to upgrade them</li>
+          </ul>
+          <span class="cert-tag">No cert yet — building knowledge</span>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase" data-color="cyan">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <span class="phase-label">Phase 2</span>
+          <h2>Operating Systems Deep Dive</h2>
+          <div class="duration">Weeks 5–10 &middot; ~60 hours</div>
+          <ul>
+            <li>Master Windows 10/11: installation, configuration, troubleshooting</li>
+            <li>Learn Linux basics: Ubuntu or Debian — file system, permissions, packages</li>
+            <li>Understand macOS fundamentals for enterprise support</li>
+            <li>Create a home lab with virtual machines (VirtualBox)</li>
+            <li>Practice installing and configuring OSes in VMs</li>
+          </ul>
+          <span class="cert-tag">CompTIA A+ 220-1101 prep begins</span>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase" data-color="green">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <span class="phase-label">Phase 3</span>
+          <h2>Networking Essentials</h2>
+          <div class="duration">Weeks 11–18 &middot; ~80 hours</div>
+          <ul>
+            <li>OSI and TCP/IP models — know every layer cold</li>
+            <li>IP addressing, subnetting, VLANs, CIDR notation</li>
+            <li>Core protocols: DHCP, DNS, HTTP/S, FTP, SSH, RDP</li>
+            <li>Router and switch configuration basics</li>
+            <li>Troubleshoot connectivity issues with ping, traceroute, nslookup</li>
+            <li>Set up a small home network and configure a router</li>
+          </ul>
+          <span class="cert-tag">CompTIA Network+ certification target</span>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="phase" data-color="purple">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <span class="phase-label">Phase 4</span>
+          <h2>Security Fundamentals</h2>
+          <div class="duration">Weeks 19–24 &middot; ~60 hours</div>
+          <ul>
+            <li>Common threats: malware, phishing, ransomware, social engineering</li>
+            <li>Basics of encryption, firewalls, and access control</li>
+            <li>User account management and password policies</li>
+            <li>Endpoint security: antivirus, EDR tools</li>
+            <li>Incident response fundamentals</li>
+          </ul>
+          <span class="cert-tag">CompTIA Security+ certification target</span>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="phase" data-color="orange">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <span class="phase-label">Phase 5</span>
+          <h2>Cloud &amp; Automation</h2>
+          <div class="duration">Weeks 25–32 &middot; ~60 hours</div>
+          <ul>
+            <li>Understand cloud computing: IaaS, PaaS, SaaS models</li>
+            <li>Get hands-on with Microsoft Azure or AWS basics</li>
+            <li>Learn PowerShell scripting for Windows automation</li>
+            <li>Introduction to Bash scripting on Linux</li>
+            <li>Familiarize yourself with ticketing systems (Jira, Freshservice)</li>
+            <li>Explore remote desktop tools: TeamViewer, AnyDesk, RDP</li>
+          </ul>
+          <span class="cert-tag">Azure Fundamentals AZ-900 or AWS Cloud Practitioner</span>
+        </div>
+      </div>
+
+      <!-- Phase 6 -->
+      <div class="phase" data-color="pink">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <span class="phase-label">Phase 6</span>
+          <h2>Land Your First Role</h2>
+          <div class="duration">Weeks 33–40 &middot; Ongoing</div>
+          <ul>
+            <li>Build a home lab portfolio with documented projects</li>
+            <li>Create a resume highlighting certifications and hands-on skills</li>
+            <li>Practice common interview questions for IT support roles</li>
+            <li>Consider entry-level titles: Help Desk Technician, IT Support Specialist</li>
+            <li>Join communities: Reddit r/compTIA, IT Support subreddits</li>
+            <li>Keep learning — get your first job and grow from there</li>
+          </ul>
+          <span class="cert-tag">Goal: Land Help Desk role within 9 months</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Skills Grid -->
+    <h2 class="section-title">Core Skills You'll Develop</h2>
+    <p class="section-subtitle">The essential competencies every IT support professional needs</p>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="icon">&#128421;</div>
+        <h3>Hardware Troubleshooting</h3>
+        <p>Diagnose and fix physical computer issues including failures, upgrades, and component replacement across desktops, laptops, and peripherals.</p>
+        <div class="skill-tags"><span class="skill-tag">Desktops</span><span class="skill-tag">Laptops</span><span class="skill-tag">Printers</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">&#128187;</div>
+        <h3>Software &amp; OS Support</h3>
+        <p>Install, configure, and troubleshoot Windows, macOS, and Linux operating systems along with common business applications.</p>
+        <div class="skill-tags"><span class="skill-tag">Windows</span><span class="skill-tag">macOS</span><span class="skill-tag">Linux</span><span class="skill-tag">Office 365</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">&#127760;</div>
+        <h3>Network Diagnostics</h3>
+        <p>Troubleshoot wired and wireless connectivity problems, configure networks, and resolve DNS/DHCP issues efficiently.</p>
+        <div class="skill-tags"><span class="skill-tag">Wi-Fi</span><span class="skill-tag">Ethernet</span><span class="skill-tag">DNS</span><span class="skill-tag">DHCP</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">&#128274;</div>
+        <h3>Security Awareness</h3>
+        <p>Identify security threats, enforce best practices, manage user accounts, and respond to incidents with proper procedures.</p>
+        <div class="skill-tags"><span class="skill-tag">Phishing</span><span class="skill-tag">Antivirus</span><span class="skill-tag">MFA</span><span class="skill-tag">Firewalls</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">&#128161;</div>
+        <h3>Cloud Services</h3>
+        <p>Support cloud-based tools and services, understand virtualization, and help users navigate SaaS platforms confidently.</p>
+        <div class="skill-tags"><span class="skill-tag">Microsoft 365</span><span class="skill-tag">Azure</span><span class="skill-tag">AWS</span><span class="skill-tag">O365 Admin</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">&#128640;</div>
+        <h3>Scripting &amp; Automation</h3>
+        <p>Automate repetitive tasks with PowerShell and Bash scripts, saving time and reducing human error in daily operations.</p>
+        <div class="skill-tags"><span class="skill-tag">PowerShell</span><span class="skill-tag">Bash</span><span class="skill-tag">Automation</span></div>
+      </div>
+    </div>
+
+    <!-- Certifications Ladder -->
+    <h2 class="section-title">Certification Ladder</h2>
+    <p class="section-subtitle">Recommended certs in order — each builds on the last</p>
+    <div class="career-path">
+      <div class="career-step" style="border-color: var(--accent-blue); color: var(--accent-blue);">IT Fundamentals<br/><small style="opacity:0.7">Optional warm-up</small></div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step" style="border-color: var(--accent-cyan); color: var(--accent-cyan);">CompTIA A+<br/><small style="opacity:0.7">The industry standard</small></div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step" style="border-color: var(--accent-green); color: var(--accent-green);">CompTIA Network+<br/><small style="opacity:0.7">Networking depth</small></div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step" style="border-color: var(--accent-purple); color: var(--accent-purple);">CompTIA Security+<br/><small style="opacity:0.7">Security baseline</small></div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step" style="border-color: var(--accent-orange); color: var(--accent-orange);">Azure / AWS Fundamentals<br/><small style="opacity:0.7">Cloud introduction</small></div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step" style="border-color: var(--accent-pink); color: var(--accent-pink);">Your First Job! &#127881;<br/><small style="opacity:0.7">Help Desk technician</small></div>
+    </div>
+
+    <!-- Study Resources -->
+    <h2 class="section-title">Recommended Resources</h2>
+    <p class="section-subtitle">Free and paid materials to accelerate your learning</p>
+    <div class="resources-grid">
+      <div class="resource-card">
+        <span class="resource-type">Video Course</span>
+        <h3>Professor Messer (YouTube)</h3>
+        <p>Free, high-quality video courses covering CompTIA A+, Network+, and Security+. The gold standard for self-study.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Practice Exams</span>
+        <h3>Jason Dion (Udemy)</h3>
+        <p>Affordable practice exams with detailed explanations. Highly regarded by exam candidates worldwide.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Hands-On Lab</span>
+        <h3>TryHackMe</h3>
+        <p>Free tier available. Great for building practical IT and cybersecurity skills in a browser-based environment.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Community</span>
+        <h3>Reddit r/ITCareers &amp; r/compTIA</h3>
+        <p>Active communities where you can ask questions, share progress, and learn from others on the same path.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Documentation</span>
+        <h3>Microsoft Learn</h3>
+        <p>Free Microsoft documentation and learning paths for Windows, Azure, and Microsoft 365 administration.</p>
+      </div>
+      <div class="resource-card">
+        <span class="resource-type">Home Lab</span>
+        <h3>VirtualBox + Old Hardware</h3>
+        <p>Build a free virtual lab at home. Install multiple OSes, break them, fix them — the best way to learn.</p>
+      </div>
+    </div>
+
+    <!-- Career Progression -->
+    <h2 class="section-title">Career Progression</h2>
+    <p class="section-subtitle">Where an IT support career can take you</p>
+    <div class="career-path">
+      <div class="career-step">Help Desk Tier 1</div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step">Help Desk Tier 2</div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step">IT Support Specialist</div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step">Systems Administrator</div>
+      <span class="career-arrow">&#8594;</span>
+      <div class="career-step">DevOps / Cloud Engineer</div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-section">
+      <h2>Pro Tips for Success</h2>
+      <div class="tips-grid">
+        <div class="tip-item" style="border-left-color: var(--accent-blue);">
+          <h4>Document Everything</h4>
+          <p>Maintain notes of every problem you solve. This builds your knowledge base and becomes invaluable during interviews.</p>
+        </div>
+        <div class="tip-item" style="border-left-color: var(--accent-cyan);">
+          <h4>Build a Home Lab</h4>
+          <p>You don't need expensive equipment. VirtualBox and old laptops are enough to practice real-world scenarios safely.</p>
+        </div>
+        <div class="tip-item" style="border-left-color: var(--accent-green);">
+          <h4>Soft Skills Matter</h4>
+          <p>Communication, patience, and empathy are just as important as technical skills in IT support. Practice explaining tech to non-tech people.</p>
+        </div>
+        <div class="tip-item" style="border-left-color: var(--accent-purple);">
+          <h4>Don't Memorize, Understand</h4>
+          <p>Cramming for exams works short-term. True understanding is what makes you good at the actual job after you pass.</p>
+        </div>
+        <div class="tip-item" style="border-left-color: var(--accent-orange);">
+          <h4>Get Hands-On Daily</h4>
+          <p>Even 30 minutes of hands-on practice beats hours of passive video watching. Break things, fix things, repeat.</p>
+        </div>
+        <div class="tip-item" style="border-left-color: var(--accent-pink);">
+          <h4>Network Early</h4>
+          <p>Connect with people already in the field on LinkedIn and Reddit. Many jobs come through referrals, not applications.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>IT Support Roadmap &middot; Built for aspiring tech professionals &middot; November 2026</p>
+    </footer>
+  </div>
+</body>
+</html>

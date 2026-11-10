@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1: IT Foundation | Roadmap Hub</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --card: #1e293b;
+  --border: #334155;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f59e0b;
+  --accent-pink: #ec4899;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 0;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* Navigation */
+nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+}
+.nav-brand span { color: var(--accent-blue); }
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-left: 1.5rem;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* Header */
+header {
+  text-align: center;
+  padding: 3rem 1rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+header p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Progress Section */
+.overall-progress {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+}
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.progress-track {
+  height: 12px;
+  background: var(--bg);
+  border-radius: 6px;
+  overflow: hidden;
+}
+#totalProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+  width: 0%;
+  transition: width 0.5s ease-out;
+}
+
+/* Path Grid */
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.path-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.path-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--text-dim);
+}
+.path-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.path-card h3 { margin-bottom: 0.5rem; font-size: 1.3rem; }
+.path-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+.path-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+.status-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+/* Specific Card Accents */
+.card-hardware { border-top: 4px solid var(--accent-blue); }
+.card-os { border-top: 4px solid var(--accent-cyan); }
+.card-cli { border-top: 4px solid var(--accent-purple); }
+.card-net { border-top: 4px solid var(--accent-green); }
+
+footer {
+  text-align: center;
+  padding: 4rem 1rem 2rem;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-brand">IT Support <span>Roadmap</span></a>
+  <div class="nav-links">
+    <a href="../index.html">&#x21A9; Main Hub</a>
+    <a href="#paths">Learning Paths</a>
+  </div>
+</nav>
+
+<div class="container">
+  <header>
+    <h1>Phase 1: IT Foundation</h1>
+    <p>The bedrock of your IT career. Master the hardware, operating systems, and networking concepts that every support professional needs.</p>
+  </header>
+
+  <div class="overall-progress">
+    <div class="progress-header">
+      <span>Phase 1 Completion</span>
+      <span id="totalPercent">0%</span>
+    </div>
+    <div class="progress-track">
+      <div id="totalProgressFill"></div>
+    </div>
+  </div>
+
+  <div class="path-grid" id="paths">
+    <!-- Hardware -->
+    <a href="phase-1-computer-hardware.html" class="path-card card-hardware">
+      <div class="path-icon">&#x1F527;</div>
+      <h3>Computer Hardware</h3>
+      <p>CPU, RAM, Storage, and Motherboards. Learn to build and troubleshoot physical components.</p>
+      <div class="path-meta">
+        <span>&#x1F550; ~4 Hours</span>
+        <span class="status-badge" id="hw-status">Incomplete</span>
+      </div>
+    </a>
+
+    <!-- OS Basics -->
+    <a href="phase-1-operating-systems-basics.html" class="path-card card-os">
+      <div class="path-icon">&#x1F4BB;</div>
+      <h3>OS Basics</h3>
+      <p>Windows vs Linux fundamentals. File management, settings, and basic OS troubleshooting.</p>
+      <div class="path-meta">
+        <span>&#x1F550; ~3 Hours</span>
+        <span class="status-badge" id="os-status">Incomplete</span>
+      </div>
+    </a>
+
+    <!-- Command Line -->
+    <a href="phase-1-command-line-basics.html" class="path-card card-cli">
+      <div class="path-icon">&#x1F4DA;</div>
+      <h3>Command Line</h3>
+      <p>The Power of the Terminal. Learn CMD and PowerShell to navigate and automate.</p>
+      <div class="path-meta">
+        <span>&#x1F550; ~2.5 Hours</span>
+        <span class="status-badge" id="cli-status">Incomplete</span>
+      </div>
+    </a>
+
+    <!-- Networking -->
+    <a href="phase-1-networking-essentials-intro.html" class="path-card card-net">
+      <div class="path-icon">&#x1F310;</div>
+      <h3>Networking Intro</h3>
+      <p>IPs, DNS, DHCP, and Routers. Understand the plumbing of the digital world.</p>
+      <div class="path-meta">
+        <span>&#x1F550; ~2.5 Hours</span>
+        <span class="status-badge" id="net-status">Incomplete</span>
+      </div>
+    </a>
+  </div>
+
+  <footer>
+    &copy; 2026 IT Support Career Roadmap | Phase 1 Foundation Hub
+  </footer>
+</div>
+
+<script>
+function checkProgress() {
+  const paths = [
+    { key: 'hw-progress', id: 'hw-status' },
+    { key: 'os-progress', id: 'os-status' },
+    { key: 'cli-progress', id: 'cli-status' },
+    { key: 'net-progress', id: 'net-status' }
+  ];
+
+  let completedPaths = 0;
+
+  paths.forEach(path => {
+    const data = localStorage.getItem(path.key);
+    if(data) {
+      try {
+        const arr = JSON.parse(data);
+        const total = arr.length;
+        const done = arr.filter(v => v === true).length;
+        const pct = Math.round((done / total) * 100);
+
+        if(pct > 0) {
+          const badge = document.getElementById(path.id);
+          badge.textContent = pct === 100 ? 'Completed' : pct + '% Done';
+          badge.style.borderColor = pct === 100 ? 'var(--accent-green)' : 'var(--accent-orange)';
+          badge.style.color = pct === 100 ? 'var(--accent-green)' : 'var(--accent-orange)';
+
+          if(pct === 100) completedPaths++;
+        }
+      } catch(e) {}
+    }
+  });
+
+  const totalPct = Math.round((completedPaths / paths.length) * 100);
+  document.getElementById('totalProgressFill').style.width = totalPct + '%';
+  document.getElementById('totalPercent').textContent = totalPct + '%';
+}
+
+window.onload = checkProgress;
+</script>
+</body>
+</html>

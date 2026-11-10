@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 2: Linux Essentials for IT Support</title>
+<style>
+:root { --bg:#0f172a; --card:#1e293b; --blue:#3b82f6; --cyan:#06b6d4; --green:#10b981; --purple:#8b5cf6; --orange:#f59e0b; --pink:#ec4899; --text:#e2e8f0; --muted:#94a3b8; --border:#334155; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+header{background:linear-gradient(135deg,var(--card),var(--bg));padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--purple);}
+header h1{font-size:1.5rem;color:var(--purple);}
+.hdr-links a{color:var(--muted);text-decoration:none;margin-left:1rem;font-size:0.9rem;}
+.hdr-links a:hover{color:var(--purple);}
+nav{background:var(--card);padding:1rem 2rem;display:flex;justify-content:space-between;border-bottom:1px solid var(--border);}
+nav a{color:var(--purple);text-decoration:none;padding:0.5rem 1rem;border:1px solid var(--purple);border-radius:6px;font-size:0.9rem;}
+nav a:hover{background:var(--purple);color:white;}
+.container{max-width:1100px;margin:0 auto;padding:2rem;padding-bottom:4rem;}
+.hero{text-align:center;padding:2rem 0;margin-bottom:2rem;border-bottom:1px solid var(--border);}
+.hero h2{font-size:2.2rem;margin-bottom:0.5rem;color:var(--cyan);}
+.hero p{color:var(--muted);}
+.objs{background:var(--card);border-radius:12px;padding:1.5rem;margin-bottom:2rem;border-left:4px solid var(--green);}
+.objs h3{color:var(--green);margin-bottom:1rem;font-size:1.2rem;}
+.objs ul{list-style:none;}
+.objs li{padding:0.4rem 0;display:flex;align-items:center;gap:0.5rem;}
+.objs input[type=checkbox]{accent-color:var(--blue);width:18px;height:18px;cursor:pointer;}
+.module{background:var(--card);border-radius:12px;margin-bottom:1.5rem;overflow:hidden;border:1px solid var(--border);}
+.mod-head{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.mod-head:hover{background:rgba(139,92,246,0.05);}
+.mod-head h3{font-size:1.1rem;}
+.mod-time{background:var(--purple);color:white;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.8rem;}
+.mod-body{padding:0 1.5rem 1.5rem;}
+.mod-body.coll{display:none;}
+.lesson{padding:1rem;margin-bottom:1rem;background:rgba(15,23,42,0.6);border-radius:8px;border-left:3px solid var(--cyan);}
+.lesson h4{color:var(--cyan);margin-bottom:0.5rem;}
+.lesson p{color:var(--muted);font-size:0.95rem;}
+.lesson ul{margin-top:0.5rem;padding-left:1.2rem;}
+.lesson li{color:var(--muted);font-size:0.9rem;padding:0.2rem 0;}
+.lab{background:rgba(16,185,129,0.1);border:1px solid var(--green);border-radius:8px;padding:1rem;margin-top:1rem;}
+.lab h4{color:var(--green);margin-bottom:0.5rem;}
+.lab ol,.lab ul{padding-left:1.4rem;}
+.lab li{color:var(--muted);font-size:0.9rem;padding:0.2rem 0;}
+.terminal{background:#0d1117;border-radius:6px;padding:1rem;font-family:'Courier New',monospace;font-size:0.85rem;color:#58a6ff;margin:0.5rem 0;overflow-x:auto;white-space:pre-wrap;}
+.terminal .prompt{color:var(--green);}
+.scenario{background:rgba(245,158,11,0.1);border:1px solid var(--orange);border-radius:8px;padding:1rem;margin-top:1rem;}
+.scenario h4{color:var(--orange);margin-bottom:0.5rem;}
+.scenario p{color:var(--muted);font-size:0.9rem;}
+.res{background:rgba(236,72,153,0.1);border:1px solid var(--pink);border-radius:8px;padding:1rem;margin-top:1rem;}
+.res h4{color:var(--pink);margin-bottom:0.5rem;}
+.res a{color:var(--cyan);text-decoration:none;display:block;font-size:0.9rem;padding:0.2rem 0;}
+.res a:hover{text-decoration:underline;}
+.prog-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);padding:0.5rem 2rem;display:flex;align-items:center;gap:1rem;z-index:100;border-top:1px solid var(--border);}
+.prog-label{color:var(--muted);font-size:0.85rem;}
+.dot-track{list-style:none;display:flex;gap:0.5rem;justify-content:center;padding:1rem 0;margin-bottom:1rem;}
+.dot-track li{width:12px;height:12px;border-radius:50%;background:var(--border);}
+.dot-track li.done{background:var(--green);}
+footer{clear:both;padding:2rem;text-align:center;color:var(--muted);font-size:0.85rem;}
+.know-check{background:rgba(59,130,246,0.1);border:1px solid var(--blue);border-radius:8px;padding:1rem;margin-top:1rem;}
+.know-check h4{color:var(--blue);margin-bottom:0.5rem;}
+.know-check p{color:var(--muted);font-size:0.9rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>&#x1F427; Linux Essentials for IT Support</h1>
+  <div class="hdr-links"><a href="../index.html">&#x21A9; Index</a><a href="phase-2-windows-administration.html">&#x2190; Windows</a></div>
+</header>
+<nav>
+  <a href="phase-2-windows-administration.html">&larr; Windows Admin</a>
+  <a href="phase-2-macos-enterprise-support.html">macOS Support &rarr;</a>
+</nav>
+<div class="container">
+  <div class="hero">
+    <h2>Linux Essentials for IT Support</h2>
+    <p>Ubuntu/Debian fundamentals: shell proficiency, systemd, filesystem navigation, and essential scripting.</p>
+  </div>
+  <ul id="dotTrack" class="dot-track"></ul>
+  <div class="objs">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li><input type="checkbox" data-m="1"/> Boot a Linux system and navigate the terminal confidently</li>
+      <li><input type="checkbox" data-m="2"/> Understand and use the Linux filesystem hierarchy</li>
+      <li><input type="checkbox" data-m="3"/> Manage files with nano, vim, and common CLI tools</li>
+      <li><input type="checkbox" data-m="4"/> Control file permissions, ownership, and ACLs</li>
+      <li><input type="checkbox" data-m="5"/> Manage users, groups, and sudo privileges</li>
+      <li><input type="checkbox" data-m="6"/> Install, update, and remove packages with apt</li>
+      <li><input type="checkbox" data-m="7"/> Manage services and understand systemd</li>
+      <li><input type="checkbox" data-m="8"/> Schedule tasks with cron and at</li>
+      <li><input type="checkbox" data-m="9"/> Write basic shell scripts for automation</li>
+      <li><input type="checkbox" data-m="10"/> Configure SSH for secure remote access</li>
+    </ul>
+  </div>
+
+  <!-- Module 1 -->
+  <div class="module open">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 1: Ubuntu/Debian Installation & Boot Process</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 1.1: Choosing and Installing Ubuntu LTS</h4>
+        <p>Selecting the right edition, partitioning strategies, and post-installation first steps.</p>
+        <ul>
+          <li>Desktop vs Server editions — which to choose</li>
+          <li>Manual partitioning: /boot, swap, /, /home layout</li>
+          <li>First-boot configuration wizard essentials</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 1.2: The Boot Process & Recovery</h4>
+        <p>GRUB, initramfs, kernel modules, and what to do when things go wrong.</p>
+        <ul>
+          <li>BIOS/UEFI handoff and GRUB menu navigation</li>
+          <li>Recovery mode and root shell access</li>
+          <li>fsck and repairing broken mount points</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> sudo dpkg-reconfigure grub-pc  # reconfigure bootloader if needed
+<span class="prompt">$</span> telinit 1                       # switch to single-user mode
+<span class="prompt">$</span> fsck -y /dev/sda1               # check and fix filesystem errors</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Fresh Install & Recovery</h4>
+        <ol>
+          <li>Download Ubuntu 22.04 LTS ISO (desktop or server — your choice)</li>
+          <li>Boot from USB in a VM (VirtualBox recommended)</li>
+          <li>Choose custom partitioning: separate /home and swap</li>
+          <li>Break the system intentionally (remove /etc/passwd read perms)</li>
+          <li>Boot into recovery mode and restore permissions using chroot</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A user reports their Ubuntu laptop won't boot past GRUB after a power outage. They've never used the terminal. Walk through recovering the system without losing user data.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://ubuntu.com/tutorials/install-ubuntu-desktop" target="_blank">Official Ubuntu Desktop Install Guide</a>
+        <a href="https://help.ubuntu.com/community/Installation" target="_blank">Ubuntu Community Installation Docs</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 2: Filesystem Hierarchy & Navigation</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 2.1: The FHS Standard</h4>
+        <p>Understanding /bin, /etc, /var, /tmp, /proc, and why every directory matters.</p>
+        <ul>
+          <li>/etc — configuration files (the heart of Linux admin)</li>
+          <li>/var/log — where diagnostics live</li>
+          <li>/proc and /sys — virtual filesystems exposing kernel state</li>
+          <li>/home vs /root — user vs administrative boundaries</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 2.2: Essential CLI Navigation</h4>
+        <p>pwd, cd, ls, find, locate — the daily driver toolkit for any sysadmin.</p>
+        <ul>
+          <li>Relative vs absolute paths — understanding the difference</li>
+          <li>find with -name, -mtime, -size filters</li>
+          <li>locate vs find performance trade-offs</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> find /var/log -name "*.log" -mtime -7    # logs modified in last 7 days
+<span class="prompt">$</span> du -sh /home/*                           # quick size summary per user
+<span class="prompt">$</span> df -h                                    # disk usage human-readable</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Navigate & Discover</h4>
+        <ol>
+          <li>List all files in /etc modified in the last day</li>
+          <li>Find any file larger than 100MB under /home recursively</li>
+          <li>Count how many config files exist in /etc/nginx</li>
+          <li>Locate the systemd journal log file manually</li>
+        </ol>
+      </div>
+      <div class="know-check">
+        <h4>Knowledge Check</h4>
+        <p>Q: What does `ls -la` show that `ls -l` does not? A: The dot-files (hidden files like .bashrc, .ssh).</p>
+        <p>Q: Where would you find network interface configuration? A: /etc/netplan/ or /etc/network/interfaces depending on distro.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://linuxize.com/post/linux-file-permissions-chmod/" target="_blank">Linux File Permissions Guide</a>
+        <a href="https://www.freedesktop.org/wiki/Software/shared-mime-info/" target="_blank">Freedesktop MIME Types</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 3: Text Editors — nano & vim</h3><span class="mod-time">~2.5 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 3.1: nano for Quick Edits</h4>
+        <p>nano is the friendly choice for beginners: intuitive, on-screen shortcuts, perfect for quick config changes.</p>
+        <ul>
+          <li>Open, edit, save (^O), exit (^X)</li>
+          <li>Search and replace across files</li>
+          <li>Line numbers and syntax highlighting</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 3.2: vim — The Power Editor</h4>
+        <p>vim is indispensable for professionals. Learn the modes and essential movements now.</p>
+        <ul>
+          <li>Modes: Normal, Insert, Command-line</li>
+          <li>Movement: h j k l, w, b, gg, G</li>
+          <li>Editing: i, a, d, c, y, u (undo!)</li>
+          <li>Saving: :w, :q, :wq, :q!</li>
+          <li>Opening config: vim /etc/hostname</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">[Normal mode]</span>
+i              # enter insert mode
+:wq            # save and quit
+:q!            # discard changes and quit
+dd             # delete current line
+yy             # copy (yank) current line
+pp             # paste below
+/%search%/n     # search and jump to next match</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Edit Without Mouse</h4>
+        <ol>
+          <li>Create /tmp/test-edit.txt using touch</li>
+          <li>Edit it with nano, add 3 lines, save and exit</li>
+          <li>Edit the same file with vim — insert text, save with :wq</li>
+          <li>Practice vim motions: jump to line 5, delete line 3, undo, redo</li>
+          <li>Open /etc/resolv.conf in vim and change the nameserver</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A user's SSH authorized_keys file got corrupted. You must edit it over the terminal using only vim. Fix the formatting so each key is on its own line with correct key-type prefix.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://www.openvim.com/" target="_blank">OpenVIM — Free Interactive Vim Tutorial</a>
+        <a href="https://nanocom.org/docs/user-guide/index.html" target="_blank">nano Documentation</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 4: Permissions & Ownership</h3><span class="mod-time">~2.5 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 4.1: rwx Fundamentals</h4>
+        <p>chmod, chown, and the numeric/octal permission system.</p>
+        <ul>
+          <li>r=4, w=2, x=1 — reading permission math</li>
+          <li>Owner, group, others breakdown</li>
+          <li>chmod 755 vs 644 — common defaults</li>
+          <li>setuid, setgid, and sticky bit basics</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 4.2: Advanced Access Control</h4>
+        <p>ACLs, capabilities, and SELinux/AppArmor context awareness.</p>
+        <ul>
+          <li>getfacl / setfacl for fine-grained permissions</li>
+          <li>umask defaults and changing them permanently</li>
+          <li>sudoers file editing and visudo safety</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> ls -l /etc/shadow       # see owner/root root rw-------
+<span class="prompt">$</span> chmod 640 /etc/secrets  # owner rw, group r, others nothing
+<span class="prompt">$</span> chown -R user:staff /home/project
+<span class="prompt">$</span> getfacl /var/data</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Permission Forensics</h4>
+        <ol>
+          <li>Create a directory structure simulating a team project</li>
+          <li>Set permissions so the dev team can read/write but others can only read</li>
+          <li>Make a script executable and demonstrate why it fails without +x</li>
+          <li>Use sudoers to grant a test user passwordless apt install for nginx only</li>
+        </ol>
+      </div>
+      <div class="know-check">
+        <h4>Knowledge Check</h4>
+        <p>Q: What do the permissions `rwsr-xr-x` indicate? A: setuid bit is set on the owner execute bit.</p>
+        <p>Q: Why can't you chmod /etc/shadow for regular users? A: Only root can modify it; shadow perms should be 640 owned by root:shadow.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://linuxize.com/post/linux-permissions-chmod/" target="_blank">Linux Permissions Guide — Linuxize</a>
+        <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_permissions_managing-users-and-groups/index" target="_blank">Red Hat File Permissions Docs</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 5: Users & Groups</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 5.1: User Management Commands</h4>
+        <p>useradd, usermod, userdel, passwd — managing identities in /etc/passwd and /etc/shadow.</p>
+        <ul>
+          <li>UID/GID assignment and the 1000+ threshold for normal users</li>
+          <li>Login shells and home directory creation</li>
+          <li>Locking vs deleting accounts (the difference matters in investigations)</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 5.2: Group Policy Equivalent</h4>
+        <p>groupadd, gpasswd, supplementary groups, and the principle of least privilege.</p>
+        <ul>
+          <li>Adding users to docker, sudo, lpadmin groups</li>
+          <li>SGID directories for shared team folders</li>
+          <li>Checking group membership with id and groups commands</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> sudo useradd -m -s /bin/bash developer
+<span class="prompt">$</span> sudo usermod -aG docker,sudo developer
+<span class="prompt">$</span> echo "developer:TempPass123!" | sudo chpasswd
+<span class="prompt">$</span> id developer    # verify groups
+<span class="prompt">$</span> sudo deluser developer    # full removal including home</div>
+      <div class="lab">
+        <h4>Terminal Exercise: User Provisioning Script</h4>
+        <ol>
+          <li>Create 3 test users with home directories</li>
+          <li>Add them to appropriate groups (dev, ops, guest)</li>
+          <li>Set password policies requiring password change on first login</li>
+          <li>Lock one account and verify lock status with passwd -S</li>
+          <li>Write a bash script that automates this entire provisioning</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>An ex-employee still has active SSH keys on three production servers. You need to remove their primary account, purge all authorized_keys references, and rotate shared service passwords they may have known.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://linuxize.com/post/linux-create-users/" target="_blank">Creating Users in Linux</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 6: Package Management with apt</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 6.1: apt Basics</h4>
+        <p>apt-get and apt commands for installing, removing, and maintaining software.</p>
+        <ul>
+          <li>apt update vs apt upgrade — the critical distinction</li>
+          <li>Installing specific versions and holding packages</li>
+          <li>Clean, autoremove, autoclean for disk management</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 6.2: Sources Lists & PPA Management</h4>
+        <p>Managing repositories, adding PPAs, and handling vendor-specific apt sources.</p>
+        <ul>
+          <li>/etc/apt/sources.list and sources.list.d/</li>
+          <li>GPG key management for third-party repos</li>
+          <li>dpkg for .deb file installs when apt isn't available</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> sudo apt update && sudo apt upgrade -y
+<span class="prompt">$</span> sudo apt install nginx curl git -y
+<span class="prompt">$</span> sudo apt hold nginx           # prevent upgrades
+<span class="prompt">$</span> sudo apt-mark showhold        # see held packages
+<span class="prompt">$</span> sudo apt autoremove --purge   # clean orphaned deps</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Software Lifecycle</h4>
+        <ol>
+          <li>Install Docker CE from the official Docker apt repository</li>
+          <li>Hold the Docker package to prevent accidental removal during upgrades</li>
+          <li>Simulate a broken dependency situation and resolve it</li>
+          <li>List all installed packages sorted by size (largest first)</li>
+        </ol>
+      </div>
+      <div class="know-check">
+        <h4>Knowledge Check</h4>
+        <p>Q: What is the difference between apt upgrade and apt full-upgrade? A: full-upgrade allows removing currently installed packages if needed for the upgrade (like apt-get dist-upgrade).</p>
+        <p>Q: How do you find which package owns /etc/nginx/nginx.conf? A: dpkg -S /etc/nginx/nginx.conf</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://linuxize.com/post/how-to-use-apt-key-on-linux-mint-ubuntu-22-04/" target="_blank">APT Key Management</a>
+        <a href="https://help.ubuntu.com/community/AptGet/Howto" target="_blank">Ubuntu AptGet Howto</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 7: Services & systemd</h3><span class="mod-time">~3 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 7.1: systemctl Essentials</h4>
+        <p>Starting, stopping, enabling, and monitoring services on modern Linux.</p>
+        <ul>
+          <li>systemctl status/start/stop/enable/disable</li>
+          <li>journald and journalctl for service logs</li>
+          <li>Understanding service unit files (.service)</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 7.2: Unit Files & Custom Services</h4>
+        <p>Writing and deploying custom systemd units for applications.</p>
+        <ul>
+          <li>Environment variables in service files</li>
+          <li>WantedBy and Requires directives</li>
+          <li>Reloading daemons after unit changes</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> sudo systemctl status sshd        # check SSH service
+<span class="prompt">$</span> sudo systemctl enable --now nginx  # start and enable at boot
+<span class="prompt">$</span> journalctl -u nginx --since "1 hour ago"
+<span class="prompt">$</span> sudo systemctl daemon-reload      # after editing unit files</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Create & Manage a Service</h4>
+        <ol>
+          <li>Create a simple Python script that runs forever (server simulation)</li>
+          <li>Write a systemd .service unit file in /etc/systemd/system/</li>
+          <li>Start, enable, and verify the service is running</li>
+          <li>Generate a failure by killing the process unexpectedly and review journalctl logs</li>
+          <li>Implement restart=always and test automatic recovery</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A web app crashes every night at 2 AM during a database backup window. It's managed by systemd but doesn't restart automatically. Diagnose, configure proper restart behavior, and set up a systemd timer instead of cron for more reliable scheduling.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html" target="_blank">systemd.service Manual Page</a>
+        <a href="https://linuxize.com/post/systemctl-list-units-linux/" target="_blank">Listing Systemd Units</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 8: Cron Jobs & Scheduled Tasks</h3><span class="mod-time">~1.5 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 8.1: crontab Syntax</h4>
+        <p>* * * * * — minute, hour, day, month, weekday explained with real examples.</p>
+        <ul>
+          <li>Common patterns: daily backups, hourly checks, weekly maintenance</li>
+          <li>@reboot and @monthly shortcut notations</li>
+          <li>Crond environment vs interactive shell — PATH traps</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 8.2: Systemd Timers (Modern Alternative)</h4>
+        <p>When to prefer timers over cron for reliability and logging.</p>
+        <ul>
+          <li>OnCalendar= syntax equivalents</li>
+          <li>Advantages: boot timing, persistent triggers, integrated logging</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> crontab -e
+# Every day at 3:15 AM — note absolute paths in cron!
+15 3 * * * /usr/bin/rsync -a /data/backups/ /mnt/backup/daily/
+# Every Sunday at midnight
+0 0 * * 0 /opt/scripts/weekly-report.sh >> /var/log/weekly.log 2>&1</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Schedule Reliability</h4>
+        <ol>
+          <li>Create a script that logs the current timestamp to /tmp/cron-test.log every minute</li>
+          <li>Schedule it with crontab and verify it executes</li>
+          <li>Create a systemd timer that runs the same task hourly</li>
+          <li>Compare the two approaches: which is easier to debug?</li>
+        </ol>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://linuxize.com/post/the-linux-crontab/" target="_blank">The Linux crontab</a>
+        <a href="https://www.digitalocean.com/community/tutorials/how-to-use-cron-to-automate-tasks-ubuntu-22-04" target="_blank">DigitalOcean Cron Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 9: Basic Shell Scripting</h3><span class="mod-time">~3 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 9.1: Bash Fundamentals</h4>
+        <p>Variables, conditionals, loops, and input/output redirection basics.</p>
+        <ul>
+          <li>#!/bin/bash shebang and making scripts executable</li>
+          <li>$?, $#, $1-$9 positional parameters</li>
+          <li>If/then/elif/else and test expressions [ ]</li>
+          <li>for loops, while loops, and case statements</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 9.2: Practical Sysadmin Scripts</h4>
+        <p>Scripts that solve real problems: disk monitoring, user auditing, log rotation helpers.</p>
+        <ul>
+          <li>Checking disk usage and alerting on thresholds</li>
+          <li>Counting failed login attempts from auth.log</li>
+          <li>Automated backup verification with checksums</li>
+        </ul>
+      </div>
+      <div class="terminal">
+#!/bin/bash
+# disk-check.sh — Alert if any partition exceeds 85% usage
+THRESHOLD=85
+while read -r line; do
+  pct=$(echo "$line" | grep -oP '\d+%')
+  pct_num=${pct%\%}
+  if [ "$pct_num" -gt "$THRESHOLD" ]; then
+    echo "ALERT: $line exceeds ${THRESHOLD}%" | mail -s "Disk Alert" admin@corp.com
+  fi
+done &lt;(df -h | tail -n +2)</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Build Your First Automation</h4>
+        <ol>
+          <li>Write a script that checks if nginx is running and starts it if not</li>
+          <li>Add logic to send an email notification on restart</li>
+          <li>Schedule the script via cron to run every 5 minutes</li>
+          <li>Write a second script that archives old logs older than 30 days</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>Your boss asks you to generate a weekly report listing: number of user accounts, top 5 disk-using directories in /home, and count of failed SSH login attempts last week. All from a single script running on five servers.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://learn.sourceforge.net/bashref/html/" target="_blank">Bash Reference Manual</a>
+        <a href="https://shellscript.sh/" target="_blank">Shell Scripting Resources</a>
+        <a href="https://linuxize.com/post/bash-shell-scripting/" target="_blank">Bash Scripting Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 10 -->
+  <div class="module">
+    <div class="mod-head" onclick="toggleMod(this)"><h3>Module 10: SSH Setup & Secure Remote Access</h3><span class="mod-time">~2 hours</span></div>
+    <div class="mod-body">
+      <div class="lesson">
+        <h4>Lesson 10.1: SSH Configuration Deep Dive</h4>
+        <p>sshd_config hardening, key generation, and trust relationships.</p>
+        <ul>
+          <li>rsa vs ed25519 keys — which to use</li>
+          <li>Disabling password auth, enforcing key-only login</li>
+          <li>Changing the default port (cosmetic but reduces noise)</li>
+          <li>AllowUsers and AllowGroups restrictions</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 10.2: Advanced SSH for IT Support</h4>
+        <p>SSH tunnels, X11 forwarding, port knocking, and bastion hosts.</p>
+        <ul>
+          <li>scp and rsync over SSH for file transfers</li>
+          <li>-L and -D port forwarding for secure browsing</li>
+          <li>ssh-config proxy jump for jumping through firewalls</li>
+        </ul>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> ssh-keygen -t ed25519 -C "admin@hostname"
+<span class="prompt">$</span> ssh-copy-id user@remote-server
+<span class="prompt">$</span> ssh -J bastion.corp.com user@internal-db   # jump host
+<span class="prompt">$</span> scp /local/file user@host:/remote/path
+<span class="prompt">$</span> ssh -L 8080:localhost:80 user@server         # local tunnel</div>
+      <div class="lab">
+        <h4>Terminal Exercise: Hardened SSH Deploy</h4>
+        <ol>
+          <li>Set up two VMs; generate ed25519 keys on one</li>
+          <li>Copy the public key to the other's authorized_keys</li>
+          <li>Hardened sshd_config: disable root login, password auth, enable only ed25519</li>
+          <li>Verify login works without password; attempt fails with password</li>
+          <li>Create an SSH config alias for easy access</li>
+        </ol>
+      </div>
+      <div class="know-check">
+        <h4>Knowledge Check</h4>
+        <p>Q: How do you connect to a server through a bastion host? A: `ssh -J bastion.example.com user@internal-server`.</p>
+        <p>Q: What's in ~/.ssh/known_hosts? A: Host keys of previously connected servers to prevent MITM attacks.</p>
+      </div>
+      <div class="res">
+        <h4>Resources</h4>
+        <a href="https://www.ssh.com/academy/ssh/config" target="_blank">SSH Config Documentation</a>
+        <a href="https://linuxize.com/post/how-to-setup-ssh-keys-on-ubuntu-22-04/" target="_blank">Setting Up SSH Keys on Ubuntu</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>Linux Essentials | Estimated Total: ~17.5 Hours</footer>
+</div>
+<div class="prog-bar">
+  <span class="prog-label">Progress:</span>
+  <span id="progPct">0%</span>
+  <div style="flex:1;height:8px;background:#334155;border-radius:4px;"><div id="progFill" style="height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 0.3s;"></div></div>
+</div>
+<script>
+function toggleMod(h){const m=h.parentElement;m.classList.toggle('open');h.nextElementSibling?.classList.toggle('coll');}
+const cbs=document.querySelectorAll('.objs input[type=checkbox]');
+function upd(){const t=cbs.length,d=[...document.querySelectorAll('.objs input:checked')].length,p=Math.round(d/t*100);document.getElementById('progFill').style.width=p+'%';document.getElementById('progPct').textContent=p+'%';localStorage.setItem('linux-progress',JSON.stringify([...cbs.map(c=>c.checked)]));}
+cbs.forEach(cb=>cb.addEventListener('change',upd));
+(function(){const s=localStorage.getItem('linux-progress');if(s){try{const a=JSON.parse(s);a.forEach((v,i)=>{if(cbs[i])cbs[i].checked=v;});upd();}catch(e){}}const tr=document.getElementById('dotTrack');cbs.forEach(()=>{const li=document.createElement('li');tr.appendChild(li);});})();
+</script>
+</body>
+</html>

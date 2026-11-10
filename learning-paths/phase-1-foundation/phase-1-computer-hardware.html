@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1: Computer Hardware Fundamentals</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f59e0b;
+  --accent-pink: #ec4899;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border: #334155;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+header { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-blue); flex-wrap: wrap; gap: 0.5rem; }
+header h1 { font-size: 1.4rem; color: var(--accent-blue); }
+.header-links a { color: var(--text-muted); text-decoration: none; margin-left: 1rem; font-size: 0.9rem; }
+.header-links a:hover { color: var(--accent-blue); }
+nav.prev-next { background: var(--card); padding: 1rem 2rem; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem; }
+nav.prev-next a { color: var(--accent-blue); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--accent-blue); border-radius: 6px; font-size: 0.9rem; transition: background 0.2s; }
+nav.prev-next a:hover { background: var(--accent-blue); color: white; }
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+.hero { text-align: center; padding: 2rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.hero h2 { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--accent-cyan); }
+.hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; margin: 0 auto; }
+.hero .meta-badges { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+.hero .badge { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.8rem; color: var(--text-muted); }
+.objectives { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--accent-blue); }
+.objectives h3 { color: var(--accent-blue); margin-bottom: 1rem; font-size: 1.2rem; }
+.objectives ul { list-style: none; }
+.objectives li { padding: 0.4rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
+.objectives input[type="checkbox"] { accent-color: var(--accent-green); width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; margin-top: 4px; }
+.module { background: var(--card); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; border: 1px solid var(--border); }
+.module-header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.module-header:hover { background: rgba(59,130,246,0.05); }
+.module-header h3 { font-size: 1.1rem; }
+.module-time { background: var(--accent-blue); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; }
+.module-body { padding: 0 1.5rem 1.5rem; }
+.module-body.collapsed { display: none; }
+.lesson { padding: 1rem; margin-bottom: 1rem; background: rgba(15,23,42,0.6); border-radius: 8px; border-left: 3px solid var(--accent-cyan); }
+.lesson h4 { color: var(--accent-cyan); margin-bottom: 0.5rem; }
+.lesson p { color: var(--text-muted); font-size: 0.95rem; }
+.lesson ul { margin-top: 0.5rem; padding-left: 1.2rem; }
+.lesson li { color: var(--text-muted); font-size: 0.9rem; padding: 0.2rem 0; }
+.lab { background: rgba(16,185,129,0.1); border: 1px solid var(--accent-green); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.lab h4 { color: var(--accent-green); margin-bottom: 0.5rem; }
+.lab ol { padding-left: 1.2rem; }
+.lab li { color: var(--text-muted); font-size: 0.9rem; padding: 0.2rem 0; }
+.scenario { background: rgba(245,158,11,0.1); border: 1px solid var(--accent-orange); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.scenario h4 { color: var(--accent-orange); margin-bottom: 0.5rem; }
+.scenario p { color: var(--text-muted); font-size: 0.9rem; }
+.resources { background: rgba(236,72,153,0.1); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.resources h4 { color: var(--accent-pink); margin-bottom: 0.5rem; }
+.resources a { color: var(--accent-cyan); text-decoration: none; display: block; font-size: 0.9rem; padding: 0.2rem 0; }
+.resources a:hover { text-decoration: underline; }
+.checkpoint { background: rgba(139,92,246,0.1); border: 1px solid var(--accent-purple); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.checkpoint h4 { color: var(--accent-purple); margin-bottom: 0.5rem; }
+.checkpoint p { color: var(--text-muted); font-size: 0.9rem; }
+.progress-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); padding: 0.5rem 2rem; display: flex; align-items: center; gap: 1rem; z-index: 100; border-top: 1px solid var(--border); }
+.progress-label { color: var(--text-muted); font-size: 0.85rem; }
+#progressTrack { list-style: none; display: flex; gap: 0.5rem; justify-content: center; padding: 1rem 0; margin-bottom: 1rem; }
+#progressTrack li { width: 12px; height: 12px; border-radius: 50%; background: var(--border); }
+#progressTrack li.done { background: var(--accent-green); }
+footer { clear: both; padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+.toggle-icon::after { content: '+'; font-size: 1.5rem; color: var(--accent-blue); }
+.module.open .toggle-icon::after { content: '-'; }
+.component-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+.component-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem 1rem; }
+.component-card h4 { font-size: 0.9rem; color: var(--accent-cyan); margin-bottom: 0.3rem; }
+.component-card p { font-size: 0.82rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>&#x1F527; Computer Hardware Fundamentals</h1>
+  <div class="header-links">
+    <a href="../index.html">&#x21A9; Back to Index</a>
+    <a href="phase-1-operating-systems-basics.html">Next: OS Basics &rarr;</a>
+  </div>
+</header>
+<nav class="prev-next">
+  <span></span>
+  <a href="phase-1-operating-systems-basics.html">Next Lesson: OS Basics &rarr;</a>
+</nav>
+<div class="container">
+  <div class="hero">
+    <h2>Computer Hardware Fundamentals</h2>
+    <p>Understand every major component inside a computer, how they work together, and gain the hands-on skills to build, upgrade, and troubleshoot hardware confidently.</p>
+    <div class="meta-badges">
+      <span class="badge">&#x1F550; ~10 Hours</span>
+      <span class="badge">&#x1F527; Hands-On Labs</span>
+      <span class="badge">CompTIA A+ 220-1101</span>
+      <span class="badge">Beginner Friendly</span>
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <div class="objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li><input type="checkbox" /> Identify CPU architectures, sockets, and performance characteristics</li>
+      <li><input type="checkbox" /> Compare RAM types, speeds, and configurations (single vs dual channel)</li>
+      <li><input type="checkbox" /> Differentiate storage technologies: HDD, SATA SSD, NVMe, M.2</li>
+      <li><input type="checkbox" /> Understand motherboard form factors, chipsets, and expansion slots</li>
+      <li><input type="checkbox" /> Assemble and disassemble a desktop PC safely</li>
+      <li><input type="checkbox" /> Diagnose common hardware failures using systematic troubleshooting</li>
+      <li><input type="checkbox" /> Configure peripherals: printers, monitors, USB devices, docking stations</li>
+      <li><input type="checkbox" /> Evaluate laptop vs desktop tradeoffs for enterprise deployment</li>
+      <li><input type="checkbox" /> Plan and execute component upgrades (RAM, storage, PSU, cooling)</li>
+      <li><input type="checkbox" /> Apply ESD safety precautions in all hardware handling scenarios</li>
+    </ul>
+  </div>
+
+  <!-- Module 1 -->
+  <div class="module open">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 1: The Brain — CPU Fundamentals</h3>
+      <span class="module-time">~1.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 1.1: How CPUs Work</h4>
+        <p>CPU (Central Processing Unit) is the brain of the computer. It executes instructions, performs calculations, and orchestrates all other components via the motherboard bus system.</p>
+        <ul>
+          <li>Cores and threads: physical cores vs hyper-threading/SMT</li>
+          <li>Clock speed (GHz), boost clocks, and TDP (Thermal Design Power)</li>
+          <li>Cache hierarchy: L1, L2, L3 cache and why it matters</li>
+          <li>x86-64 vs ARM architectures in consumer and enterprise PCs</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 1.2: CPU Sockets & Compatibility</h4>
+        <p>Not all CPUs fit all motherboards. Socket type determines compatibility, and chipset features determine what else you can connect.</p>
+        <ul>
+          <li>Intel sockets: LGA 1700 (12th-14th gen), LGA 1200 (10th-11th gen)</li>
+          <li>AMD sockets: AM4 (Ryzen 1000-5000), AM5 (Ryzen 7000+, DDR5 only)</li>
+          <li>Understanding BIOS/UEFI firmware updates for CPU support</li>
+          <li>Cooler compatibility: Intel vs AMD mounting standards</li>
+        </ul>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A user complains their workstation runs slow during video calls but fine otherwise. You suspect a thermal throttling issue. Walk through diagnosing whether the CPU throttle-down is due to dust, failed thermal paste, or an incompatible cooler mount.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://www.intel.com/content/www/us/en/architecture-and-technology/cpp-overview/cpp-overview.html" target="_blank">Intel Architecture Overview</a>
+        <a href="https://www.amd.com/en/support" target="_blank">AMD Support & CPU Guides</a>
+        <a href="https://www.youtube.com/watch?v=HEmXJXsnLzg" target="_blank">CPU Core Architecture Explained (Techlore)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 2: Memory — RAM Deep Dive</h3>
+      <span class="module-time">~1.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 2.1: RAM Types & Generations</h4>
+        <p>RAM (Random Access Memory) is the computer's short-term workspace. Understanding DRAM generations helps you select the right memory for any build.</p>
+        <ul>
+          <li>DDR3 vs DDR4 vs DDR5: pin layouts, voltages, speeds</li>
+          <li>SO-DIMM (laptop) vs DIMM (desktop) physical differences</li>
+          <li>ECC vs non-ECC memory: when error correction matters</li>
+          <li>Registered (RDIMM) vs unbuffered (UDIMM) memory</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 2.2: Memory Configurations & Performance</h4>
+        <p>How you install RAM dramatically affects performance. Channel architecture and speed matching are critical considerations.</p>
+        <ul>
+          <li>Single-channel vs dual-channel vs triple-channel vs quad-channel</li>
+          <li>XMP/EXPO profiles: enabling advertised speeds in BIOS</li>
+          <li>Mixing RAM kits: what happens when capacities/speeds differ</li>
+          <li>Memory timing latencies: CL, tRCD, tRP, tRAS explained</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: RAM Upgrade & Diagnostics</h4>
+        <ol>
+          <li>Open a desktop PC and identify existing RAM slots and type (DDR4/DDR5)</li>
+          <li>Use cpuinfo / dxdiag / free command to document current memory config</li>
+          <li>Install an additional compatible RAM stick in the correct slot for dual-channel</li>
+          <li>Enter BIOS and enable XMP profile if available</li>
+          <li>Run Windows Memory Diagnostic or MemTest86 to verify stability</li>
+        </ol>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://en.wikipedia.org/wiki/DRAM" target="_blank">DRAM Technology Overview (Wikipedia)</a>
+        <a href="https://pcpartpicker.com/blog/a-guide-to-computer-memory-ram/" target="_blank">PCPartPicker RAM Guide</a>
+        <a href="https://www.memtest86.com/" target="_blank">MemTest86 — Free Memory Testing Tool</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 3: Storage Technologies</h3>
+      <span class="module-time">~2 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 3.1: HDD vs SSD — Core Differences</h4>
+        <p>Storage is where your data lives permanently. Choosing between spinning disks and flash storage impacts speed, cost, capacity, and reliability.</p>
+        <ul>
+          <li>HDD: platters, read/write heads, RPM speeds (5400 vs 7200), noise, power</li>
+          <li>SATA SSD: NAND flash, controller, 6 Gbps bottleneck, 500+ MB/s reads</li>
+          <li>NVMe SSD: PCIe lanes, M.2 form factor, 3000-12000+ MB/s throughput</li>
+          <li>QLC vs TLC vs MLC NAND: endurance (TBW) and lifespan tradeoffs</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 3.2: Interfaces & Form Factors</h4>
+        <p>Connecting storage requires matching both physical shape and data protocol.</p>
+        <ul>
+          <li>2.5-inch SATA (SSD/HDD): most common SATA form factor</li>
+          <li>3.5-inch SATA: desktop HDD standard, higher capacities</li>
+          <li>M.2 2280 vs 2242 vs 2230: width x length dimensions</li>
+          <li>M.2 keys: B-key, M-key, B+M key and what they support</li>
+          <li>USB external drives: USB 3.0/3.1/3.2/4, Thunderbolt 3/4</li>
+          <li>SAS vs SATA in enterprise environments</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 3.3: Storage Setup & Cloning</h4>
+        <p>Installing new drives, migrating data, and configuring RAID arrays for redundancy or performance.</p>
+        <ul>
+          <li>BIOS/UEFI drive boot order configuration</li>
+          <li>Disk management: partitioning, formatting NTFS/exFAT/ext4</li>
+          <li>Cloning tools: Macrium Reflect, Clonezilla, dd for Linux</li>
+          <li>Built-in RAID 0/1/10: performance vs redundancy tradeoffs</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Drive Installation & Migration</h4>
+        <ol>
+          <li>Install a 2.5-inch SATA SSD into a desktop as a secondary drive</li>
+          <li>Initialize, format, and assign a drive letter in Disk Management</li>
+          <li>Clone an existing HDD to the new SSD using free cloning software</li>
+          <li>Swap primary drives and update BIOS boot order to test the clone</li>
+          <li>Verify system boots cleanly from the SSD and confirm performance gain</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>An executive's laptop has only 128 GB of eMMC storage and is unusably slow. They need at least 512 GB for their workload. Options include replacing the internal drive, upgrading to an NVMe slot, or using a high-speed external solution. Assess each option's feasibility for a warranty-sensitive thin laptop.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://www.tomshardware.com/reviews/hdd-vs-ssd,3941.html" target="_blank">HDD vs SSD Complete Comparison (Tom's Hardware)</a>
+        <a href="https://learn.microsoft.com/en-us/windows-server/storage/disk-management/create-or-delete-a-simple-volume" target="_blank">Managing Disks in Windows</a>
+        <a href="https://clonezilla.org/" target="_blank">Clonezilla — Free Disk Cloning Tool</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 4: Motherboard & System Architecture</h3>
+      <span class="module-time">~1.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 4.1: Motherboard Form Factors</h4>
+        <p>The motherboard is the backbone that connects everything. Form factor determines case compatibility, expansion slots, and overall capability.</p>
+        <ul>
+          <li>ATX, Micro-ATX (mATX), Mini-ITX: size comparisons and use cases</li>
+          <li>Enterprise boards: E-ATX, workstation boards with more PCIe lanes</li>
+          <li>Laptop motherboards: highly integrated, rarely upgradeable</li>
+          <li>I/O shield presence and port layout variations</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 4.2: Chipsets, Buses & Expansion Slots</h4>
+        <p>Chipsets control what the CPU can communicate with. Understanding them helps you pick the right board for the job.</p>
+        <ul>
+          <li>Intel chipsets: H, B, Z series — feature differences explained</li>
+          <li>AMD chipsets: A, B, X series — similarly tiered feature sets</li>
+          <li>PCIe generation differences: 3.0 vs 4.0 vs 5.0 bandwidth</li>
+          <li>SATA ports, M.2 sharing rules, and lane bifurcation quirks</li>
+          <li>VRM phases: why they matter for overclocking and stability</li>
+        </ul>
+      </div>
+      <div class="component-grid">
+        <div class="component-card">
+          <h4>BIOS / UEFI</h4>
+          <p>Firmware that initializes hardware at boot. Modern UEFI offers mouse support, network boot, and secure boot verification.</p>
+        </div>
+        <div class="component-card">
+          <h4>CMOS Battery</h4>
+          <p>Keeps BIOS settings and real-time clock running when powered off. Dead battery = lost settings and wrong system time.</p>
+        </div>
+        <div class="component-card">
+          <h4>Power Connectors</h4>
+          <p>24-pin ATX main, 8-pin EPS CPU, 6/8-pin PCIe GPU. PSU wattage must cover total system draw plus headroom.</p>
+        </div>
+        <div class="component-card">
+          <h4>Front Panel Headers</h4>
+          <p>PWR_SW, RESET_SW, HDD_LED, PWR_LED, USB 2.0/3.0, audio HD_AUDIO. Pinouts vary by manufacturer.</p>
+        </div>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://en.wikipedia.org/wiki/Motherboard_form_factor" target="_blank">Motherboard Form Factors (Wikipedia)</a>
+        <a href="https://www.youtube.com/watch?v=qP1jHMvUiGg" target="_blank">Intel Chipset Guide (Linus Tech Tips)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 5: Power Supplies & Cooling</h3>
+      <span class="module-time">~1 hour</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 5.1: PSU Wattage & Efficiency</h4>
+        <p>The power supply delivers electricity to every component. Choosing the right PSU prevents instability, crashes, and hardware damage.</p>
+        <ul>
+          <li>Wattage calculation: sum all component TDPs + 20% headroom</li>
+          <li>80 PLUS certification: White, Bronze, Silver, Gold, Platinum, Titanium</li>
+          <li>Modular vs semi-modular vs non-modular cables</li>
+          <li>Rail configurations: single-rail vs multi-rail PSUs</li>
+          <li>ATX 3.0 / 12VHPWR connector for modern NVIDIA GPUs</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 5.2: Cooling Solutions</h4>
+        <p>Heat kills electronics. Proper cooling extends component life and maintains performance under load.</p>
+        <ul>
+          <li>Air cooling: tower coolers, low-profile, stock heatsinks</li>
+          <li>All-in-one liquid coolers (AIO): 120mm, 240mm, 360mm radiators</li>
+          <li>Case airflow: intake fans, exhaust fans, positive pressure</li>
+          <li>Thermal paste application: pea method vs spread method</li>
+          <li>Monitoring temps with HWMonitor, Core Temp, or OpenHardwareMonitor</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Build Assessment & Thermal Check</h4>
+        <ol>
+          <li>Identify the PSU wattage label on an open desktop chassis</li>
+          <li>Calculate estimated system power draw from listed components</li>
+          <li>Inspect fan placement and cable routing for optimal airflow</li>
+          <li>Boot system and record idle/idle temperatures using monitoring tool</li>
+          <li>Run a stress test (Prime95 or OCCT) and observe thermal behavior</li>
+        </ol>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://outerVision.com/power-supply-calculator" target="_blank">PSU Wattage Calculator (OuterVision)</a>
+        <a href="https://www.coolermaster.com/knowledge-center/article/how-to-apply-thermal-paste/" target="_blank">Thermal Paste Application Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 6: Peripherals & Connectivity</h3>
+      <span class="module-time">~1 hour</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 6.1: Display Outputs & Resolutions</h4>
+        <p>Monitors and graphics outputs have evolved significantly. Knowing the standards prevents mismatches and frustration.</p>
+        <ul>
+          <li>HDMI versions (2.0, 2.1) and what resolutions/framerates they support</li>
+          <li>DisplayPort 1.4 vs 2.0: daisy-chaining (MST) capabilities</li>
+          <li>USB-C / Thunderbolt video output alternatives</li>
+          <li>Multi-monitor setups: spanning, extending, duplicate modes</li>
+          <li>G-Sync vs FreeSync: adaptive sync technologies</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 6.2: Printers & Common Peripherals</h4>
+        <p>Printers, webcams, docks, and other peripherals are daily touchpoints for IT support staff.</p>
+        <ul>
+          <li>Inkjet vs laser vs LED printer technologies and use cases</li>
+          <li>Network printer setup: IP assignment, shared folders, print queues</li>
+          <li>USB device enumeration and driver installation</li>
+          <li>USB-C docking stations: display output passthrough, charging</li>
+          <li>KVM switches for multi-computer workflows</li>
+        </ul>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>A user reports their second monitor goes black randomly. Sometimes it works after wiggling the cable. Diagnose whether this is a faulty cable, bad HDMI port on the GPU, driver issue, or insufficient power delivery through the port. Test with known-good cables first.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://support.hp.com/us-en/help" target="_blank">HP Printer Troubleshooting</a>
+        <a href="https://www.displayport.org/" target="_blank">DisplayPort Standard Specs</a>
+        <a href="https://usb.org/about-usb" target="_blank">USB Implementers Forum Standards</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 7: Laptop vs Desktop & Portability</h3>
+      <span class="module-time">~1 hour</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 7.1: Enterprise Laptop Considerations</h4>
+        <p>Businesses deploy laptops for mobility but face unique challenges around repairability, upgrades, and lifecycle management.</p>
+        <ul>
+          <li>ThinkPad, Latitude, EliteBook — enterprise durability standards (MIL-STD)</li>
+          <li>User-replaceable components: RAM slots, SSD bays in business laptops</li>
+          <li>Battery health monitoring and replacement intervals</li>
+          <li>Lock slots, Kensington interfaces, and physical security</li>
+          <li>Webcam shutters, microphone mutes, privacy toggles on modern laptops</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 7.2: Thin-and-Light vs Gaming vs Workstation</h4>
+        <p>Understanding the trade-offs between ultraportables, performance laptops, and mobile workstations.</p>
+        <ul>
+          <li>Thin-and-light: integrated GPU, limited cooling, best battery life</li>
+          <li>Gaming laptops: discrete GPUs, aggressive cooling, poor battery</li>
+          <li>Mobile workstations: ISV-certified GPUs, ECC RAM, xeon/mobile CPUs</li>
+          <li>Tablets/2-in-1s: detachable keyboards, stylus support, limited I/O</li>
+          <li>Docking station ecosystems: Dell WD-series, HP dock, Lenovo ThinkPad docks</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Laptop Hardware Tour</h4>
+        <ol>
+          <li>Open a service manual for a specific laptop model (e.g., Dell Latitude 5520)</li>
+          <li>Identify accessible upgrade locations: RAM slot, M.2 slot, Wi-Fi card</li>
+          <li>Remove and reseat the existing RAM module</li>
+          <li>Check battery cycle count and health status</li>
+          <li>Replace the back panel and verify all ports and keys function</li>
+        </ol>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://www.dell.com/support" target="_blank">Dell Service Manuals</a>
+        <a href="https://support.lenovo.com/us/en/products" target="_blank">Lenovo Hardware Maintenance Manuals</a>
+        <a href="https://www.youtube.com/@LaptopMedia" target="_blank">Laptop Media YouTube — Reviews & Disassembly Guides</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 8: Hardware Troubleshooting Methodology</h3>
+      <span class="module-time">~1.5 hours</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 8.1: The IT Troubleshooting Process</h4>
+        <p>A structured methodology prevents wasted time and missed root causes. Follow these steps for every hardware ticket.</p>
+        <ul>
+          <li>Step 1: Identify the problem — gather symptoms from user and logs</li>
+          <li>Step 2: Establish a theory of probable cause — what could be failing?</li>
+          <li>Step 3: Test the theory — isolate variables one at a time</li>
+          <li>Step 4: Establish a plan of action — what fix will you apply?</li>
+          <li>Step 5: Verify full system functionality — does the fix work end-to-end?</li>
+          <li>Step 6: Document findings — knowledge base article for next time</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 8.2: Diagnostic Tools & Beep Codes</h4>
+        <p>Sometimes the answer comes before the OS even loads. POST codes and beep sequences tell you exactly which component is misbehaving.</p>
+        <ul>
+          <li>POST (Power-On Self-Test): what happens before the OS starts</li>
+          <li>Beep code patterns for AMI, Award, and Phoenix BIOS</li>
+          <li>Diagnostic LEDs on modern motherboards (CPU / DRAM / VGA / BOOT)</li>
+          <li>Hardware diagnostic utilities: Built-in Dell diagnostics, HP PC Hardware Diagnostics</li>
+          <li>Minimimal boot testing: remove everything, add back one component at a time</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: POST Diagnosis Challenge</h4>
+        <ol>
+          <li>Power on a PC that won't post — listen for beep patterns or check debug LEDs</li>
+          <li>Reseat all RAM modules and try booting again</li>
+          <li>If still no display, swap the RAM stick into a known-good slot</li>
+          <li>Disconnect non-essential peripherals and attempt minimal boot</li>
+          <li>Test the system with a different power supply if available</li>
+        </ol>
+      </div>
+      <div class="checkpoint">
+        <h4>Checkpoint: Can You Diagnose This?</h4>
+        <p>A desktop makes no sound on power-up, no display, and no fans spin beyond a brief pulse. Which component is the most likely culprit? (Answer: PSU or front-panel power switch, not RAM — always check power first.)</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://support.dell.com/en_US/community/beep-codes" target="_blank">Dell Beep Code Reference</a>
+        <a href="https://www.pcguide.com/ref-mobo-beep-codes.html" target="_blank">Complete Beep Code Tables (PCGuide)</a>
+        <a href="https://support.hp.com/us-en/help/computer-software" target="_blank">HP PC Hardware Diagnostics</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="module">
+    <div class="module-header" onclick="toggleModule(this)">
+      <h3>Module 9: Safe Assembly & ESD Protection</h3>
+      <span class="module-time">~1 hour</span>
+    </div>
+    <div class="module-body">
+      <div class="lesson">
+        <h4>Lesson 9.1: ESD Safety Procedures</h4>
+        <p>Electrostatic discharge can silently destroy components worth hundreds of dollars. Always follow proper ESD precautions.</p>
+        <ul>
+          <li>ESD wrist strap: clip to grounded metal, not paint or plastic</li>
+          <li>Anti-static mats and grounding points on workbenches</li>
+          <li>When you must touch a component: hold by edges, avoid pins and traces</li>
+          <li>Component storage: anti-static bags, original packaging when possible</li>
+          <li>Humidity matters: dry winter air increases ESD risk significantly</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <h4>Lesson 9.2: Step-by-Step Desktop Build</h4>
+        <p>Building from parts teaches you how everything fits together better than any textbook.</p>
+        <ul>
+          <li>Prepare workspace: clean, well-lit, non-conductive surface</li>
+          <li>Install CPU onto motherboard before placing in case</li>
+          <li>Apply thermal paste correctly — tiny dot, never smear excessively</li>
+          <li>Install RAM into correct channels (check motherboard manual)</li>
+          <li>Mount motherboard standoffs matching your form factor</li>
+          <li>Connect front panel connectors carefully — refer to manual diagrams</li>
+          <li>First boot test: keep everything outside the case to rule out shorts</li>
+        </ul>
+      </div>
+      <div class="lab">
+        <h4>Hands-On Lab: Full Desktop Build</h4>
+        <ol>
+          <li>Gather: motherboard, CPU, 1x RAM stick, PSU, case, M.2 SSD</li>
+          <li>Install CPU into socket (align triangle marker, no force needed)</li>
+          <li>Apply thermal paste and mount the CPU cooler</li>
+          <li>Install RAM in the recommended dual-channel slot pattern</li>
+          <li>Mount M.2 NVMe drive and secure with screw</li>
+          <li>Place motherboard in case with standoffs, secure screws</li>
+          <li>Connect 24-pin ATX and 8-pin EPS, then power on to verify POST</li>
+        </ol>
+      </div>
+      <div class="scenario">
+        <h4>Real-World Scenario</h4>
+        <p>You've been asked to build 10 identical workstation units for a new hire cohort. Each machine needs dual-channel RAM, a 512 GB NVMe boot drive, and a quiet air cooler. Draft a build checklist and quality-control procedure to ensure every unit passes POST and benchmark tests before shipping to users.</p>
+      </div>
+      <div class="resources">
+        <h4>Resources</h4>
+        <a href="https://www.youtube.com/watch?v=N2TX2vkyAjk" target="_blank">PC Building Complete Guide (Linus Tech Tips)</a>
+        <a href="https://us.noagearmo.com/esd-safety-guide/" target="_blank">ESD Safety Best Practices</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Check -->
+  <div class="checkpoint" style="margin-top: 2rem;">
+    <h3 style="color:var(--accent-purple); margin-bottom:0.8rem;">Knowledge Check — Quiz Yourself</h3>
+    <p style="color:var(--text-muted); font-size:0.95rem;"><strong>Q1:</strong> What is the maximum theoretical bandwidth of PCIe 4.0 x16 compared to PCIe 3.0 x16?</p>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.5rem;">Answer: PCIe 4.0 doubles the per-lane bandwidth (~32 GT/s vs ~16 GT/s), giving x16 roughly 64 GB/s vs 32 GB/s for PCIe 3.0.</p>
+    <p style="color:var(--text-muted); font-size:0.95rem; margin-top:0.5rem;"><strong>Q2:</strong> Why should you NEVER open a CRT monitor casing?</p>
+    <p style="color:var(--text-muted); font-size:0.9rem;">Answer: CRTs store lethal voltage (~30,000V) in their capacitors even when unplugged. Only LCD/LED screens are safe to open without special training.</p>
+    <p style="color:var(--text-muted); font-size:0.95rem; margin-top:0.5rem;"><strong>Q3:</strong> A user's PC blue screens with "IRQL_NOT_LESS_OR_EQUAL." What hardware is the most likely cause?</p>
+    <p style="color:var(--text-muted); font-size:0.9rem;">Answer: Faulty RAM, overheating CPU, or unstable RAM XMP profile. Run MemTest86 as first step.</p>
+  </div>
+
+  <footer>
+    Phase 1 — Computer Hardware Fundamentals | Estimated Total: ~10 Hours
+  </footer>
+</div>
+<div class="progress-bar">
+  <span class="progress-label">Progress:</span>
+  <span id="progressPercent">0%</span>
+  <div style="flex:1;height:8px;background:#334155;border-radius:4px;">
+    <div id="progressFill" style="height:100%;background:var(--accent-green);border-radius:4px;width:0%;transition:width 0.3s;"></div>
+  </div>
+</div>
+<script>
+function toggleModule(header) {
+  header.parentElement.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('collapsed');
+}
+const checkboxes = document.querySelectorAll('.module input[type="checkbox"]');
+function updateProgress() {
+  const total = checkboxes.length;
+  const done = document.querySelectorAll('.module input[type="checkbox"]:checked').length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPercent').textContent = pct + '%';
+  localStorage.setItem('hw-progress', JSON.stringify([...document.querySelectorAll('.module input[type="checkbox"]').map(c => c.checked)]));
+}
+checkboxes.forEach(cb => cb.addEventListener('change', updateProgress));
+(function() {
+  const saved = localStorage.getItem('hw-progress');
+  if(saved) { try { const arr = JSON.parse(saved); arr.forEach((val, i) => { if(checkboxes[i]) checkboxes[i].checked = val; }); updateProgress(); } catch(e){} }
+})();
+</script>
+</body>
+</html>

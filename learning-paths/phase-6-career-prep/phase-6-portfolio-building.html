@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building Your IT Portfolio | Learning Paths</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+    /* Nav */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand { font-size: 1.05rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-brand span { color: var(--accent-pink); }
+    .nav-breadcrumbs { display: flex; gap: 0.3rem; align-items: center; font-size: 0.82rem; color: var(--text-muted); }
+    .nav-breadcrumbs a { color: var(--text-muted); text-decoration: none; }
+    .nav-breadcrumbs a:hover { color: var(--accent-pink); }
+    .nav-breadcrumbs .sep { color: var(--text-dim); }
+    .nav-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .nav-link:hover { color: var(--text); border-color: var(--accent-pink); background: rgba(236,72,153,0.08); }
+    .nav-link.active { color: var(--accent-pink); border-color: var(--accent-pink); background: rgba(236,72,153,0.12); }
+
+    /* Hero */
+    .hero {
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(236,72,153,0.15);
+      color: var(--accent-pink);
+      border-radius: 6px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.8rem;
+    }
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.5px;
+    }
+    .hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; }
+    .hero-meta { display: flex; gap: 1.5rem; margin-top: 1.2rem; flex-wrap: wrap; }
+    .hero-meta-item { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
+    .hero-meta-item strong { color: var(--text); }
+
+    /* Objectives */
+    .objectives {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-pink);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .objectives h2 { font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .objective-list { list-style: none; }
+    .objective-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .objective-list li:last-child { border-bottom: none; }
+    .objective-list input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .objective-list input[type="checkbox"]:checked {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+    .objective-list input[type="checkbox"]:checked::after {
+      content: '\2713';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Modules */
+    .module {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .module-header {
+      padding: 1.3rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .module-header:hover { background: rgba(255,255,255,0.02); }
+    .module-header-left { display: flex; align-items: center; gap: 1rem; }
+    .module-num {
+      background: rgba(236,72,153,0.15);
+      color: var(--accent-pink);
+      border-radius: 8px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .module-title { font-size: 1.05rem; font-weight: 700; }
+    .module-time {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      background: var(--bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+    }
+    .module-body { padding: 0 1.5rem 1.5rem; display: none; }
+    .module.open .module-body { display: block; }
+    .module.open .module-toggle::after { content: '\25B2'; }
+    .module-toggle::after {
+      content: '\25BC';
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+    .module h3 { font-size: 0.95rem; margin: 1rem 0 0.6rem; color: var(--accent-pink); }
+    .module ul { list-style: none; padding-left: 0; }
+    .module ul li {
+      padding: 0.35rem 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .module ul li::before { content: '\2022'; color: var(--accent-pink); flex-shrink: 0; }
+    .module .handson {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin-top: 1rem;
+    }
+    .module .handson-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-cyan);
+      margin-bottom: 0.5rem;
+    }
+    .module .handson p { font-size: 0.88rem; color: var(--text-muted); }
+
+    /* Template Box */
+    .template-box {
+      background: var(--bg);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+    }
+    .template-box h4 {
+      font-size: 0.85rem;
+      color: var(--accent-orange);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .template-box pre {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      overflow-x: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .template-box code { font-family: 'Consolas', 'Monarco', monospace; }
+
+    /* Checklist */
+    .checklist-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .checklist-section h2 { font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.5rem;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.7rem;
+      background: var(--bg);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .checklist-item:hover { color: var(--text); }
+    .checklist-item input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-radius: 3px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .checklist-item input[type="checkbox"]:checked {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+    .checklist-item input[type="checkbox"]:checked::after {
+      content: '\2713';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+    }
+    .checklist-item.done span { text-decoration: line-through; opacity: 0.5; }
+
+    /* Resources */
+    .resources-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .resource-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      display: block;
+    }
+    .resource-item:hover { border-color: var(--accent-pink); transform: translateY(-2px); }
+    .resource-type {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      margin-bottom: 0.4rem;
+    }
+    .resource-item h4 { font-size: 0.92rem; margin-bottom: 0.3rem; }
+    .resource-item p { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* Next Steps */
+    .next-steps {
+      background: linear-gradient(135deg, rgba(236,72,153,0.1), rgba(139,92,246,0.1));
+      border: 1px solid rgba(236,72,153,0.3);
+      border-radius: 14px;
+      padding: 1.8rem;
+      margin-top: 2rem;
+    }
+    .next-steps h2 { font-size: 1.2rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+    .next-steps ol { padding-left: 1.2rem; }
+    .next-steps li { padding: 0.4rem 0; font-size: 0.9rem; color: var(--text-muted); }
+    .next-steps li a { color: var(--accent-pink); text-decoration: none; }
+    .next-steps li a:hover { text-decoration: underline; }
+
+    /* Prev/Next Nav */
+    .page-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .page-nav-link {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+      max-width: 48%;
+    }
+    .page-nav-link:hover { border-color: var(--accent-pink); transform: translateY(-2px); }
+    .page-nav-link .label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+    .page-nav-link .title { font-size: 0.95rem; font-weight: 600; }
+    .page-nav-link.next { text-align: right; margin-left: auto; }
+
+    footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+    footer a { color: var(--accent-pink); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.6rem; }
+      .module-header { padding: 1rem; }
+      .module-body { padding: 0 1rem 1rem; }
+      .page-nav { flex-direction: column; }
+      .page-nav-link { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html" class="nav-brand">&#x1F4DA; <span>Learning Paths</span></a>
+    <div class="nav-breadcrumbs">
+      <a href="../index.html">Home</a>
+      <span class="sep">/</span>
+      <a href="../index.html#all-phases">Phase 6</a>
+      <span class="sep">/</span>
+      <span>Portfolio Building</span>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">All Paths</a>
+      <a href="phase-6-resume-interview.html" class="nav-link">Resume &amp; Interview</a>
+      <a href="phase-6-job-search-strategy.html" class="nav-link">Job Search Strategy</a>
+      <a href="../../it-support-roadmap.html" class="nav-link">Main Roadmap</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="hero">
+      <span class="hero-badge">Phase 6 &middot; Career Prep</span>
+      <h1>Building Your IT Portfolio</h1>
+      <p>Your portfolio is your proof of skills. In IT support, a well-documented portfolio of hands-on projects, lab work, and contributions speaks louder than any certificate.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><strong>8 Modules</strong></div>
+        <div class="hero-meta-item"><strong>~18 hours</strong> estimated</div>
+        <div class="hero-meta-item"><strong>Hands-on</strong> focus</div>
+      </div>
+    </div>
+
+    <!-- Learning Objectives -->
+    <div class="objectives">
+      <h2>&#x1F3AF; Learning Objectives</h2>
+      <ul class="objective-list">
+        <li><input type="checkbox"><span>Explain why portfolio documentation matters for IT support careers</span></li>
+        <li><input type="checkbox"><span>Set up a professional GitHub profile showcasing IT projects</span></li>
+        <li><input type="checkbox"><span>Document home lab projects with clear write-ups</span></li>
+        <li><input type="checkbox"><span>Create project showcase templates for your portfolio</span></li>
+        <li><input type="checkbox"><span>Optimize your LinkedIn profile for IT support roles</span></li>
+        <li><input type="checkbox"><span>Write blog posts about your learning journey</span></li>
+        <li><input type="checkbox"><span>Understand open source contribution basics</span></li>
+        <li><input type="checkbox"><span>Build a simple personal tech website</span></li>
+      </ul>
+    </div>
+
+    <!-- Module 1 -->
+    <div class="module open">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 1</span>
+          <span class="module-title">Documentation Best Practices</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 2 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>Why Documentation Matters</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">In IT support, documentation IS the job. Every ticket you resolve, every system you configure, every process you improve should be documented. It proves your skills and helps others.</p>
+        <ul>
+          <li>Follow the <strong>Problem -> Solution -> Lesson</strong> framework for every write-up</li>
+          <li>Use headings, bullet points, and screenshots to make docs scannable</li>
+          <li>Include before/after states so readers see the transformation</li>
+          <li>Version your documentation: note what changed and when</li>
+          <li>Write for your future self: assume you'll forget details</li>
+          <li>Use markdown (.md files) for all your documentation</li>
+        </ul>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Document a recent technical problem you solved (real or simulated). Write it using the Problem-Solution-Lesson framework and save it as a markdown file in your GitHub repo.</p>
+        </div>
+
+        <div class="template-box">
+          <h4>&#128203; Documentation Template</h4>
+<pre># [Project/Ticket Title]
+
+## Overview
+What was the issue or goal? (2-3 sentences)
+
+## Environment
+- OS:
+- Software versions:
+- Tools used:
+
+## Problem Description
+Detailed description of the issue or requirement.
+
+## Solution
+Step-by-step actions taken to resolve the issue.
+
+```bash
+# Include relevant commands or scripts
+```
+
+## Results
+What was the outcome? Include evidence (screenshots, metrics).
+
+## Lessons Learned
+What would you do differently? What did you learn?
+
+## References
+Links to documentation, forums, or resources used.</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 2</span>
+          <span class="module-title">Creating a GitHub Portfolio</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 2.5 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>Setting Up Your Profile</h3>
+        <ul>
+          <li>Create a professional GitHub profile photo and bio</li>
+          <li>Pin your most important repositories to your profile</li>
+          <li>Use a README.md on every repository to explain the project</li>
+          <li>Organize repos into collections (e.g., "home-lab", "scripts", "labs")</li>
+          <li>Add a main README.md at the root of your profile</li>
+          <li>Use topics/labels to categorize your projects</li>
+        </ul>
+
+        <h3>Repository Structure</h3>
+        <ul>
+          <li>One repo per project with a clear purpose</li>
+          <li>Include a detailed README for each project</li>
+          <li>Use meaningful commit messages</li>
+          <li>Add issue templates for bug reports and feature requests</li>
+          <li>Include a CONTRIBUTING.md for collaborative projects</li>
+        </ul>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Create a GitHub account, set up your profile README, and create your first repository with a proper README documenting an IT support project from your home lab.</p>
+        </div>
+
+        <div class="template-box">
+          <h4>&#128203; Repository README Template</h4>
+<pre># Project Name
+A one-line description of what this project does.
+
+## What's Inside
+Brief description of the project scope.
+
+## Prerequisites
+- List of software/tools needed
+- Hardware requirements (if any)
+
+## Setup Instructions
+Step-by-step setup guide with code blocks.
+
+## Usage
+How to use or interact with the project.
+
+## Screenshots
+![Screenshot](./screenshots/demo.png)
+
+## Learnings
+What I learned from building this project.
+
+## References
+Resources used during development.</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 3</span>
+          <span class="module-title">Home Lab Documentation</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 2.5 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>What to Document</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">Your home lab is your strongest portfolio asset. Document it thoroughly:</p>
+        <ul>
+          <li><strong>Lab Architecture:</strong> Network diagram showing your VMs, routers, switches</li>
+          <li><strong>Each Service Deployed:</strong> What it does, how you configured it, why</li>
+          <li><strong>Problems Encountered:</strong> Things that broke and how you fixed them</li>
+          <li><strong>Hardware List:</strong> What physical/virtual hardware you use and costs</li>
+          <li><strong>Cost Breakdown:</strong> Total investment vs. what it taught you</li>
+        </ul>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Take screenshots of your home lab setup. Draw a simple network diagram (use draw.io or Excalidraw). Write a comprehensive lab overview document covering architecture, services, and lessons learned.</p>
+        </div>
+
+        <div class="template-box">
+          <h4>&#128203; Home Lab Overview Template</h4>
+<pre># My Home Lab
+*A hands-on learning environment for IT support skills*
+
+## Lab Overview
+Purpose: [why you built this]
+Started: [date]
+Last Updated: [date]
+
+## Hardware
+| Component | Model | Purpose | Cost |
+|-----------|-------|---------|------|
+| Server | | | $ |
+| Router | | | $ |
+| Switch | | | $ |
+
+## Virtual Machines
+| VM Name | OS | Purpose | Specs |
+|---------|-----|---------|-------|
+| | | | |
+
+## Services Running
+1. **[Service Name]** - What it does, how it helped you learn
+2. **[Service Name]** - ...
+3. **[Service Name]** - ...
+
+## Key Projects
+1. [Project title] - Brief description and link to repo
+2. [Project title] - ...
+
+## Lessons Learned
+- What went wrong and how you fixed it
+- What you'd do differently
+- Skills gained</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 4</span>
+          <span class="module-title">Project Showcase Templates</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 2 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>Showcasing Your Work Effectively</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">Every project in your portfolio should tell a story. Use this template for each project showcase:</p>
+        <ul>
+          <li><strong>The Challenge:</strong> What problem were you solving?</li>
+          <li><strong>Approach:</strong> How did you think through it?</li>
+          <li><strong>Implementation:</strong> What did you actually do? (with evidence)</li>
+          <li><strong>Results:</strong> What was the outcome? Quantify if possible.</li>
+          <li><strong>Reflection:</strong> What would you improve next time?</li>
+        </ul>
+
+        <h3>Ideal Portfolio Projects for IT Support</h3>
+        <ul>
+          <li>Active Directory domain setup with group policy enforcement</li>
+          <li>Home NAS with backup automation</li>
+          <li>Network monitoring dashboard (PRTG, Zabbix, or similar)</li>
+          <li>Print server setup and troubleshooting scenario</li>
+          <li>VPN configuration for secure remote access</li>
+          <li>Automated system health checks via script</li>
+          <li>Multi-OS troubleshooting lab (Windows/Linux/macOS)</li>
+        </ul>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Choose 2-3 projects from your home lab or past experience. Write a project showcase for each using the challenge-approach-implementation-results-reflection format. Save as individual markdown files.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 5 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 5</span>
+          <span class="module-title">LinkedIn Optimization for IT Roles</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 1.5 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>Profile Elements That Matter</h3>
+        <ul>
+          <li><strong>Headline:</strong> Not just "Looking for jobs" - use keywords like "IT Support Specialist | CompTIA A+ | Azure Fundamentals"</li>
+          <li><strong>About Section:</strong> Tell your story: why IT support, what you've built, what you're passionate about</li>
+          <li><strong>Experience:</strong> Include home lab work, volunteer IT help, and any relevant non-IT experience</li>
+          <li><strong>Featured Section:</strong> Pin your best project write-ups and GitHub repos</li>
+          <li><strong>Skills & Endorsements:</strong> Add all relevant skills; get endorsements from peers</li>
+          <li><strong>Certifications:</strong> Add every certification with credential IDs and URLs</li>
+          <li><strong>Recommendations:</strong> Request recommendations from colleagues, mentors, or lab partners</li>
+        </ul>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Review your LinkedIn profile against the checklist above. Update your headline, about section, and add at least 3 featured items from your portfolio work.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 6 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 6</span>
+          <span class="module-title">Blog &amp; Writing About Your Journey</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 2.5 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>Why Writing Matters</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">Writing about what you learn reinforces your knowledge, demonstrates communication skills, and builds visibility with employers. Even short posts count.</p>
+        <ul>
+          <li>Start a dev.to or Medium blog, or use your own site</li>
+          <li>Write about obstacles you overcame and how you solved them</li>
+          <li>Share "day in the life" of your study routine</li>
+          <li>Post tutorial-style content ("How I set up my home lab")</li>
+          <li>Share exam preparation tips and resource reviews</li>
+          <li>Comment thoughtfully on others' posts to build community presence</li>
+        </ul>
+
+        <div class="template-box">
+          <h4>&#128203; Blog Post Structure</h4>
+<pre>Title: Catchy and keyword-rich (e.g., "How I Built a Home Lab for Under $200")
+
+Introduction: Hook the reader, state what they'll learn
+Body:
+  - Use subheadings (H2, H3)
+  - Include screenshots where helpful
+  - Add code blocks for technical steps
+  - Keep paragraphs short (2-4 sentences)
+Conclusion: Summary + call-to-action (comment, share, follow)
+
+Tags: # compTIA # homelab # it.support # learning</pre>
+        </div>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Write and publish your first blog post about something you learned recently. It could be about your home lab, an exam topic, or a troubleshooting story. Aim for 500-800 words.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 7 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 7</span>
+          <span class="module-title">Open Source Contribution Basics</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 2 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>Getting Started with Open Source</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">Contributing to open source shows collaboration skills and genuine interest in technology. Start small:</p>
+        <ul>
+          <li><strong>Good First Issues:</strong> Look for issues labeled "good first issue" or "beginner friendly"</li>
+          <li><strong>Documentation:</strong> Fix typos, improve examples, translate docs - low barrier entry</li>
+          <li><strong>Bug Reports:</strong> Learn to write clear, reproducible bug reports</li>
+          <li><strong>Answer Questions:</strong> Help others in issue threads and discussions</li>
+          <li><strong>Follow Contribution Guidelines:</strong> Always read CONTRIBUTING.md before submitting</li>
+        </ul>
+
+        <h3>Projects Worth Looking At</h3>
+        <ul>
+          <li>IT-support-adjacent tools: WSL docs, Docker tutorials, networking guides</li>
+          <li>Home lab community projects (OpenMediaVault, CasaOS, etc.)</li>
+          <li>Documentation improvements for major tech companies</li>
+          <li>Automation script repositories on GitHub</li>
+        </ul>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Find a GitHub repository related to IT support or networking. Read its CONTRIBUTING.md, find a "good first issue," and submit a pull request (even if it's just a documentation fix).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 8 -->
+    <div class="module">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-header-left">
+          <span class="module-num">MOD 8</span>
+          <span class="module-title">Personal Tech Website</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <span class="module-time">&#9201; 2.5 hours</span>
+          <span class="module-toggle"></span>
+        </div>
+      </div>
+      <div class="module-body">
+        <h3>Building Your Online Presence</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">A simple personal website acts as your digital business card. You don't need fancy hosting - GitHub Pages is free and looks professional.</p>
+        <ul>
+          <li>Use GitHub Pages (free, connects to your GitHub profile)</li>
+          <li>Consider static site generators: Hugo, Jekyll, or even simple HTML</li>
+          <li>Include: About page, portfolio/projects, blog, contact info</li>
+          <li>Keep it clean and fast-loading - no heavy animations needed</li>
+          <li>Use a custom domain if you want to invest ($10-12/year)</li>
+        </ul>
+
+        <h3>Essential Pages</h3>
+        <ul>
+          <li><strong>Home:</strong> Who you are, what you do, a brief bio</li>
+          <li><strong>Projects:</strong> Your best 3-5 IT support projects with descriptions and links</li>
+          <li><strong>Blog:</strong> Your written journey and insights</li>
+          <li><strong>About:</strong> More detail on your background and goals</li>
+          <li><strong>Contact:</strong> Email, LinkedIn, GitHub links</li>
+        </ul>
+
+        <div class="handson">
+          <div class="handson-label">&#x1F527; Hands-On Practice</div>
+          <p>Create a simple personal website using GitHub Pages. Include an About page, a Projects section linking to your GitHub repos, and a Contact section. Deploy it and share the URL on your LinkedIn profile.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Checklist -->
+    <div class="checklist-section">
+      <h2>&#x2705; Module Completion Checklist</h2>
+      <div class="checklist-grid">
+        <div class="checklist-item"><input type="checkbox"><span>Completed Documentation Best Practices module</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Created GitHub profile with README</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Documented home lab setup with architecture diagram</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Created 2+ project showcase pages</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Optimized LinkedIn profile for IT roles</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Published first blog post</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Made first open source contribution (any size)</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Launched personal tech website</span></div>
+        <div class="checklist-item"><input type="checkbox"><span>Linked portfolio everywhere (LinkedIn, resume, social)</span></div>
+      </div>
+    </div>
+
+    <!-- Resources -->
+    <div class="checklist-section">
+      <h2>&#x1F4D6; Resources &amp; References</h2>
+      <div class="resources-list">
+        <a href="https://docs.github.com/en/get-started" class="resource-item" target="_blank" rel="noopener">
+          <div class="resource-type">Documentation</div>
+          <h4>GitHub Docs</h4>
+          <p>Official guides for profiles, repositories, and READMEs.</p>
+        </a>
+        <a href="https://pages.github.com/" class="resource-item" target="_blank" rel="noopener">
+          <div class="resource-type">Hosting</div>
+          <h4>GitHub Pages</h4>
+          <p>Free static website hosting directly from your GitHub repos.</p>
+        </a>
+        <a href="https://www.drawio.com/" class="resource-item" target="_blank" rel="noopener">
+          <div class="resource-type">Tool</div>
+          <h4>draw.io / Diagrams.net</h4>
+          <p>Free diagramming tool for network diagrams and architecture visuals.</p>
+        </a>
+        <a href="https://dev.to/" class="resource-item" target="_blank" rel="noopener">
+          <div class="resource-type">Platform</div>
+          <h4>DEV Community</h4>
+          <p>Write-and-publish platform with a supportive tech community.</p>
+        </a>
+        <a href="https://medium.com/" class="resource-item" target="_blank" rel="noopener">
+          <div class="resource-type">Platform</div>
+          <h4>Medium</h4>
+          <p>Professional publishing platform for longer-form technical writing.</p>
+        </a>
+        <a href="https://choosealicense.com/" class="resource-item" target="_blank" rel="noopener">
+          <div class="resource-type">Guide</div>
+          <h4>Choose an License</h4>
+          <p>Understand open source licenses before contributing to projects.</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="next-steps">
+      <h2>&#x1F680; Next Steps</h2>
+      <ol>
+        <li>Review all your portfolio work - is it cohesive and professional?</li>
+        <li>Move to the <a href="phase-6-resume-interview.html">Resume & Interview Preparation</a> guide to pair your portfolio with a strong application package</li>
+        <li>Link your portfolio URL on your resume, LinkedIn, and all job applications</li>
+        <li>Share your best project write-up on LinkedIn for visibility</li>
+        <li>Keep adding to your portfolio regularly - it grows over time</li>
+      </ol>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+      <a href="../index.html" class="page-nav-link">
+        <span class="label">&#8592; Back to Hub</span>
+        <span class="title">All Learning Paths</span>
+      </a>
+      <a href="phase-6-resume-interview.html" class="page-nav-link next">
+        <span class="label">Next &#8594;</span>
+        <span class="title">Resume & Interview Prep</span>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>Phase 6: Career Preparation &middot; IT Support Learning Paths</p>
+    <p style="margin-top:0.3rem;"><a href="../index.html">&#x2190; Back to Learning Paths Hub</a> &middot; <a href="../../it-support-roadmap.html">Main Roadmap</a></p>
+  </footer>
+
+  <script>
+    function toggleModule(header) {
+      const module = header.closest('.module');
+      module.classList.toggle('open');
+    }
+    // Checkboxes persistence
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+      const key = 'portfolio_' + cb.closest('.module, .checklist-section')?.querySelector('h2')?.textContent?.trim()?.replace(/\s+/g,'_') || 'global';
+      try {
+        const saved = JSON.parse(localStorage.getItem('portfolio-checks') || '{}');
+        if (saved[key] && cb.checked === false) cb.checked = saved[key];
+        cb.addEventListener('change', function() {
+          const s = JSON.parse(localStorage.getItem('portfolio-checks') || '{}');
+          s[key] = cb.checked;
+          localStorage.setItem('portfolio-checks', JSON.stringify(s));
+          cb.closest('.checklist-item')?.classList.toggle('done', cb.checked);
+        });
+      } catch(e) {}
+    });
+    // Init checklist visual state
+    document.querySelectorAll('.checklist-item input:checked').forEach(function(cb) {
+      cb.closest('.checklist-item').classList.add('done');
+    });
+    // Open first module by default
+    document.querySelector('.module.open .module-header').click();
+    document.querySelector('.module.open').classList.remove('open');
+  </script>
+</body>
+</html>
