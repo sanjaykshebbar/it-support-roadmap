@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phase 3: Networking Essentials | IT Support Roadmap</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #1e293b;
+      --border: #334155;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-brand span { color: var(--accent-green); }
+    .nav-links { display: flex; gap: 1rem; }
+    .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+    .nav-link:hover { color: var(--text); }
+    header {
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      margin-bottom: 0.5rem;
+    }
+    header p { color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .topic-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, border-color 0.2s;
+      display: block;
+    }
+    .topic-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-green);
+    }
+    .topic-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text); }
+    .topic-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+    .topic-tag {
+      display: inline-block;
+      background: rgba(16,185,129,0.15);
+      color: var(--accent-green);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+    footer { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 2rem 0; border-top: 1px solid var(--border); }
+    footer a { color: var(--accent-green); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../../index.html" class="nav-brand">&#x1F4DA; <span>Learning Paths</span></a>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">&larr; All Phases</a>
+      <a href="../../it-support-roadmap.html" class="nav-link">🗺️ Visual Roadmap</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header>
+      <h1>Phase 3: Networking Essentials</h1>
+      <p>Master OSI models, IP subnetting, core network protocols, and professional troubleshooting techniques.</p>
+    </header>
+
+    <div class="topics-grid">
+      <a href="phase-3-osi-tcpip-models.html" class="topic-card">
+        <h3>OSI &amp; TCP/IP Models</h3>
+        <p>Understand the 7 layers of the OSI model, TCP/IP architecture, encapsulation, and how data moves across networks.</p>
+        <span class="topic-tag">Module 1 &middot; ~20 hrs</span>
+      </a>
+
+      <a href="phase-3-ip-addressing-subnetting.html" class="topic-card">
+        <h3>IP Addressing &amp; Subnetting</h3>
+        <p>Master IPv4/IPv6 addressing, CIDR notation, subnet calculation, private vs public IPs, and NAT.</p>
+        <span class="topic-tag">Module 2 &middot; ~25 hrs</span>
+      </a>
+
+      <a href="phase-3-network-protocols.html" class="topic-card">
+        <h3>Essential Network Protocols</h3>
+        <p>Explore DHCP, DNS, HTTP/S, SSH, RDP, FTP, SNMP, and ARP with port numbers and security considerations.</p>
+        <span class="topic-tag">Module 3 &middot; ~20 hrs</span>
+      </a>
+
+      <a href="phase-3-network-troubleshooting.html" class="topic-card">
+        <h3>Network Troubleshooting &amp; Diagnostics</h3>
+        <p>Learn systematic troubleshooting methodology, ping, traceroute, Wireshark, cable testing, and real-world case studies.</p>
+        <span class="topic-tag">Module 4 &middot; ~15 hrs</span>
+      </a>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 IT Support Career Guide &middot; <a href="../../index.html">Back to Hub</a></p>
+    </footer>
+  </div>
+</body>
+</html>
